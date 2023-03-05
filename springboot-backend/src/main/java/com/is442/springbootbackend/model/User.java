@@ -1,6 +1,9 @@
 package com.is442.springbootbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name="user")
@@ -9,9 +12,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private long userId;
-
+    @JsonIgnore
     @ManyToOne()
-    @JoinColumn(name="roleId", referencedColumnName = "role_id", nullable=false)
+    @JoinColumn(name="roleId", referencedColumnName = "role_id")
     private Role role;
 
     @Column(name="name", nullable=false)
@@ -25,8 +28,17 @@ public class User {
 
     @Column(name="password", nullable=false)
     private String password;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "assignedUser")
+    private List<UserGroup> assignedUserGroup;
 
-    public User(String name, String email, String phoneNo, String password) {
+    public User(){
+        super();
+    }
+
+
+    public User(Role role, String name, String email, String phoneNo, String password) {
+        this.role = role;
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;

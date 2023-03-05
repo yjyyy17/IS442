@@ -1,5 +1,6 @@
 package com.is442.springbootbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class Role {
     @Column(name = "role_id")
     private long roleId;
 
+    @JsonIgnore
     @OneToMany(targetEntity = User.class , mappedBy = "userId",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private List<User> userList;
 
@@ -21,6 +23,32 @@ public class Role {
     private String address;
     @Column(name = "industry", nullable = false)
     private String industry;
+
+    public Role(){
+        super();
+    }
+
+    public Role(String role, String address, String industry) {
+        this.role = role;
+        this.address = address;
+        this.industry = industry;
+    }
+
+    public long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(long roleId) {
+        this.roleId = roleId;
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
 
     public String getRole() {
         return role;
