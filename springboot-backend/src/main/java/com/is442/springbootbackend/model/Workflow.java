@@ -1,9 +1,9 @@
 package com.is442.springbootbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="workflow")
@@ -18,9 +18,9 @@ public class Workflow {
 
     @Column(name = "description", nullable=false)
     private String description;
-    @JsonIgnore
+
     @ManyToMany(mappedBy = "assignedWorkflow")
-    private List<UserGroup> assignedUserGroup;
+    private Set<UserGroup> assignedUserGroup = new HashSet<>();
 
     public Workflow(){
         super();

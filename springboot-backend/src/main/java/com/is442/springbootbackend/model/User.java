@@ -3,7 +3,8 @@ package com.is442.springbootbackend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="user")
@@ -12,6 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private long userId;
+
     @JsonIgnore
     @ManyToOne()
     @JoinColumn(name="roleId", referencedColumnName = "role_id")
@@ -28,9 +30,9 @@ public class User {
 
     @Column(name="password", nullable=false)
     private String password;
-    @JsonIgnore
+
     @ManyToMany(mappedBy = "assignedUser")
-    private List<UserGroup> assignedUserGroup;
+    private Set<UserGroup> assignedUserGroup = new HashSet<>();
 
     public User(){
         super();
@@ -43,6 +45,14 @@ public class User {
         this.email = email;
         this.phoneNo = phoneNo;
         this.password = password;
+    }
+
+    public Set<UserGroup> getAssignedUserGroup() {
+        return assignedUserGroup;
+    }
+
+    public void setAssignedUserGroup(Set<UserGroup> assignedUserGroup) {
+        this.assignedUserGroup = assignedUserGroup;
     }
 
     public long getUserId() {

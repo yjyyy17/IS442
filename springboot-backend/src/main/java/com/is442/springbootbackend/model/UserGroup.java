@@ -1,10 +1,8 @@
 package com.is442.springbootbackend.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+;
 import jakarta.persistence.*;
-import org.hibernate.jdbc.Work;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 @Entity
 @Table(name = "user_group")
@@ -13,14 +11,14 @@ public class UserGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_group_id")
     private Long userGroupId;
-    @JsonIgnore
+
     @ManyToMany
     @JoinTable(name="user_group_users", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="user_id"))
-    private List<User> assignedUser;
-    @JsonIgnore
+    private Set<User> assignedUser = new HashSet<>();
+
     @ManyToMany
     @JoinTable(name="user_group_workflows", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
-    private List<Workflow> assignedWorkflow;
+    private Set<Workflow> assignedWorkflow = new HashSet<>();
 
     public UserGroup(){
         super();
@@ -35,5 +33,19 @@ public class UserGroup {
         this.userGroupId = userGroupId;
     }
 
+    public Set<User> getAssignedUser() {
+        return assignedUser;
+    }
 
+    public void setAssignedUser(Set<User> assignedUser) {
+        this.assignedUser = assignedUser;
+    }
+
+    public Set<Workflow> getAssignedWorkflow() {
+        return assignedWorkflow;
+    }
+
+    public void setAssignedWorkflow(Set<Workflow> assignedWorkflow) {
+        this.assignedWorkflow = assignedWorkflow;
+    }
 }
