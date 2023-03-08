@@ -1,5 +1,6 @@
 package com.is442.springbootbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -28,6 +29,7 @@ public class User {
     @Column(name="password", nullable=false)
     private String password;
     @JsonManagedReference
+    @JsonIgnore
     @ManyToMany(mappedBy = "assignedUser")
     private Set<UserGroup> assignedUserGroup = new HashSet<>();
 
