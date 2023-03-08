@@ -1,6 +1,6 @@
 package com.is442.springbootbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -8,16 +8,13 @@ import java.util.Set;
 
 @Entity
 @Table(name="user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="user_type", discriminatorType = DiscriminatorType.STRING)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private long userId;
-
-    @JsonIgnore
-    @ManyToOne()
-    @JoinColumn(name="roleId", referencedColumnName = "role_id")
-    private Role role;
 
     @Column(name="name", nullable=false)
     private String name;
@@ -30,7 +27,7 @@ public class User {
 
     @Column(name="password", nullable=false)
     private String password;
-
+    @JsonManagedReference
     @ManyToMany(mappedBy = "assignedUser")
     private Set<UserGroup> assignedUserGroup = new HashSet<>();
 
@@ -39,8 +36,7 @@ public class User {
     }
 
 
-    public User(Role role, String name, String email, String phoneNo, String password) {
-        this.role = role;
+    public User(String name, String email, String phoneNo, String password) {
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
@@ -61,14 +57,6 @@ public class User {
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public String getName() {

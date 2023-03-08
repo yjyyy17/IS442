@@ -1,7 +1,8 @@
 package com.is442.springbootbackend.controller;
 
-import com.is442.springbootbackend.model.Role;
-import com.is442.springbootbackend.repository.RoleRepository;
+import com.is442.springbootbackend.model.User;
+import com.is442.springbootbackend.model.Vendor;
+import com.is442.springbootbackend.repository.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +14,14 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
-public class RoleController {
+public class VendorController {
     @Autowired
-    private RoleRepository roleRepository;
+    private VendorRepository vendorRepository;
 
-    //get all roles
-    @GetMapping("/role")
-    public List<Role> getAllRoles(){
-        return roleRepository.findAll();
+    @GetMapping("/vendor")
+    public List<Vendor> getAllUserGroups(){
+        return vendorRepository.findAll();
     }
+
+
 }
