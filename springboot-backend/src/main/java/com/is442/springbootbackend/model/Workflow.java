@@ -1,6 +1,7 @@
 package com.is442.springbootbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -20,9 +21,10 @@ public class Workflow {
     @Column(name = "description", nullable=false)
     private String description;
 
+    @JsonManagedReference
     @JsonIgnore
-    @OneToMany(targetEntity = UserGroup.class , mappedBy = "userGroupId",cascade=CascadeType.ALL)
-    private Set<UserGroup> userGroupList = new HashSet<>();
+    @ManyToMany(mappedBy = "assignedWorkflow")
+    private Set<UserGroup> assignedUserGroup = new HashSet<>();
 
     public Workflow(){
         super();

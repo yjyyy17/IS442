@@ -22,9 +22,10 @@ public class UserGroup {
     private Set<User> assignedUser = new HashSet<>();
 
 
-    @ManyToOne()
-    @JoinColumn(name="workflowId", referencedColumnName = "workflow_id")
-    private Workflow workflow;
+    @JsonBackReference
+    @ManyToMany
+    @JoinTable(name="user_group_workflow", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
+    private Set<Workflow> assignedWorkflow = new HashSet<>();
 
     public UserGroup(){
         super();
@@ -46,11 +47,11 @@ public class UserGroup {
         this.assignedUser = assignedUser;
     }
 
-    public Workflow getWorkflow() {
-        return workflow;
+    public Set<Workflow> getAssignedWorkflow() {
+        return assignedWorkflow;
     }
 
-    public void setWorkflow(Workflow workflow) {
-        this.workflow = workflow;
+    public void setAssignedWorkflow(Set<Workflow> assignedWorkflow) {
+        this.assignedWorkflow = assignedWorkflow;
     }
 }
