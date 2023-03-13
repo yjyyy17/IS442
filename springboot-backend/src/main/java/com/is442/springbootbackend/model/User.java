@@ -28,10 +28,10 @@ public class User {
 
     @Column(name="password", nullable=false)
     private String password;
-    @JsonManagedReference
+
     @JsonIgnore
-    @ManyToMany(mappedBy = "assignedUser")
-    private Set<UserGroup> assignedUserGroup = new HashSet<>();
+    @ManyToMany(mappedBy = "assignedUsers")
+    private Set<UserGroup> userGroups = new HashSet<>();
 
     public User(){
         super();
@@ -45,20 +45,16 @@ public class User {
         this.password = password;
     }
 
-    public Set<UserGroup> getAssignedUserGroup() {
-        return assignedUserGroup;
-    }
-
-    public void setAssignedUserGroup(Set<UserGroup> assignedUserGroup) {
-        this.assignedUserGroup = assignedUserGroup;
-    }
-
     public long getUserId() {
         return userId;
     }
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public Set<UserGroup> getUserGroups() {
+        return userGroups;
     }
 
     public String getName() {

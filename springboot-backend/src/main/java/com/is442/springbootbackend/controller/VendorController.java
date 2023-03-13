@@ -63,7 +63,7 @@ public class VendorController {
 
         vendorRepository.delete(vendor);
         Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
+        response.put("Vendor with id " + id + " has been deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
 

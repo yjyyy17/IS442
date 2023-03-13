@@ -16,16 +16,13 @@ public class UserGroup {
     @Column(name = "user_group_id")
     private Long userGroupId;
 
-    @JsonBackReference
     @ManyToMany
     @JoinTable(name="user_group_users", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="user_id"))
-    private Set<User> assignedUser = new HashSet<>();
+    private Set<User> assignedUsers = new HashSet<>();
 
-
-    @JsonBackReference
     @ManyToMany
-    @JoinTable(name="user_group_workflow", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
-    private Set<Workflow> assignedWorkflow = new HashSet<>();
+    @JoinTable(name="user_group_workflows", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
+    private Set<Workflow> assignedWorkflows = new HashSet<>();
 
     public UserGroup(){
         super();
@@ -39,19 +36,19 @@ public class UserGroup {
         this.userGroupId = userGroupId;
     }
 
-    public Set<User> getAssignedUser() {
-        return assignedUser;
+    public Set<User> getAssignedUsers() {
+        return assignedUsers;
     }
 
-    public void setAssignedUser(Set<User> assignedUser) {
-        this.assignedUser = assignedUser;
+    public Set<Workflow> getAssignedWorkflows() {
+        return assignedWorkflows;
     }
 
-    public Set<Workflow> getAssignedWorkflow() {
-        return assignedWorkflow;
+    public void assignUser(User user) {
+        assignedUsers.add(user);
     }
 
-    public void setAssignedWorkflow(Set<Workflow> assignedWorkflow) {
-        this.assignedWorkflow = assignedWorkflow;
+    public void assignWorkflow(Workflow workflow) {
+        assignedWorkflows.add(workflow);
     }
 }

@@ -1,5 +1,6 @@
 package com.is442.springbootbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -21,10 +22,9 @@ public class Workflow {
     @Column(name = "description", nullable=false)
     private String description;
 
-    @JsonManagedReference
     @JsonIgnore
-    @ManyToMany(mappedBy = "assignedWorkflow")
-    private Set<UserGroup> assignedUserGroup = new HashSet<>();
+    @ManyToMany(mappedBy = "assignedWorkflows")
+    private Set<UserGroup> userGroups = new HashSet<>();
 
     public Workflow(){
         super();
@@ -36,13 +36,16 @@ public class Workflow {
         this.description = description;
     }
 
-
     public Long getWorkflowId() {
         return workflowId;
     }
 
     public void setWorkflowId(Long workflowId) {
         this.workflowId = workflowId;
+    }
+
+    public Set<UserGroup> getUserGroups() {
+        return userGroups;
     }
 
     public String getTitle() {

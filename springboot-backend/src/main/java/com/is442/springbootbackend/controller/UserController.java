@@ -61,7 +61,7 @@ public class UserController {
 
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
+        response.put("User with id " + id + " has been deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
 }
