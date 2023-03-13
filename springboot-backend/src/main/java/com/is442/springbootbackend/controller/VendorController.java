@@ -21,7 +21,7 @@ public class VendorController {
 
     //get all vendors
     @GetMapping("/vendor")
-    public List<Vendor> getAllUserGroups(){
+    public List<Vendor> getAllVendors(){
         return vendorRepository.findAll();
     }
 
