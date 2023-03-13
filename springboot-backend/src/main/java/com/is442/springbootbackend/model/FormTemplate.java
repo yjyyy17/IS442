@@ -1,4 +1,6 @@
 package com.is442.springbootbackend.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.*;
 @Entity
@@ -21,8 +23,41 @@ public class FormTemplate {
     @Column(name="revision_number", nullable=false)
     private int revisionNumber;
 
-//    @OneToMany(mappedBy = "formTemplateQuestion")
-//    private HashMap<int, FormTemplateQuestion> questions;
+    //this adds the form_id FK constraint to Question table
+//    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "form_id")
+//    @JsonManagedReference
+    private Set<Question> questions = new HashSet<>();
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public FormTemplate() {
+    }
+
+    public FormTemplate(int formID,
+                        String title,
+                        String description,
+                        String assignee,
+                        Date effectiveDate,
+                        String formNumber,
+                        int revisionNumber,
+                        Set<Question> questions) {
+
+        this.formID = formID;
+        this.title = title;
+        this.description = description;
+        this.assignee = assignee;
+        this.effectiveDate = effectiveDate;
+        this.formNumber = formNumber;
+        this.revisionNumber = revisionNumber;
+        this.questions = questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
 
     public int getFormID() {
         return formID;

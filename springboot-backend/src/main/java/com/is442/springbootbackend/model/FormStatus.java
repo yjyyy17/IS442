@@ -7,7 +7,9 @@ import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.model.User;
 @Entity
 @Table(name = "formstatus")
-public class FormStatus {
+public class
+
+FormStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int fsID;
