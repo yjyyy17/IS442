@@ -23,6 +23,12 @@ public class FormTemplate {
     @Column(name="revision_number", nullable=false)
     private int revisionNumber;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "formTemplate")
+    private Set<Action> actions = new HashSet<>();
+
+
+
     //this adds the form_id FK constraint to Question table
 //    @JsonIgnore
     @OneToMany(mappedBy = "formID")
