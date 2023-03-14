@@ -9,12 +9,13 @@ import jakarta.persistence.*;
 //@IdClass(QuestionID.class)
 public class Question {
 
-//    @ManyToOne(cascade = CascadeType.ALL)
+    //    @ManyToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "form_id", referencedColumnName = "form_id")
 //    @JsonBackReference
-    @Column(name = "formID" , nullable = false)
-    private int formID;
+//    @Column(name = "formID" , nullable = false)
+//    private int formID;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "questionID")
     private int questionID;
     @Column(name = "order")
@@ -29,19 +30,20 @@ public class Question {
     private String type;
     @Column(name = "status")
     private String status;
+    @ManyToOne
+    private FormTemplate formID;
 
     public Question() {
     }
 
-    public Question(int formID,
-                    int questionID,
+    public Question(int questionID,
                     int order,
                     String label,
                     String options,
                     String defaultQuestion,
                     String type,
-                    String status) {
-        this.formID = formID;
+                    String status,
+                    FormTemplate formID) {
         this.questionID = questionID;
         this.order = order;
         this.label = label;
@@ -49,14 +51,11 @@ public class Question {
         this.defaultQuestion = defaultQuestion;
         this.type = type;
         this.status = status;
-    }
-
-    public int getFormID() {
-        return formID;
-    }
-
-    public void setFormID(int formID) {
         this.formID = formID;
+    }
+
+    public Question(Question question) {
+
     }
 
     public int getQuestionID() {
@@ -114,4 +113,14 @@ public class Question {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public FormTemplate getFormID() {
+        return formID;
+    }
+
+    public void setFormID(FormTemplate formID) {
+        this.formID = formID;
+    }
 }
+
+

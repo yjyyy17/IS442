@@ -25,13 +25,8 @@ public class FormTemplate {
 
     //this adds the form_id FK constraint to Question table
 //    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "form_id")
-//    @JsonManagedReference
-    private Set<Question> questions = new HashSet<>();
-    public Set<Question> getQuestions() {
-        return questions;
-    }
+    @OneToMany(mappedBy = "formID")
+    private Collection<Question> questions;
 
     public FormTemplate() {
     }
@@ -43,8 +38,7 @@ public class FormTemplate {
                         Date effectiveDate,
                         String formNumber,
                         int revisionNumber,
-                        Set<Question> questions) {
-
+                        Collection<Question> questions) {
         this.formID = formID;
         this.title = title;
         this.description = description;
@@ -52,10 +46,6 @@ public class FormTemplate {
         this.effectiveDate = effectiveDate;
         this.formNumber = formNumber;
         this.revisionNumber = revisionNumber;
-        this.questions = questions;
-    }
-
-    public void setQuestions(Set<Question> questions) {
         this.questions = questions;
     }
 
@@ -115,11 +105,11 @@ public class FormTemplate {
         this.revisionNumber = revisionNumber;
     }
 
-//    public HashMap<int, FormTemplateQuestion> getQuestions() {
-//        return questions;
-//    }
-//
-//    public void setQuestions(HashMap<int, FormTemplateQuestion> questions) {
-//        this.questions = questions;
-//    }
+    public Collection<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Collection<Question> questions) {
+        this.questions = questions;
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -21,10 +22,19 @@ public class QuestionController {
         return questionRepository.findAll() ;
     }
 
+    // get questions by formTemplate id
+    @GetMapping(path = "/questions/{formID}")
+    public Optional<Question> getQuestionsByID(@PathVariable int formID){
+        return questionRepository.findById(formID);
+    }
+
     // create a new qn for an existing formtemp
     @PostMapping(path = "/questions/add")
-    public ResponseEntity<?> addQuestions(@RequestBody Question question){
-        return ResponseEntity.ok(questionRepository.save(question));
+    public Question addQuestions(@RequestBody Question question){
+        System.out.println("HELLO");
+        System.out.println(question.getOrder());
+
+        return new Question(question);
 
     }
 }
