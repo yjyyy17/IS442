@@ -1,6 +1,9 @@
 // import logo from './logo.svg';
-import './App.css';
-import ListUserComponent from './components/ListUserComponent';
+import "./App.css";
+import ListUserComponent from "./components/ListUserComponent";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+
 function App() {
   return (
     // <div className="App">
@@ -10,7 +13,7 @@ function App() {
     //     <p>
     //       Edit <code>src/App.js</code> and save to reload.
     //     </p>
-     
+
     //     <a
     //       className="App-link"
     //       href="https://reactjs.org"
@@ -20,19 +23,20 @@ function App() {
     //       Learn React
     //     </a>
 
-
     //   </header>
     // </div>
 
-    <div className="ListUserComponent">
-    <header className="App-header">
-     
-        <ListUserComponent/>
+    //   <div className="ListUserComponent">
+    //   <header className="App-header">
 
+    //       <ListUserComponent/>
 
-    </header>
+    //   </header>
 
-  </div>
+    // </div>
+    <Routes>
+      <Route path='/' element={<Login />} />
+    </Routes>
   );
 }
 

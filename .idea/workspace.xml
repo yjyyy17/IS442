@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b9709227-fac4-4858-bdd6-6576c2a642a3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/springboot-backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/SpringbootBackendApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/SpringbootBackendApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/RoleController.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/RoleController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/exception/ResourceNotFoundException.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/exception/ResourceNotFoundException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/repository/RoleRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/repository/RoleRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/repository/UserRepository.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2MdBoUY5WBxhqbzGIZNmF5ZVVLE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/Users/nolinho/OneDrive - Singapore Management University/y3s2/OOP/oop project/Untitled"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b9709227-fac4-4858-bdd6-6576c2a642a3" name="Changes" comment="" />
+      <created>1678087753603</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1678087753603</updated>
+    </task>
+    <servers />
+  </component>
+</project>
