@@ -1,5 +1,11 @@
 package com.is442.springbootbackend.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Blob;
 import java.util.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -7,8 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.is442.springbootbackend.model.CompletedForm;
-
+import com.is442.springbootbackend.model.FormTemplate;
 import com.is442.springbootbackend.repository.CompletedFormRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.Path;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
@@ -22,40 +33,72 @@ public class CompletedFormController {
         return completedFormRepository.findAll();
     }
 
-    // // get completedForm by user_group_id and pdf_id
-    // @GetMapping(path="/completedform/{user_group_id}/{pdf_id}")
-    // public CompletedForm findByUserGroupIdAndPdfId(@PathVariable int userGroupId, int pdfId) {
-    //     return completedFormRepository.findByUserGroupIdAndPdfId(userGroupId,pdfId);
-    // }
 
-    @GetMapping(path="/completedform/{user_group_id}/{pdf_id}")
-    @ResponseBody
-    public CompletedForm getFormByUserGroupIdAndPdfId(@PathVariable Map<Integer, Integer> pathVarsMap) {
-        Integer user_group_id = pathVarsMap.get("user_group_id");
-        Integer pdf_id = pathVarsMap.get("pdf_id");
-        if (user_group_id != null && pdf_id != null) {
-            return completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
-        // } else {
-        //     return "Missing Parameters";
-        }
-        return null;
+
+    // get completedForm by user_group_id and pdf_id
+    @PostMapping(path="/completedform")
+    public CompletedForm findByUserGroupIdAndPdfId(@RequestParam int user_group_id,@RequestParam int pdf_id) {
+        return completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
     }
 
+    @PersistenceContext
+    private EntityManager entityManager;
+    // create new form template
+    @PostMapping(path="/completedform/add")
+    public String addCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id)  {
+        try {
+            // Create a new PDF entity
+            // String currentDirectory = System.getProperty("user.dir");
+            // System.out.println("Current working directory is: " + currentDirectory);
 
-//     // create new form template
-//     @PostMapping(path="/completedform/add")
-// //    JSON format:
-// //    {
-// //        "assignee": "Amy",
-// //        "description": "form1",
-// //        "effectiveDate": "2023-03-04",
-// //        "formNumber": "abc-123-xyz",
-// //        "revisionNumber": 1,
-// //        "title": "Vendor Assessment Form"
-// //    }
-//     public ResponseEntity<?> addForm(@RequestBody FormTemplate form) {
-//         return ResponseEntity.ok(completedFormRepository.save(form));
-//     }
+            File file = new File("springboot-backend/src/main/resources/test.pdf");
+
+            // byte[] pdfBytes = Files.readAllBytes(file);
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                bos.write(buffer, 0, bytesRead);
+            }
+            byte[] fileBytes = bos.toByteArray();
+            fis.close();
+            bos.close();
+
+            Blob pdfBlob = new javax.sql.rowset.serial.SerialBlob(fileBytes);
+
+            CompletedForm completedForm = new CompletedForm();
+            completedForm.setUserGroupId(user_group_id);
+            completedForm.setPdfId(pdf_id);
+            // System.out.println("pdfBlob: " + pdfBlob);
+            completedForm.setPdfForm(pdfBlob);
+
+            System.out.println(user_group_id);
+            System.out.println(pdf_id);
+            System.out.println(fileBytes);
+
+
+
+            // Persist the entity to the database
+            entityManager.persist(fileBytes);
+
+
+            // Close the EntityManager
+            entityManager.close();
+
+
+            // entityManager.persist(completedForm);
+
+            // Return a success message
+            return "Pdf added successfully!";
+
+          } catch (Exception ex) {
+            // Handle any exceptions that may occur
+            return "Error adding pdf: " + ex.getMessage();
+          }
+    }
+   
+
 
 //     // update form template by formID
 //     @PutMapping(path="/formtemplate/{formID}")
