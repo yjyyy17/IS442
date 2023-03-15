@@ -12,4 +12,6 @@ import com.is442.springbootbackend.model.CompletedForm;
 public interface CompletedFormRepository extends JpaRepository<CompletedForm, Integer>{
 
     public CompletedForm findByUserGroupIdAndPdfId(int userGroupId,int pdfId);
+
+
 }

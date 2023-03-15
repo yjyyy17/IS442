@@ -3,12 +3,15 @@ package com.is442.springbootbackend.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Blob;
 import java.util.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,81 +44,78 @@ public class CompletedFormController {
         return completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
-    // create new form template
-    @PostMapping(path="/completedform/add")
-    public String addCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id)  {
-        try {
-            // Create a new PDF entity
-            // String currentDirectory = System.getProperty("user.dir");
-            // System.out.println("Current working directory is: " + currentDirectory);
-
-            File file = new File("springboot-backend/src/main/resources/test.pdf");
-
-            // byte[] pdfBytes = Files.readAllBytes(file);
-            FileInputStream fis = new FileInputStream(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                bos.write(buffer, 0, bytesRead);
-            }
-            byte[] fileBytes = bos.toByteArray();
-            fis.close();
-            bos.close();
-
-            Blob pdfBlob = new javax.sql.rowset.serial.SerialBlob(fileBytes);
-
-            CompletedForm completedForm = new CompletedForm();
-            completedForm.setUserGroupId(user_group_id);
-            completedForm.setPdfId(pdf_id);
-            // System.out.println("pdfBlob: " + pdfBlob);
-            completedForm.setPdfForm(pdfBlob);
-
-            System.out.println(user_group_id);
-            System.out.println(pdf_id);
-            System.out.println(fileBytes);
+    // @PostMapping(path="/addCompletedForm")
+    // public ResponseEntity<?> uploadFile(@RequestParam("file")MultipartFile file) throws IOException{
+    //     String uploadImage = service.uploadImage(file);
+    //     return ResponseEntity.status(HttpStatusCode.OK).body(uploadImage);
+    // }
 
 
-
-            // Persist the entity to the database
-            entityManager.persist(fileBytes);
-
-
-            // Close the EntityManager
-            entityManager.close();
-
-
-            // entityManager.persist(completedForm);
-
-            // Return a success message
-            return "Pdf added successfully!";
-
-          } catch (Exception ex) {
-            // Handle any exceptions that may occur
-            return "Error adding pdf: " + ex.getMessage();
-          }
+     @PostMapping("/addCompletedForm")
+    public CompletedForm createCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam("file")MultipartFile file){
+        return completedFormRepository.save(new CompletedForm(user_group_id,pdf_id,file));
     }
+
+
+
+    // @PersistenceContext
+    // private EntityManager entityManager;
+    // // create new form template
+    // @PostMapping(path="/completedform/add")
+    // public String addCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id)  {
+    //     try {
+    //         // Create a new PDF entity
+    //         // String currentDirectory = System.getProperty("user.dir");
+    //         // System.out.println("Current working directory is: " + currentDirectory);
+
+    //         File file = new File("springboot-backend/src/main/resources/test.pdf");
+
+    //         // byte[] pdfBytes = Files.readAllBytes(file);
+    //         FileInputStream fis = new FileInputStream(file);
+    //         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    //         byte[] buffer = new byte[1024];
+    //         int bytesRead;
+    //         while ((bytesRead = fis.read(buffer)) != -1) {
+    //             bos.write(buffer, 0, bytesRead);
+    //         }
+    //         byte[] fileBytes = bos.toByteArray();
+    //         fis.close();
+    //         bos.close();
+
+    //         Blob pdfBlob = new javax.sql.rowset.serial.SerialBlob(fileBytes);
+
+    //         CompletedForm completedForm = new CompletedForm();
+    //         completedForm.setUserGroupId(user_group_id);
+    //         completedForm.setPdfId(pdf_id);
+    //         // System.out.println("pdfBlob: " + pdfBlob);
+    //         completedForm.setPdfForm(fileBytes);
+
+    //         System.out.println(user_group_id);
+    //         System.out.println(pdf_id);
+    //         System.out.println(fileBytes);
+
+
+
+    //         // Persist the entity to the database
+    //         entityManager.persist(fileBytes);
+
+
+    //         // Close the EntityManager
+    //         entityManager.close();
+
+
+    //         // entityManager.persist(completedForm);
+
+    //         // Return a success message
+    //         return "Pdf added successfully!";
+
+    //       } catch (Exception ex) {
+    //         // Handle any exceptions that may occur
+    //         return "Error adding pdf: " + ex.getMessage();
+    //       }
+    // }
    
 
 
-//     // update form template by formID
-//     @PutMapping(path="/formtemplate/{formID}")
-//     public ResponseEntity<FormTemplate> updateForm(@PathVariable int formID,@RequestBody FormTemplate form) throws Exception{
-//         FormTemplate updateForm = formTemplateRepository.findById(formID)
-//                 .orElseThrow(() -> new Exception("Form template not exist with id: " + formID));
-
-//         updateForm.setTitle(form.getTitle());
-//         updateForm.setDescription(form.getDescription());
-//         updateForm.setAssignee(form.getAssignee());
-//         updateForm.setEffectiveDate(form.getEffectiveDate());
-//         updateForm.setFormNumber(form.getFormNumber());
-//         updateForm.setRevisionNumber(form.getRevisionNumber());
-
-//         formTemplateRepository.save(updateForm);
-
-//         return ResponseEntity.ok(updateForm);
-//     }
 
 }
