@@ -1,32 +1,44 @@
 package com.is442.springbootbackend.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
+
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.is442.springbootbackend.model.FormStatus;
+import com.is442.springbootbackend.model.Question;
+//import com.is442.springbootbackend.model.Action;
+
 @Entity
-@Table(name = "formTemplate")
+@Table(name = "form_template")
 public class FormTemplate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "form_id")
-    private int formID;
-    @Column(name="title", nullable=false)
+    @Column(name = "form_id", nullable = false, updatable = false)
+    private int formId;
+
+    @Column(nullable = false)
     private String title;
-    @Column(name="description", nullable=false)
+
+    @Column(name = "\"description\"")
     private String description;
-    @Column(name="assignee", nullable=false)
+
+    @Column(nullable = true)
     private String assignee;
-    @Column(name="effectiveDate", nullable=false)
+
+    @Column(nullable = true)
+    @Temporal(TemporalType.DATE)
     private Date effectiveDate;
-    @Column(name="form_number", nullable=false)
+
+    @Column(nullable = false)
     private String formNumber;
-    @Column(name="revision_number", nullable=false)
-    private int revisionNumber;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "formTemplate")
     private Set<Action> actions = new HashSet<>();
-
 
 
     //this adds the form_id FK constraint to Question table
@@ -34,33 +46,36 @@ public class FormTemplate {
     @OneToMany(mappedBy = "formID")
     private Collection<Question> questions;
 
+    @Column(nullable = false)
+    private Integer revisionNumber;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "form")
+    private List<FormStatus> formStatuses = new ArrayList<>();
+
+
     public FormTemplate() {
+        // default constructor
     }
 
-    public FormTemplate(int formID,
-                        String title,
-                        String description,
-                        String assignee,
-                        Date effectiveDate,
-                        String formNumber,
-                        int revisionNumber,
-                        Collection<Question> questions) {
-        this.formID = formID;
+    public FormTemplate(String title, String description, String assignee, Date effectiveDate, String formNumber, Integer revisionNumber) {
         this.title = title;
         this.description = description;
         this.assignee = assignee;
         this.effectiveDate = effectiveDate;
         this.formNumber = formNumber;
         this.revisionNumber = revisionNumber;
-        this.questions = questions;
     }
 
-    public int getFormID() {
-        return formID;
+
+    public int getFormId() {
+        return formId;
     }
 
-    public void setFormID(int formID) {
-        this.formID = formID;
+    public void setFormId(int formId) {
+        this.formId = formId;
+
     }
 
     public String getTitle() {
@@ -103,13 +118,14 @@ public class FormTemplate {
         this.formNumber = formNumber;
     }
 
-    public int getRevisionNumber() {
+    public Integer getRevisionNumber() {
         return revisionNumber;
     }
 
-    public void setRevisionNumber(int revisionNumber) {
+    public void setRevisionNumber(Integer revisionNumber) {
         this.revisionNumber = revisionNumber;
     }
+
 
     public Collection<Question> getQuestions() {
         return questions;
@@ -117,5 +133,38 @@ public class FormTemplate {
 
     public void setQuestions(Collection<Question> questions) {
         this.questions = questions;
+    }
+
+    public List<FormStatus> getFormStatuses() {
+        return formStatuses;
+    }
+
+    public void setFormStatuses(List<FormStatus> formStatuses) {
+        this.formStatuses = formStatuses;
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        FormTemplate that = (FormTemplate) object;
+        return formId == that.formId && java.util.Objects.equals(title, that.title) && java.util.Objects.equals(description, that.description) && java.util.Objects.equals(assignee, that.assignee) && java.util.Objects.equals(effectiveDate, that.effectiveDate) && java.util.Objects.equals(formNumber, that.formNumber) && java.util.Objects.equals(revisionNumber, that.revisionNumber) && java.util.Objects.equals(formStatuses, that.formStatuses);
+    }
+
+    public int hashCode() {
+        return java.util.Objects.hash(super.hashCode(), formId, title, description, assignee, effectiveDate, formNumber, revisionNumber, formStatuses);
+    }
+
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "FormTemplate{" +
+                "formId=" + formId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", assignee='" + assignee + '\'' +
+                ", effectiveDate=" + effectiveDate +
+                ", formNumber='" + formNumber + '\'' +
+                ", revisionNumber=" + revisionNumber +
+                '}';
     }
 }

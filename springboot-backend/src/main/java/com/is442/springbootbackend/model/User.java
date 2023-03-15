@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.*;
+
+import com.is442.springbootbackend.model.FormStatus;
 
 @Entity
 @Table(name="user")
@@ -31,6 +34,10 @@ public class User {
     @JsonIgnore
     @ManyToMany(mappedBy = "assignedUsers")
     private Set<UserGroup> userGroups = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<FormStatus> formStatuses = new ArrayList<>();
 
     public User(){
         super();
@@ -86,5 +93,28 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        User user = (User) object;
+        return userId == user.userId && java.util.Objects.equals(name, user.name) && java.util.Objects.equals(email, user.email) && java.util.Objects.equals(phoneNo, user.phoneNo) && java.util.Objects.equals(password, user.password) && java.util.Objects.equals(userGroups, user.userGroups);
+    }
+
+    public int hashCode() {
+        return java.util.Objects.hash(super.hashCode(), userId, name, email, phoneNo, password, userGroups);
+    }
+
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNo='" + phoneNo + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

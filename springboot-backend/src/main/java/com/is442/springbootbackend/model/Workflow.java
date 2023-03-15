@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.*;
+
+import com.is442.springbootbackend.model.FormStatus;
 
 @Entity
 @Table(name="workflow")
@@ -23,6 +26,9 @@ public class Workflow {
     @JsonIgnore
     @ManyToMany(mappedBy = "assignedWorkflows")
     private Set<UserGroup> userGroups = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "workflow")
+    private List<FormStatus> formStatuses = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "workflow")
@@ -68,5 +74,26 @@ public class Workflow {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Workflow workflow = (Workflow) object;
+        return java.util.Objects.equals(workflowId, workflow.workflowId) && java.util.Objects.equals(title, workflow.title) && java.util.Objects.equals(description, workflow.description) && java.util.Objects.equals(userGroups, workflow.userGroups);
+    }
+
+    public int hashCode() {
+        return java.util.Objects.hash(super.hashCode(), workflowId, title, description, userGroups);
+    }
+
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "Workflow{" +
+                "workflowId=" + workflowId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
