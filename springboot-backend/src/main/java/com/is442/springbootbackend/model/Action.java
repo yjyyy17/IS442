@@ -1,6 +1,5 @@
 package com.is442.springbootbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity

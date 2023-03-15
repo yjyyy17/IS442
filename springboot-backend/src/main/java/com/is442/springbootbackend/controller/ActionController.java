@@ -5,7 +5,6 @@ import com.is442.springbootbackend.model.Action;
 import com.is442.springbootbackend.model.FormTemplate;
 import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.repository.ActionRepository;
-import com.is442.springbootbackend.repository.AdminRepository;
 import com.is442.springbootbackend.repository.FormTemplateRepository;
 import com.is442.springbootbackend.repository.WorkflowRepository;
 import org.hibernate.jdbc.Work;
@@ -41,6 +40,18 @@ public class ActionController {
     public ResponseEntity<Action> getActionById(@PathVariable Long id){
         Action action = actionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Action does not exist with id: " + id));
         return ResponseEntity.ok(action);
+    }
+
+    @GetMapping("/action/workflow/{workflowId}")
+    public ResponseEntity<List<Action>> findByWorkflowWorkflowId(@PathVariable Long workflowId){
+        List<Action> actions = actionRepository.findByWorkflowWorkflowId(workflowId);
+        return ResponseEntity.ok(actions);
+    }
+
+    @GetMapping("/action/formTemplate/{formId}")
+    public ResponseEntity<List<Action>> findByFormTemplateFormId(@PathVariable int formId){
+        List<Action> actions = actionRepository.findByFormTemplateFormId(formId);
+        return ResponseEntity.ok(actions);
     }
 
     //create new action
