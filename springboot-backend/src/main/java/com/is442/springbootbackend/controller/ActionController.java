@@ -45,12 +45,18 @@ public class ActionController {
     @GetMapping("/action/workflow/{workflowId}")
     public ResponseEntity<List<Action>> findByWorkflowWorkflowId(@PathVariable Long workflowId){
         List<Action> actions = actionRepository.findByWorkflowWorkflowId(workflowId);
+        if (actions.isEmpty()){
+            throw new ResourceNotFoundException("Action does not exist with workflow id: " + workflowId);
+        }
         return ResponseEntity.ok(actions);
     }
 
     @GetMapping("/action/formTemplate/{formId}")
     public ResponseEntity<List<Action>> findByFormTemplateFormId(@PathVariable int formId){
         List<Action> actions = actionRepository.findByFormTemplateFormId(formId);
+        if (actions.isEmpty()){
+            throw new ResourceNotFoundException("Action does not exist with form id: " + formId);
+        }
         return ResponseEntity.ok(actions);
     }
 
@@ -75,8 +81,8 @@ public class ActionController {
     //update mapping for workflow
     @PutMapping("/action/{actionId}/workflow/{workflowId}")
     public Action assignWorkflow(@PathVariable Long actionId, @PathVariable Long workflowId){
-        Action action = actionRepository.findById(actionId).get();
-        Workflow workflow = workflowRepository.findById(workflowId).get();
+        Action action = actionRepository.findById(actionId).orElseThrow(()-> new ResourceNotFoundException("Action does not exist with id : " +actionId));
+        Workflow workflow = workflowRepository.findById(workflowId).orElseThrow(()-> new ResourceNotFoundException("Workflow does not exist with id :" + workflowId));
         action.setWorkflow(workflow);
         return actionRepository.save(action);
     }
@@ -84,8 +90,8 @@ public class ActionController {
     //update mapping for form template
     @PutMapping("/action/{actionId}/formTemplate/{formId}")
     public Action assignFormTemplate(@PathVariable Long actionId, @PathVariable int formId){
-        Action action = actionRepository.findById(actionId).get();
-        FormTemplate formTemplate = formTemplateRepository.findById(formId).get();
+        Action action = actionRepository.findById(actionId).orElseThrow(()-> new ResourceNotFoundException("Action does not exist with id : " +actionId));
+        FormTemplate formTemplate = formTemplateRepository.findById(formId).orElseThrow(()-> new ResourceNotFoundException("Form does not exist with id :" + formId));
         action.setFormTemplate(formTemplate);
         return actionRepository.save(action);
     }
