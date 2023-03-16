@@ -95,6 +95,9 @@ public class CompletedForm {
         this.pdfId = pdfId;
     }
 
+    public void removeBlob(int userGroupId, int pdfId){
+        this.pdfForm = null;
+    }
 
     public CompletedForm() {
     }

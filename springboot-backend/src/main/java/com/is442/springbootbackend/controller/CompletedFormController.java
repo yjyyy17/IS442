@@ -44,19 +44,23 @@ public class CompletedFormController {
         return completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
     }
 
-    // @PostMapping(path="/addCompletedForm")
-    // public ResponseEntity<?> uploadFile(@RequestParam("file")MultipartFile file) throws IOException{
-    //     String uploadImage = service.uploadImage(file);
-    //     return ResponseEntity.status(HttpStatusCode.OK).body(uploadImage);
-    // }
-
 
      @PostMapping("/addCompletedForm")
     public CompletedForm createCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam byte[] pdf_form){
         return completedFormRepository.save(new CompletedForm(user_group_id,pdf_id,pdf_form));
     }
 
+    //update completedForm by user_group_id and pdf_id
+    @PutMapping("/update")
+    public CompletedForm updateUser(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam byte[] pdf_form) {
+        CompletedForm completedForm = completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
+        completedForm.setPdfId(pdf_id);
+        completedForm.setUserGroupId(user_group_id);
+        completedForm.removeBlob(user_group_id,pdf_id);
+        completedForm.setPdfForm(pdf_form);
 
+        return completedFormRepository.save(completedForm);
+    }
 
     // @PersistenceContext
     // private EntityManager entityManager;
