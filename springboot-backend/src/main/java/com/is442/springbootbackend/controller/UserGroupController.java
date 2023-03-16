@@ -62,8 +62,8 @@ public class UserGroupController {
     //update mapping for users
     @PutMapping("/userGroup/{userGroupId}/user/{userId}")
     public UserGroup assignUsers(@PathVariable Long userGroupId, @PathVariable Long userId){
-        UserGroup userGroup = userGroupRepository.findById(userGroupId).get();
-        User user = userRepository.findById(userId).get();
+        UserGroup userGroup = userGroupRepository.findById(userGroupId).orElseThrow(() -> new ResourceNotFoundException("User group does not exist with id : " + userGroupId));
+        User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User does not exist with id : " + userId));
         userGroup.assignUser(user);
         return userGroupRepository.save(userGroup);
 
@@ -74,8 +74,8 @@ public class UserGroupController {
     //update mapping for workflows
     @PutMapping("/userGroup/{userGroupId}/workflow/{workflowId}")
     public UserGroup assignWorkflows(@PathVariable Long userGroupId, @PathVariable Long workflowId){
-        UserGroup userGroup = userGroupRepository.findById(userGroupId).get();
-        Workflow workflow = workflowRepository.findById(workflowId).get();
+        UserGroup userGroup = userGroupRepository.findById(userGroupId).orElseThrow(() -> new ResourceNotFoundException("User group does not exist with id : " + userGroupId));
+        Workflow workflow = workflowRepository.findById(workflowId).orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + workflowId));
         userGroup.assignWorkflow(workflow);
         return  userGroupRepository.save(userGroup);
     }
