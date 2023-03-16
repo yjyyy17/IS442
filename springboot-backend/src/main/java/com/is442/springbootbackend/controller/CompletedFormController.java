@@ -52,8 +52,8 @@ public class CompletedFormController {
 
 
      @PostMapping("/addCompletedForm")
-    public CompletedForm createCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam("file")MultipartFile file){
-        return completedFormRepository.save(new CompletedForm(user_group_id,pdf_id,file));
+    public CompletedForm createCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam byte[] pdf_form){
+        return completedFormRepository.save(new CompletedForm(user_group_id,pdf_id,pdf_form));
     }
 
 

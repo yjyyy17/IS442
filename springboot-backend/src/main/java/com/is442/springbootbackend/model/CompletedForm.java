@@ -98,12 +98,13 @@ public class CompletedForm {
 
     public CompletedForm() {
     }
+
     public CompletedForm(int userGroupId, int pdfId, byte[] pdfForm) {
         this.userGroupId = userGroupId;
         this.pdfId = pdfId;
         this.pdfForm = pdfForm;
     }
-	public CompletedForm(int user_group_id, int pdf_id, Object object) {
-	}
+
+	
 
 }
