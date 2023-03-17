@@ -1,5 +1,6 @@
 package com.is442.springbootbackend.controller;
 
+import com.is442.springbootbackend.model.FormTemplate;
 import com.is442.springbootbackend.model.Question;
 import com.is442.springbootbackend.repository.FormTemplateRepository;
 import com.is442.springbootbackend.repository.QuestionRepository;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +30,20 @@ public class QuestionController {
 
     // get questions by formTemplate id
     @GetMapping(path = "/{formID}")
-    public Optional<Question> getQuestionsByID(@PathVariable int formID) {
-        return questionRepository.findById(formID);
+    public List<Question> getQuestionsByID(@PathVariable int formID) {
+        // returns null or a form template
+        Optional<FormTemplate> form = formTemplateRepository.findById(formID);
+        List<Question> allQuestions = getAllQuestions();
+        List<Question> filteredQuestions = new ArrayList<>();
+
+        for (Question q: allQuestions){
+            System.out.println(q.getQuestionID());
+            if (q.getFormID().getFormId() == formID){
+                filteredQuestions.add(q);
+            }
+        }
+//
+        return filteredQuestions;
     }
 
     // create a new qn for an existing formtemp
@@ -47,16 +61,15 @@ public class QuestionController {
 
     public ResponseEntity<?> addQuestions(@RequestBody Question question) throws NullPointerException{
         try {
-
+            System.out.println(question.getFormID());
             if (formTemplateRepository.existsById(question.getFormID().getFormId())) {
 
                 Question qn = new Question();
                 qn.setOrder(question.getOrder());
                 qn.setLabel(question.getLabel());
                 qn.setOptions(question.getOptions());
-                qn.setDefaultQuestion(question.getDefaultQuestion());
                 qn.setType(question.getType());
-                qn.setStatus(question.getType());
+                qn.setStatus(question.getStatus());
                 qn.setFormID(question.getFormID());
 
                 questionRepository.save(qn);
@@ -99,7 +112,6 @@ public class QuestionController {
             currentQn.setOrder(question.getOrder());
             currentQn.setLabel(question.getLabel());
             currentQn.setOptions(question.getOptions());
-            currentQn.setDefaultQuestion(question.getDefaultQuestion());
             currentQn.setType(question.getType());
             currentQn.setStatus(question.getStatus());
             questionRepository.save(currentQn);

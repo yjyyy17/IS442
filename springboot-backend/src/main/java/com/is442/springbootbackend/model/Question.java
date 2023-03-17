@@ -18,20 +18,20 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "questionID")
     private int questionID;
-    @Column(name = "order")
+    @Column(name = "order", nullable = false)
     private int order;
-    @Column(name = "label")
+    @Column(name = "label", nullable = false)
     private String label;
-    @Column(name = "options")
+    @Column(name = "options", nullable = true)
     private String options;
-    @Column(name = "defaultQuestion")
-    private String defaultQuestion;
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     private String type;
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private String status;
     @ManyToOne
+    @JoinColumn(name = "form_id", referencedColumnName = "form_id")
     private FormTemplate formID;
+
 
     public Question() {
     }
@@ -40,7 +40,6 @@ public class Question {
                     int order,
                     String label,
                     String options,
-                    String defaultQuestion,
                     String type,
                     String status,
                     FormTemplate formID) {
@@ -48,7 +47,6 @@ public class Question {
         this.order = order;
         this.label = label;
         this.options = options;
-        this.defaultQuestion = defaultQuestion;
         this.type = type;
         this.status = status;
         this.formID = formID;
@@ -90,14 +88,6 @@ public class Question {
         this.options = options;
     }
 
-    public String getDefaultQuestion() {
-        return defaultQuestion;
-    }
-
-    public void setDefaultQuestion(String defaultQuestion) {
-        this.defaultQuestion = defaultQuestion;
-    }
-
     public String getType() {
         return type;
     }
@@ -117,6 +107,8 @@ public class Question {
     public FormTemplate getFormID() {
         return formID;
     }
+
+    public int getFormIdInt(){return getFormID().getFormId();}
 
     public void setFormID(FormTemplate formID) {
         this.formID = formID;
