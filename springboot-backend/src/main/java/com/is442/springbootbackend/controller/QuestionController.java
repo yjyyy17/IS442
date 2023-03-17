@@ -2,6 +2,7 @@ package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.model.FormTemplate;
 import com.is442.springbootbackend.model.Question;
+import com.is442.springbootbackend.model.User;
 import com.is442.springbootbackend.repository.FormTemplateRepository;
 import com.is442.springbootbackend.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/questions")
+@RequestMapping("/api/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
@@ -36,9 +37,9 @@ public class QuestionController {
         List<Question> allQuestions = getAllQuestions();
         List<Question> filteredQuestions = new ArrayList<>();
 
-        for (Question q: allQuestions){
+        for (Question q : allQuestions) {
             System.out.println(q.getQuestionID());
-            if (q.getFormID().getFormId() == formID){
+            if (q.getFormID().getFormId() == formID) {
                 filteredQuestions.add(q);
             }
         }
@@ -48,21 +49,22 @@ public class QuestionController {
 
     // create a new qn for an existing formtemp
     @PostMapping(path = "/add")
-    //{
-    //    "order": 1,
-    //    "label": "label",
-    //    "options": "option",
-    //    "defaultQuestion": "hellow how are you?",
-    //    "type": "type",
-    //    "status": "active",
-    //    "formID": {
-    //  "formID" : 1
-    //}}
+//    {
+//        "order": 1,
+//        "label": "label",
+//        "options": "option",
+//        "defaultQuestion": "hellow how are you?",
+//        "type": "type",
+//        "status": "active",
+//        "formID": {
+//          "formId" : 1
+//         }
+//    }
 
     public ResponseEntity<?> addQuestions(@RequestBody Question question) throws NullPointerException{
         try {
             System.out.println(question.getFormID());
-            if (formTemplateRepository.existsById(question.getFormID().getFormId())) {
+            if (formTemplateRepository.findById(question.getFormID().getFormId()) != null) {
 
                 Question qn = new Question();
                 qn.setOrder(question.getOrder());
@@ -70,7 +72,9 @@ public class QuestionController {
                 qn.setOptions(question.getOptions());
                 qn.setType(question.getType());
                 qn.setStatus(question.getStatus());
-                qn.setFormID(question.getFormID());
+
+                FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(question.getFormID().getFormId()).orElse(null);
+                qn.setFormID(formtemplate);
 
                 questionRepository.save(qn);
 
@@ -108,7 +112,16 @@ public class QuestionController {
         if (qnExists){
             Question currentQn = questionRepository.getById(question.getQuestionID());
             currentQn.setStatus(question.getStatus());
-            currentQn.setFormID(question.getFormID());
+
+            int formId = question.getFormID().getFormId();
+            FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(formId).orElse(null);
+            if (formtemplate != null) {
+                currentQn.setFormID(formtemplate);
+            } else {
+                return ResponseEntity.badRequest().body("Form Template with ID " + formId + " does not exist.");
+            }
+
+//            currentQn.setFormID(question.getFormID());
             currentQn.setOrder(question.getOrder());
             currentQn.setLabel(question.getLabel());
             currentQn.setOptions(question.getOptions());
