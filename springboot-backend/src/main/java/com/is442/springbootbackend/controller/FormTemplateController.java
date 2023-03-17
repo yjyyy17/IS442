@@ -2,6 +2,8 @@ package com.is442.springbootbackend.controller;
 
 import java.util.*;
 
+import com.is442.springbootbackend.model.User;
+import com.is442.springbootbackend.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,9 @@ import com.is442.springbootbackend.repository.FormTemplateRepository;
 public class FormTemplateController {
     @Autowired
     private FormTemplateRepository formTemplateRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // get all form templates
     @GetMapping(path = "/formtemplate")
@@ -39,7 +44,9 @@ public class FormTemplateController {
     // create new form template
 //    JSON format:
 //    {
-//        "assignee": "Vendor",
+//        "assignee": {
+//          "userId": 6
+//         },
 //        "description": "form1",
 //        "effectiveDate": "2023-03-04",
 //        "formNumber": "abc-123-xyz",
@@ -48,18 +55,34 @@ public class FormTemplateController {
 //    }
     @PostMapping(path = "/formtemplate/add")
     public ResponseEntity<?> addForm(@RequestBody FormTemplate form) {
+        System.out.println(form.getAssignee().getUserId());
+        long userId = form.getAssignee().getUserId();
+        User user = (User) userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            form.setAssignee(user);
+        } else {
+            return ResponseEntity.badRequest().body("Assignee with ID " + userId + " does not exist.");
+        }
         return ResponseEntity.ok(formTemplateRepository.save(form));
     }
 
     // update form template by formID
     @PutMapping(path = "/formtemplate/{formId}")
-    public ResponseEntity<FormTemplate> updateForm(@PathVariable int formId, @RequestBody FormTemplate form) throws Exception {
+    public ResponseEntity<?> updateForm(@PathVariable int formId, @RequestBody FormTemplate form) throws Exception {
         FormTemplate updateForm = formTemplateRepository.findById(formId)
                 .orElseThrow(() -> new Exception("Form template not exist with id: " + formId));
 
         updateForm.setTitle(form.getTitle());
         updateForm.setDescription(form.getDescription());
-        updateForm.setAssignee(form.getAssignee());
+
+        long userId = form.getAssignee().getUserId();
+        User user = (User) userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            updateForm.setAssignee(user);
+        } else {
+            return ResponseEntity.badRequest().body("Assignee with ID " + userId + " does not exist.");
+        }
+
         updateForm.setEffectiveDate(form.getEffectiveDate());
         updateForm.setFormNumber(form.getFormNumber());
         updateForm.setRevisionNumber(form.getRevisionNumber());

@@ -11,7 +11,7 @@ import com.is442.springbootbackend.model.User;
 
 @Entity
 
-@Table(name = "formstatus")
+@Table(name = "form_status")
 //@IdClass(FormStatusId.class)
 public class FormStatus {
 //    @EmbeddedId

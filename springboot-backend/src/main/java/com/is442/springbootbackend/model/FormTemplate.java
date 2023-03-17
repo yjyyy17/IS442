@@ -25,8 +25,10 @@ public class FormTemplate {
     @Column(name = "\"description\"")
     private String description;
 
-    @Column(nullable = true)
-    private String assignee;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "assignee", referencedColumnName = "user_id")
+//    @MapsId
+    private User assignee;
 
     @Column(nullable = true)
     @Temporal(TemporalType.DATE)
@@ -59,7 +61,7 @@ public class FormTemplate {
         // default constructor
     }
 
-    public FormTemplate(String title, String description, String assignee, Date effectiveDate, String formNumber, Integer revisionNumber) {
+    public FormTemplate(String title, String description, User assignee, Date effectiveDate, String formNumber, Integer revisionNumber) {
         this.title = title;
         this.description = description;
         this.assignee = assignee;
@@ -71,7 +73,7 @@ public class FormTemplate {
     public FormTemplate(int formId,
                         String title,
                         String description,
-                        String assignee,
+                        User assignee,
                         Date effectiveDate,
                         String formNumber,
                         Set<Action> actions,
@@ -115,11 +117,11 @@ public class FormTemplate {
         this.description = description;
     }
 
-    public String getAssignee() {
+    public User getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(String assignee) {
+    public void setAssignee(User assignee) {
         this.assignee = assignee;
     }
 
