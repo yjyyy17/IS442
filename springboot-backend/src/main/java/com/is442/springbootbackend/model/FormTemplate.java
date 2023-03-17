@@ -42,7 +42,7 @@ public class FormTemplate {
 
 
     //this adds the form_id FK constraint to Question table
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "formID")
     private Collection<Question> questions;
 
@@ -68,6 +68,27 @@ public class FormTemplate {
         this.revisionNumber = revisionNumber;
     }
 
+    public FormTemplate(int formId,
+                        String title,
+                        String description,
+                        String assignee,
+                        Date effectiveDate,
+                        String formNumber,
+                        Set<Action> actions,
+                        Collection<Question> questions,
+                        Integer revisionNumber,
+                        List<FormStatus> formStatuses) {
+        this.formId = formId;
+        this.title = title;
+        this.description = description;
+        this.assignee = assignee;
+        this.effectiveDate = effectiveDate;
+        this.formNumber = formNumber;
+        this.actions = actions;
+        this.questions = questions;
+        this.revisionNumber = revisionNumber;
+        this.formStatuses = formStatuses;
+    }
 
     public int getFormId() {
         return formId;
@@ -167,4 +188,6 @@ public class FormTemplate {
                 ", revisionNumber=" + revisionNumber +
                 '}';
     }
+
+
 }
