@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Questions")
+@Table(name = "Question")
 //@IdClass(QuestionID.class)
 public class Question {
 
@@ -31,6 +31,10 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "form_id", referencedColumnName = "form_id")
     private FormTemplate formID;
+
+    @OneToOne(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private Response response;
+
 
 
     public Question() {
@@ -112,6 +116,14 @@ public class Question {
 
     public void setFormID(FormTemplate formID) {
         this.formID = formID;
+    }
+
+    public Response getResponse() {
+        return response;
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
     }
 }
 

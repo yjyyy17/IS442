@@ -43,7 +43,7 @@ public class FormTemplate {
 
     //this adds the form_id FK constraint to Question table
     @JsonIgnore
-    @OneToMany(mappedBy = "formID")
+    @OneToMany(mappedBy = "formID", cascade = CascadeType.REMOVE)
     private Collection<Question> questions;
 
     @Column(nullable = false)

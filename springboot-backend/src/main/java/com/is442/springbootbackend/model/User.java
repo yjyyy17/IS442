@@ -39,6 +39,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<FormStatus> formStatuses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "userID", cascade = CascadeType.REMOVE)
+    private Collection<Response> response;
+
     public User(){
         super();
     }
@@ -116,5 +119,13 @@ public class User {
                 ", phoneNo='" + phoneNo + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public Collection<Response> getResponse() {
+        return response;
+    }
+
+    public void setResponse(Collection<Response> response) {
+        this.response = response;
     }
 }
