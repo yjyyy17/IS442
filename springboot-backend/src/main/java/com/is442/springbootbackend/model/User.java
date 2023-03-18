@@ -39,6 +39,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<FormStatus> formStatuses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "userID", cascade = CascadeType.REMOVE)
     private Collection<Response> response;
 
