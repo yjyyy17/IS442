@@ -2,6 +2,7 @@ package com.is442.springbootbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 //import com.is442.springbootbackend.CompositeID.QuestionID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -28,10 +29,12 @@ public class Question {
     private String type;
     @Column(name = "status", nullable = false)
     private String status;
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "form_id", referencedColumnName = "form_id")
     private FormTemplate formID;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "question", cascade = CascadeType.REMOVE)
     private Response response;
 

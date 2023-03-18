@@ -63,8 +63,9 @@ public class QuestionController {
 
     public ResponseEntity<?> addQuestions(@RequestBody Question question) throws NullPointerException{
         try {
-            System.out.println(question.getFormID());
-            if (formTemplateRepository.findById(question.getFormID().getFormId()) != null) {
+            System.out.println(question.getFormIdInt());
+            FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(question.getFormIdInt()).orElse(null);
+            if (formtemplate != null) {
 
                 Question qn = new Question();
                 qn.setOrder(question.getOrder());
@@ -72,8 +73,6 @@ public class QuestionController {
                 qn.setOptions(question.getOptions());
                 qn.setType(question.getType());
                 qn.setStatus(question.getStatus());
-
-                FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(question.getFormID().getFormId()).orElse(null);
                 qn.setFormID(formtemplate);
 
                 questionRepository.save(qn);
