@@ -31,6 +31,9 @@ public class User {
     @Column(name="password", nullable=false)
     private String password;
 
+    @Column(name="user_type",insertable = false, updatable = false)
+    private String userType;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "assignedUsers")
     private Set<UserGroup> userGroups = new HashSet<>();
@@ -48,12 +51,20 @@ public class User {
     }
 
 
-    public User(String name, String email, String phoneNo, String password) {
+    public User(String name, String email, String phoneNo, String password, String userType) {
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
         this.password = password;
+        this.userType = userType;
     }
+
+//    public User(String name, String email, String phoneNo, String password) {
+//        this.name = name;
+//        this.email = email;
+//        this.phoneNo = phoneNo;
+//        this.password = password;
+//    }
 
     public long getUserId() {
         return userId;
@@ -99,26 +110,36 @@ public class User {
         this.password = password;
     }
 
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        User user = (User) object;
-        return userId == user.userId && java.util.Objects.equals(name, user.name) && java.util.Objects.equals(email, user.email) && java.util.Objects.equals(phoneNo, user.phoneNo) && java.util.Objects.equals(password, user.password) && java.util.Objects.equals(userGroups, user.userGroups);
+    public String getUserType() {
+        return userType;
     }
 
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(phoneNo, user.phoneNo) && Objects.equals(password, user.password) && Objects.equals(userType, user.userType);
+    }
+
+    @Override
     public int hashCode() {
-        return java.util.Objects.hash(super.hashCode(), userId, name, email, phoneNo, password, userGroups);
+        return Objects.hash(userId, name, email, phoneNo, password, userType);
     }
 
-    @java.lang.Override
-    public java.lang.String toString() {
+    @Override
+    public String toString() {
         return "User{" +
                 "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNo='" + phoneNo + '\'' +
                 ", password='" + password + '\'' +
+                ", userType='" + userType + '\'' +
                 '}';
     }
 
