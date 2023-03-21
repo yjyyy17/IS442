@@ -4,17 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b9709227-fac4-4858-bdd6-6576c2a642a3" name="Changes" comment="edited Question get qns by formID">
-      <change afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/Response.java" afterDir="false" />
+    <list default="true" id="b9709227-fac4-4858-bdd6-6576c2a642a3" name="Changes" comment="created response model and added constraints accordingly">
+      <change afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/controller/ResponseController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/repository/ResponseRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/FormTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/FormTemplate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot-backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/src/main/java/com/is442/springbootbackend/model/Response.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/FormTemplateController.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/FormTemplateController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/QuestionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/controller/QuestionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/FormStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/FormStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/FormTemplate.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/FormTemplate.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/Question.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/Question.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/springboot-backend/target/classes/com/is442/springbootbackend/model/User.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +24,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -114,7 +114,9 @@
       <updated>1678087753603</updated>
       <workItem from="1678854465862" duration="8000" />
       <workItem from="1678858134136" duration="546000" />
-      <workItem from="1678949171893" duration="13728000" />
+      <workItem from="1678949171893" duration="14060000" />
+      <workItem from="1679151196316" duration="7081000" />
+      <workItem from="1679236761262" duration="469000" />
     </task>
     <task id="LOCAL-00001" summary="CRUD Question.class">
       <created>1679025216630</created>
@@ -144,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679033863549</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="created response model and added constraints accordingly">
+      <created>1679044759268</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1679044759269</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,6 +173,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CRUD Question.class" />
     <MESSAGE value="edited Question get qns by formID" />
-    <option name="LAST_COMMIT_MESSAGE" value="edited Question get qns by formID" />
+    <MESSAGE value="created response model and added constraints accordingly" />
+    <option name="LAST_COMMIT_MESSAGE" value="created response model and added constraints accordingly" />
   </component>
 </project>
