@@ -8,10 +8,15 @@ import {
   Radio,
   Select,
   MenuItem,
-  Button
+  Button,
 } from "../../../mui";
 
-const DynamicForm = ({ questions, handleAnswerChange, answerData, onSubmit }) => {
+const DynamicForm = ({
+  questions,
+  handleAnswerChange,
+  answerData,
+  onSubmit,
+}) => {
   const [selectedOthersDropdown, setSelectedOthersDropdown] =
     React.useState(null);
   const [selectedOthersRadio, setSelectedOthersRadio] = React.useState(null);
@@ -26,7 +31,10 @@ const DynamicForm = ({ questions, handleAnswerChange, answerData, onSubmit }) =>
       setSelectedOthersDropdown(question);
     } else {
       // clear answer for the question if "Others" is not selected
-      if (selectedOthersDropdown?.question_id === question.question_id) {
+      if (
+        selectedOthersDropdown &&
+        selectedOthersDropdown.question_id === question.question_id
+      ) {
         handleAnswerChange(selectedOthersDropdown.question_id, answer);
         setSelectedOthersDropdown(null);
       }
@@ -42,7 +50,10 @@ const DynamicForm = ({ questions, handleAnswerChange, answerData, onSubmit }) =>
       setSelectedOthersRadio(question);
     } else {
       // clear answer for the question if "Others" is not selected
-      if (selectedOthersRadio?.question_id === question.question_id) {
+      if (
+        selectedOthersRadio &&
+        selectedOthersRadio.question_id === question.question_id
+      ) {
         handleAnswerChange(selectedOthersRadio.question_id, answer);
         setSelectedOthersRadio(null);
       }
@@ -74,29 +85,35 @@ const DynamicForm = ({ questions, handleAnswerChange, answerData, onSubmit }) =>
             />
           ))}
         </RadioGroup>
-        {selectedOthersRadio?.question_id === question.question_id && (
-          <Box m={2}>
-            <Typography>Please specify:</Typography>
-            <TextField
-              fullWidth
-              onChange={(event) => handleTextFieldChange(event, question)}
-            />
-          </Box>
-        )}
+        {selectedOthersRadio &&
+          selectedOthersRadio.question_id === question.question_id && (
+            <Box m={2}>
+              <Typography>Please specify:</Typography>
+              <TextField
+                fullWidth
+                onChange={(event) => handleTextFieldChange(event, question)}
+              />
+            </Box>
+          )}
       </Box>
     );
   };
 
   // render Select component
   const renderSelect = (question) => {
+    const answer = answerData.find(
+      (ans) => ans.question_id === question.question_id
+    );
+    const value = answer ? answer.answer : question.options.split(",")[0];
+
     return (
       <Box m={2} key={question.question_id}>
         <Typography>{question.label}</Typography>
         <Select
           value={
-            selectedOthersDropdown ? 'Others' :
-              (answerData.find((ans) => ans.question_id === question.question_id))
-              ?.answer || question.options.split(",")[0]
+            selectedOthersDropdown
+              ? "Others"
+              : value
           }
           onChange={(event) => handleSelectChange(event, question)}
           fullWidth
@@ -107,7 +124,7 @@ const DynamicForm = ({ questions, handleAnswerChange, answerData, onSubmit }) =>
             </MenuItem>
           ))}
         </Select>
-        {selectedOthersDropdown?.question_id === question.question_id && (
+        {selectedOthersDropdown && selectedOthersDropdown.question_id === question.question_id && (
           <Box m={2}>
             <Typography>Please specify:</Typography>
             <TextField
