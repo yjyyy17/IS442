@@ -1,5 +1,6 @@
 package com.is442.springbootbackend.controller;
 
+import com.is442.springbootbackend.exception.ResourceNotFoundException;
 import com.is442.springbootbackend.model.FormTemplate;
 import com.is442.springbootbackend.model.Question;
 import com.is442.springbootbackend.model.User;
@@ -91,7 +92,15 @@ public class QuestionController {
 
     @PutMapping(path = "/delete/{questionID}/{status}")
     public ResponseEntity<?> deleteQuestionByID(@PathVariable int questionID, @PathVariable String status){
-        Question qn = questionRepository.getById(questionID);
+
+
+        Question qn = questionRepository.findById(questionID).orElse(null);
+
+        if (qn == null){
+           return new ResponseEntity<>("QuestionID not found", HttpStatus.NOT_FOUND);
+        }
+
+
 //        System.out.println(questionID);
 //        System.out.println(status);
         qn.setStatus(status);
@@ -104,6 +113,7 @@ public class QuestionController {
             return new ResponseEntity<>(500,HttpStatus.INTERNAL_SERVER_ERROR);}
     }
     @PutMapping(path = "/edit")
+
     public ResponseEntity<?> editQuestionsByID(@RequestBody Question question){
         System.out.println(question.getQuestionID());
         boolean qnExists = questionRepository.existsById(question.getQuestionID());
@@ -113,6 +123,7 @@ public class QuestionController {
             currentQn.setStatus(question.getStatus());
 
             int formId = question.getFormID().getFormId();
+//            System.out.println(formId + "ID" + question.getLabel());
             FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(formId).orElse(null);
             if (formtemplate != null) {
                 currentQn.setFormID(formtemplate);
