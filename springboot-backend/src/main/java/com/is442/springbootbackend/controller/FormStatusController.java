@@ -67,6 +67,46 @@ public class FormStatusController {
         return ResponseEntity.ok().body(formStatus);
     }
 
+    // Get a FormStatus record by formID
+    // RequestParam: ?formId=1
+    @GetMapping("formstatusByFormId")
+    public ResponseEntity<List<FormStatus>> getFormStatusByFormId(
+            @RequestParam int formId) {
+
+        List<FormStatus> formStatus = formStatusRepository.findByFormFormId(formId);
+        if (formStatus.size() == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(formStatus);
+    }
+
+    // Get a FormStatus record by workflowID
+    // RequestParam: ?workflowId=1
+    @GetMapping("formstatusByWorkflowId")
+    public ResponseEntity<List<FormStatus>> getFormStatusByWorkflowId(
+            @RequestParam long workflowId) {
+
+        List<FormStatus> formStatus = formStatusRepository.findByWorkflowWorkflowId(workflowId);
+        if (formStatus.size() == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(formStatus);
+    }
+
+    // Get a FormStatus record by userID
+    // RequestParam: ?userId=2
+    @GetMapping("formstatusByUserId")
+    public ResponseEntity<List<FormStatus>> getFormStatusByUserId(
+            @RequestParam long userId) {
+
+        List<FormStatus> formStatus = formStatusRepository.findByUserUserId(userId);
+
+        if (formStatus == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(formStatus);
+    }
+
     // create new form status
 //    JSON format:
 //    {

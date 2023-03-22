@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/system";
 import { Card, TextField, Typography, Button } from "../mui";
-import { Link, Route, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
-
+import getAllUsers from "../services/getAllUsers";
 
 const Background = styled("div")({
   background: "linear-gradient(#A3D9A6, white)",
@@ -17,69 +17,109 @@ const Background = styled("div")({
 const MuiCard = styled(Card)({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
   padding: 50,
 });
 
 const MuiTextField = styled(TextField)({
-  margin: 15,
+  marginTop: 15,
+  marginBottom: 15,
   width: "300px",
 });
 
 const SubmitButton = styled(Button)({
   background: "#F36350",
-  margin: 15,
+  marginTop: 15,
+  marginBottom: 15,
+  width: "100%",
 });
 
 const Login = ({ handleClose }) => {
-  //   const classes = useStyles();
-  // create state variables for each input
-  const [user, setUser] = useState();
-  const [password, setPassword] = useState();
+  // Initialise state variable for form data
+  const [loginData, setLoginData] = useState({
+    user: "",
+    password: "",
+  });
 
-  const handleSubmit = (e) => {
-    // e.preventDefault();
-    console.log(user, password);
-    handleClose();
+  const [userData, setUserData] = useState();
+
+  const handleInputChange = (event) => {
+    // Handle input changes
+    var name = event.target.name;
+    var value = event.target.value;
+    setLoginData({ ...loginData, [name]: value });
   };
 
-  const userPaths = {
-    vendor: "/vendor",
-  };
+  // Gets all user data
+  useEffect(() => {
+    const fetchData = async () => {
+      let data = await getAllUsers();
+      setUserData(data);
+    };
 
+    fetchData();
+  }, []);
+
+  
   const navigate = useNavigate();
-  const handleKeypress = (e) => {
-    console.log(user, password);
-    navigate(userPaths[user]);
+  
+    // ***** To update after log in POST request is complete *****
+    const userPaths = {
+      Vendor: "/vendor",
+    };
+
+  // Navigate to main page
+  const handleSubmit = (e) => {
+    // Search for the user email in the database
+    e.preventDefault();
+    const user = userData.find((u) => u.email === loginData.user);  
+    if (user.password === loginData.password) {
+      navigate(userPaths[user.userType]);
+      sessionStorage.setItem('userId', user.userId);
+    }
   };
 
-  // clear all sessionStorage items
-  window.sessionStorage.clear();
+  // Enable login with enter key pressed
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      const user = userData.find((u) => u.email === loginData.user);  
+    if (user.password === loginData.password) {
+      navigate(userPaths[user.userType]);
+    }
+    }
+  }
 
   return (
     <>
       <Background>
         <img
           src={logo}
-          style={{ height: "15%", width: "15%", marginBottom: "3%" }}
+          style={{ height: "13%", width: "auto", marginBottom: "3%" }}
         />
         <Typography gutterBottom variant='h3' component='div'>
           Sign In
         </Typography>
 
-        <MuiCard onSubmit={handleSubmit} onKeyPress={handleKeypress}>
+        <MuiCard onKeyDown={handleKeyDown}>
+          <Typography>Username</Typography>
           <MuiTextField
-            label='Email address'
-            onChange={(e) => setUser(e.target.value)}
+            name='user'
+            value={loginData.user}
+            onChange={handleInputChange}
           />
+
+          <Typography>Password</Typography>
           <MuiTextField
-            label='Password'
+            name='password'
             type='password'
-            onChange={(e) => setPassword(e.target.value)}
+            value={loginData.password}
+            onChange={handleInputChange}
           />
           <div>
-            <Link to={userPaths[user]} style={{ textDecoration: "none" }}>
+            <Link
+              to={userPaths[loginData.user]}
+              style={{ textDecoration: "none" }}
+              onClick={handleSubmit}
+            >
               <SubmitButton type='submit' variant='contained'>
                 Login
               </SubmitButton>

@@ -31,6 +31,20 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    //get user by email
+    // ?email=
+    @GetMapping("/getUserByEmail")
+    public ResponseEntity<?> getUserByEmail(@RequestParam String email){
+        User user = userRepository.findByEmail(email);
+//        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User does not exist with email: " + email));
+        if(user!=null){
+            return ResponseEntity.ok(user);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     //create new user
     @PostMapping("/user")
     public User createUser(@RequestBody User user){
