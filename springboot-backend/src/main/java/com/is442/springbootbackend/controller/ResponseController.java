@@ -1,10 +1,12 @@
 package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.model.Response;
+import com.is442.springbootbackend.model.User;
 import com.is442.springbootbackend.repository.QuestionRepository;
 import com.is442.springbootbackend.repository.ResponseRepository;
 import com.is442.springbootbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,23 +30,35 @@ public class ResponseController {
     public List<Response> getResponseForUser(@RequestBody Response response) throws NullPointerException {
 
         long userID = response.getUserID().getUserId();
+        System.out.println(userID + "userid");
         long questionID = response.getQuestion().getQuestionID();
+        System.out.println(questionID + "questionid");
         long formID = response.getQuestion().getFormID().getFormId();
+
+//        if (questionID == null){
+//
+//        }
 
         List<Response> reponses = responseRepository.findAll();
         List<Response> filteredResponse = new ArrayList<>();
 
         Iterator<Response> responseIterator = reponses.iterator();
-
+        System.out.println("HERE");
         while(responseIterator.hasNext()){
             Response responseIterated = responseIterator.next();
             long userIDIterator = responseIterated.getUserID().getUserId();
+            System.out.println("new" + userIDIterator);
             long questionIDIterator = responseIterated.getQuestion().getQuestionID();
+            System.out.println("THIS IS THW QUESTION ID" + questionIDIterator);
             long formIDIterator = responseIterated.getQuestion().getFormID().getFormId();;
 
 
             if (userIDIterator == userID && questionIDIterator == questionID && formIDIterator == formID){
                 filteredResponse.add(responseIterated);
+            }
+
+            else {
+                System.out.println("There is an issue" + questionIDIterator + formIDIterator + userIDIterator + questionID + formID + userID);
             }
         }
 
@@ -53,5 +67,60 @@ public class ResponseController {
         System.out.println(questionID + " " + formID);
 
         return filteredResponse;
+    }
+
+    @PostMapping(path = "/add")
+    public ResponseEntity<?> addResponses(@RequestBody List<Response> responses){
+
+        Iterator<Response> interateResponses = responses.iterator();
+        User user = null;
+        boolean completionStatus = false;
+        while(interateResponses.hasNext()){
+            Response response = interateResponses.next();
+            //check if valid formID exists
+            int formid = response.getQuestion().getFormID().getFormId();
+            boolean formiDExists = responseRepository.existsById(formid);
+
+            //check if valid questionID exists
+            int questionID = response.getQuestion().getQuestionID();
+            boolean questionIDExists = responseRepository.existsById(questionID);
+
+            if (formiDExists == false ){
+                return ResponseEntity.badRequest().body("FormID " + formid +" not exist ");
+
+            } else if (questionIDExists == false){
+                return ResponseEntity.badRequest().body("QuestionID " + questionID + " does not exist ");
+            }
+            System.out.println(response.getAnswer());
+            if (response.getUserID() != null)
+            {
+                 user = response.getUserID();
+
+                 responseRepository.save(response);
+                 completionStatus = true;
+
+            } else{
+                Response rs = new Response();
+                rs.setUserID(user);
+                rs.setAnswer(response.getAnswer());
+                rs.setStatus(response.getStatus());
+                rs.setQuestion(response.getQuestion());
+                responseRepository.save(rs);
+                completionStatus = true;
+
+
+            }
+
+//            System.out.println("form " + formiDExists + "question " + questionIDExists);
+
+
+        }
+        if(completionStatus == true){
+            return ResponseEntity.ok().body("Added");
+        } else {
+            return ResponseEntity.badRequest().body("Unable to add");
+        }
+
+
     }
 }
