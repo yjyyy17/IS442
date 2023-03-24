@@ -4,6 +4,7 @@ import ListUserComponent from "./components/ListUserComponent";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Vendor from "./pages/Vendor/Vendor"
+import Admin from "./pages/Admin/Admin";
 
 
 function App() {
@@ -13,6 +14,10 @@ function App() {
       <Route path='/vendor' element={<Vendor />} />
       <Route path='/vendor/indiv_workflow' element={<Vendor />} />
       <Route path='/vendor/forms' element={<Vendor />} />
+
+      <Route path='/admin' element={<Admin />} />
+      <Route path='/admin/workflows' element={<Admin />} />
+      <Route path='/admin/user_accounts' element={<Admin />} />
     </Routes>
     // <div className="App">
     //   <header className="App-header">
