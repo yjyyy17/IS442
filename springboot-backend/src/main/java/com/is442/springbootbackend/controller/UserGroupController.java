@@ -1,19 +1,23 @@
 package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
+import java.text.ParseException;
 import com.is442.springbootbackend.model.User;
 import com.is442.springbootbackend.model.UserGroup;
 import com.is442.springbootbackend.model.Workflow;
+import com.is442.springbootbackend.model.UserGroup_Workflows;
 import com.is442.springbootbackend.repository.UserGroupRepository;
 import com.is442.springbootbackend.repository.UserRepository;
 import com.is442.springbootbackend.repository.WorkflowRepository;
+import com.is442.springbootbackend.repository.UserGroup_WorkflowsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.text.SimpleDateFormat;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.lang.*;
+
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -27,6 +31,9 @@ public class UserGroupController {
 
     @Autowired
     private WorkflowRepository workflowRepository;
+
+    @Autowired
+    private UserGroup_WorkflowsRepository userGroup_WorkflowsRepository;
 
     //get all user groups
     @GetMapping("/userGroup")
@@ -43,7 +50,7 @@ public class UserGroupController {
         return ResponseEntity.ok(userGroup);
     }
 
-    //create new user
+    //create new user group
     @PostMapping("/userGroup")
     public UserGroup createUserGroup(@RequestBody UserGroup userGroup){
         return userGroupRepository.save(userGroup);
@@ -73,11 +80,28 @@ public class UserGroupController {
 
     //update mapping for workflows
     @PutMapping("/userGroup/{userGroupId}/workflow/{workflowId}")
-    public UserGroup assignWorkflows(@PathVariable Long userGroupId, @PathVariable Long workflowId){
-        UserGroup userGroup = userGroupRepository.findById(userGroupId).orElseThrow(() -> new ResourceNotFoundException("User group does not exist with id : " + userGroupId));
-        Workflow workflow = workflowRepository.findById(workflowId).orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + workflowId));
-        userGroup.assignWorkflow(workflow);
-        return  userGroupRepository.save(userGroup);
+    public UserGroup_Workflows assignWorkflows(@PathVariable Long userGroupId, @PathVariable Long workflowId, @RequestBody Map<String, String> reqBody) throws ParseException{
+//        try{
+            UserGroup userGroup = userGroupRepository.findById(userGroupId).orElseThrow(() -> new ResourceNotFoundException("User group does not exist with id : " + userGroupId));
+            Workflow workflow = workflowRepository.findById(workflowId).orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + workflowId));
+//             convert String duedate to Date duedate
+//            String dbDueDate = dueDate;
+            Date dbDueDate = new SimpleDateFormat("yyyy-MM-dd").parse(reqBody.get("dueDate"));
+
+            // Check if the mapping already exists, and update the due date if it does.
+            UserGroup_Workflows userGroupWorkflows = (UserGroup_Workflows) userGroup_WorkflowsRepository.findByUsergroupUserGroupIdAndWorkflowWorkflowId(userGroupId, workflowId);
+            if(userGroupWorkflows != null){
+                userGroupWorkflows.setDueDate(dbDueDate);
+            }
+            else{
+                // if doesnt exist, create a new row in the User_group_Workflows table
+                userGroupWorkflows = new UserGroup_Workflows(workflow, userGroup, dbDueDate);
+                userGroup_WorkflowsRepository.save(userGroupWorkflows);
+            }
+            return userGroup_WorkflowsRepository.save(userGroupWorkflows);
+//        }catch(ParseException pe){
+//            throw new ParseException("Invalid input for due date", pe.getErrorOffset());
+//        }
     }
 
     //delete user group by id
