@@ -42,6 +42,7 @@ const VendorsTable = () => {
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
               <TableCell>Actions</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -74,6 +75,8 @@ const VendorsTable = () => {
                     >
                       Edit
                     </Button>
+                  </TableCell>
+                  <TableCell>
                     <Button variant="contained" color="error">
                       Delete
                     </Button>

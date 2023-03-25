@@ -34,7 +34,7 @@ const VendorsTable = () => {
         onChange={(e) => setSearchedVal(e.target.value)}
       />
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ width: '100%' }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>User ID</TableCell>
@@ -42,6 +42,7 @@ const VendorsTable = () => {
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
               <TableCell>Actions</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -74,6 +75,8 @@ const VendorsTable = () => {
                     >
                       Edit
                     </Button>
+                  </TableCell>
+                  <TableCell>
                     <Button variant="contained" color="error">
                       Delete
                     </Button>

@@ -10,10 +10,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import { Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const VendorsTable = () => {
   const [vendors, setVendors] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/vendor`)
@@ -26,13 +29,26 @@ const VendorsTable = () => {
       });
   }, []);
 
+  const newAccount = () => {
+    navigate(`../admin/create_account`);
+  }
+  
+
   return (
     <>
-      <TextField
-        label="Search"
-        sx={{ mb: 4 }}
-        onChange={(e) => setSearchedVal(e.target.value)}
-      />
+      <div className="d-flex justify-content-between">
+        <TextField
+          label="Search"
+          sx={{ mb: 4 }}
+          onChange={(e) => setSearchedVal(e.target.value)}
+        />
+        <div className="row align-items-center">
+          <Button variant="contained" color="primary" onClick={newAccount}>
+            <Add />
+            New
+          </Button>
+        </div>
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -44,6 +60,7 @@ const VendorsTable = () => {
               <TableCell>Address</TableCell>
               <TableCell>Industry</TableCell>
               <TableCell>Actions</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -82,6 +99,8 @@ const VendorsTable = () => {
                     >
                       Edit
                     </Button>
+                  </TableCell>
+                  <TableCell>
                     <Button variant="contained" color="error">
                       Delete
                     </Button>
