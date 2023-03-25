@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.annotation.Repeatable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,20 +31,16 @@ public class ResponseController {
     public List<Response> getResponseForUser(@RequestBody Response response) throws NullPointerException {
 
         long userID = response.getUserID().getUserId();
-        System.out.println(userID + "userid");
+//        System.out.println(userID + "userid");
         long questionID = response.getQuestion().getQuestionID();
-        System.out.println(questionID + "questionid");
+//        System.out.println(questionID + "questionid");
         long formID = response.getQuestion().getFormID().getFormId();
-
-//        if (questionID == null){
-//
-//        }
 
         List<Response> reponses = responseRepository.findAll();
         List<Response> filteredResponse = new ArrayList<>();
 
         Iterator<Response> responseIterator = reponses.iterator();
-        System.out.println("HERE");
+//        System.out.println("HERE");
         while(responseIterator.hasNext()){
             Response responseIterated = responseIterator.next();
             long userIDIterator = responseIterated.getUserID().getUserId();
@@ -51,10 +48,11 @@ public class ResponseController {
             long questionIDIterator = responseIterated.getQuestion().getQuestionID();
             System.out.println("THIS IS THW QUESTION ID" + questionIDIterator);
             long formIDIterator = responseIterated.getQuestion().getFormID().getFormId();;
-
+            System.out.println(formIDIterator + " FORMITERATOR");
 
             if (userIDIterator == userID && questionIDIterator == questionID && formIDIterator == formID){
                 filteredResponse.add(responseIterated);
+                System.out.println("ADDED " + userIDIterator + " " + questionIDIterator + " " + formIDIterator);
             }
 
             else {
@@ -121,6 +119,63 @@ public class ResponseController {
             return ResponseEntity.badRequest().body("Unable to add");
         }
 
+    }
 
+    @PutMapping("/update")
+    public ResponseEntity<?> updateResponses( @RequestBody List<Response> responses) {
+
+        Iterator<Response> interateResponses = responses.iterator();
+        User user = null;
+        int responseID = 0;
+        boolean completionStatus = false;
+        while (interateResponses.hasNext()) {
+            Response response = interateResponses.next();
+            responseID = response.getResponseID();
+//            System.out.println(responseID + "GOING HERE ");
+            if (response.getUserID() != null)
+            {
+                user = response.getUserID();
+                responseRepository.save(response);
+
+            }
+            if (responseRepository.existsById(responseID)){
+                System.out.println("exists");
+
+                Response selectedResponse = responseRepository.getById(responseID);
+
+                selectedResponse.setUserID(user);
+                selectedResponse.setAnswer(response.getAnswer());
+                selectedResponse.setStatus(response.getStatus());
+                selectedResponse.setQuestion(response.getQuestion());
+                responseRepository.save(selectedResponse);
+
+
+            } else {
+                return ResponseEntity.badRequest().body("Unable to update responseID " + responseID + " not found");
+            }
+        }
+
+        return ResponseEntity.ok().body("Updated");
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteResponses(Response deleteResponses){
+
+        int formId = deleteResponses.getQuestion().getFormID().getFormId();
+        long userId = deleteResponses.getUserID().getUserId();
+
+        List<Response> allResponses = responseRepository.findAll();
+
+        Iterator<Response> response = allResponses.iterator();
+
+        while (response.hasNext()){
+            Response iteratedResponse = response.next();
+
+            if(iteratedResponse.getUserID().getUserId() == userId && iteratedResponse.getQuestion().getFormID().getFormId() == formId){
+                iteratedResponse.setStatus("Inactive");
+                responseRepository.save(iteratedResponse);
+            }
+        }
+        return ResponseEntity.ok().body("Updated");
     }
 }
