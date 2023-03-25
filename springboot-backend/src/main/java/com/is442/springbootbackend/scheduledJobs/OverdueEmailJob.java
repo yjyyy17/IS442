@@ -5,6 +5,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.sendgrid.*;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -12,7 +14,10 @@ import java.util.*;
 public class OverdueEmailJob implements Job {
 
 //    private String apikey;
-    private final String apikey = "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";
+//    private final String apikey = "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";
+   @Value("${app.sendgrid.apikey}")
+   private String apikey;
+
     public Mail formatEmail(String companyName, String formName, String fromEmail, String subject, String toEmail){
         Email from = new Email(fromEmail);
         Email to = new Email(toEmail);
