@@ -48,7 +48,7 @@ public class CheckAndSendEmail{
                     .newTrigger()
                     .withIdentity("triggerA", "group2")
                     .withSchedule(
-                            CronScheduleBuilder.cronSchedule("0 10 * * * ?")) // trigger at 10am everyday ; sec min hour dayofmonth month dayofweek year(optional) ; change 10 to "0/1" to send every minute
+                            CronScheduleBuilder.cronSchedule("0 0 10 * * ?")) // trigger at 10am everyday ; sec min hour dayofmonth month dayofweek year(optional) ; change 10 to "0/1" to send every minute
                     .build();
 
             sched.scheduleJob(overdueEmailJob, triggerA);
