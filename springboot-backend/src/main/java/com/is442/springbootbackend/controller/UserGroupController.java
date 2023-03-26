@@ -123,11 +123,10 @@ public class UserGroupController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/usergroup_workflow/{usergroupId}")
-    public List<UserGroup_Workflows> getUsergroupWorkflow(@PathVariable Long usergroupId){
-        List<UserGroup_Workflows> ugwf = userGroup_WorkflowsRepository.findByUsergroupUserGroupId(usergroupId);
-
-        return ugwf;
+    // to get all usergroups, workflows and duedates (for overdue email functionality)
+    @GetMapping("/usergroup_workflow")
+    public List<UserGroup_Workflows> getAllUserGroup_Workflows(){
+        return userGroup_WorkflowsRepository.findAll();
     }
 
 }

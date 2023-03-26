@@ -17,7 +17,7 @@ public class UserGroup_Workflows {
     @Column(name = "user_group_workflow_id")
     private Long usergroupWorkflowId;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_group_id", referencedColumnName = "user_group_id")
     @JsonIgnoreProperties("assignedWorkflows")
     private UserGroup usergroup;
