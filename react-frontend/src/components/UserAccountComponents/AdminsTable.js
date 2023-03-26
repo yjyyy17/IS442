@@ -10,10 +10,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router-dom";
+import { Add } from "@mui/icons-material";
 
 const VendorsTable = () => {
   const [admins, setAdmin] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/admin`)
@@ -24,15 +27,39 @@ const VendorsTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [admins]);
+
+  const newAccount = () => {
+    navigate(`../admin/create_account`);
+  };
+
+  const deleteAdmin = (id) => {
+    axios
+      .delete(`http://localhost:8080/api/admin/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        alert("Admin successfully deleted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
-      <TextField
-        label="Search"
-        sx={{ mb: 4 }}
-        onChange={(e) => setSearchedVal(e.target.value)}
-      />
+      <div className="d-flex justify-content-between">
+        <TextField
+          label="Search"
+          sx={{ mb: 4 }}
+          onChange={(e) => setSearchedVal(e.target.value)}
+        />
+        <div className="row align-items-center">
+          <Button variant="contained" color="primary" onClick={newAccount}>
+            <Add />
+            New
+          </Button>
+        </div>
+      </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -77,7 +104,11 @@ const VendorsTable = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button variant="contained" color="error">
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => deleteAdmin(item.userId)}
+                    >
                       Delete
                     </Button>
                   </TableCell>

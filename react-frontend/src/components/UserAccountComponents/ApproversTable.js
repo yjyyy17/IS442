@@ -10,10 +10,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router-dom";
+import { Add } from "@mui/icons-material";
 
 const VendorsTable = () => {
   const [approvers, setApprover] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/approver`)
@@ -24,17 +27,41 @@ const VendorsTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [approvers]);
+
+  const newAccount = () => {
+    navigate(`../admin/create_account`);
+  };
+
+  const deleteApprover = (id) => {
+    axios
+      .delete(`http://localhost:8080/api/approver/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        alert("Admin successfully deleted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
-      <TextField
-        label="Search"
-        sx={{ mb: 4 }}
-        onChange={(e) => setSearchedVal(e.target.value)}
-      />
+      <div className="d-flex justify-content-between">
+        <TextField
+          label="Search"
+          sx={{ mb: 4 }}
+          onChange={(e) => setSearchedVal(e.target.value)}
+        />
+        <div className="row align-items-center">
+          <Button variant="contained" color="primary" onClick={newAccount}>
+            <Add />
+            New
+          </Button>
+        </div>
+      </div>
       <TableContainer component={Paper}>
-        <Table sx={{ width: '100%' }} aria-label="simple table">
+        <Table sx={{ width: "100%" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>User ID</TableCell>
@@ -77,7 +104,11 @@ const VendorsTable = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button variant="contained" color="error">
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => deleteApprover(item.userId)}
+                    >
                       Delete
                     </Button>
                   </TableCell>

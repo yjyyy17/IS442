@@ -27,12 +27,23 @@ const VendorsTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [vendors]);
 
   const newAccount = () => {
     navigate(`../admin/create_account`);
-  }
-  
+  };
+
+  const deleteVendor = (id) => {
+    axios
+      .delete(`http://localhost:8080/api/vendor/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        alert("Vendor successfully deleted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
@@ -101,7 +112,11 @@ const VendorsTable = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button variant="contained" color="error">
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => deleteVendor(item.userId)}
+                    >
                       Delete
                     </Button>
                   </TableCell>
