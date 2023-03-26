@@ -20,13 +20,13 @@ public class UserGroup {
     @JoinTable(name="user_group_users", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="user_id"))
     private Set<User> assignedUsers = new HashSet<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "usergroupWorkflowId")
-    private List<UserGroup_Workflows> assignedWorkflows = new ArrayList<>();
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "usergroupWorkflowId")
+//    private List<UserGroup_Workflows> assignedWorkflows = new ArrayList<>();
 
-//    @ManyToMany
-//    @JoinTable(name="user_group_workflows", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
-//    private Set<Workflow> assignedWorkflows = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name="user_group_workflows", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
+    private Set<Workflow> assignedWorkflows = new HashSet<>();
 
 
     public UserGroup(){
@@ -45,7 +45,7 @@ public class UserGroup {
         return assignedUsers;
     }
 
-    public List<UserGroup_Workflows> getAssignedWorkflows() {
+    public Set<Workflow> getAssignedWorkflows() {
         return assignedWorkflows;
     }
 
@@ -53,15 +53,8 @@ public class UserGroup {
         assignedUsers.add(user);
     }
 
-    public void assignWorkflow(List<UserGroup_Workflows> assignedWorkflows) {
-        this.assignedWorkflows = assignedWorkflows;
+    public void assignWorkflow(Workflow workflow) {
+        assignedWorkflows.add(workflow);
     }
 
-//    public Date getDueDate() {
-//        return dueDate;
-//    }
-//
-//    public void setDueDate(Date dueDate) {
-//        this.dueDate = dueDate;
-//    }
 }

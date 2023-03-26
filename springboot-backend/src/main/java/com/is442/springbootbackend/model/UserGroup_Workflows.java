@@ -1,6 +1,6 @@
 package com.is442.springbootbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -9,24 +9,29 @@ import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.model.UserGroup;
 
 @Entity
-@Table(name="user_group_workflows")
+@Table(name="workflow_duedate")
 public class UserGroup_Workflows {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_group_workflow_id")
     private Long usergroupWorkflowId;
 
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_group_id", referencedColumnName = "user_group_id")
+    @JsonIgnoreProperties("assignedWorkflows")
+    private UserGroup usergroup;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "workflow_id", referencedColumnName = "workflow_id")
     private Workflow workflow;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_group_id", referencedColumnName = "user_group_id")
-    private UserGroup usergroup;
 
     @Column(name = "due_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dueDate;
+
+    public UserGroup_Workflows(){}
 
     public UserGroup_Workflows(Workflow workflow, UserGroup usergroup, Date dueDate) {
         this.workflow = workflow;
@@ -42,6 +47,7 @@ public class UserGroup_Workflows {
         this.workflow = workflow;
     }
 
+    @JsonIgnoreProperties("assignedWorkflows")
     public UserGroup getUserGroup() {
         return usergroup;
     }

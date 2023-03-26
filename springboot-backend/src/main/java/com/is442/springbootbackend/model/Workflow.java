@@ -1,6 +1,6 @@
 package com.is442.springbootbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -35,9 +35,11 @@ public class Workflow {
     @OneToMany(mappedBy = "workflow")
     private Set<Action> actions = new HashSet<>();
 
+
     @JsonIgnore
     @OneToMany(mappedBy = "usergroupWorkflowId")
-    private List<UserGroup_Workflows> assignedWorkflows = new ArrayList<>();
+//    @JsonManagedReference
+    private Set<UserGroup_Workflows> assignedWorkflows = new HashSet<>();
 
     public Workflow(){
         super();
@@ -81,13 +83,13 @@ public class Workflow {
         this.description = description;
     }
 
-    public List<UserGroup_Workflows> getAssignedWorkflows() {
+    public Set<UserGroup_Workflows> getAssignedWorkflows() {
         return assignedWorkflows;
     }
 
-    public void assignWorkflow(List<UserGroup_Workflows> assignedWorkflows) {
-        this.assignedWorkflows = assignedWorkflows;
-    }
+//    public void assignWorkflow(serGroup_Workflows assignedWorkflows) {
+//        this.assignedWorkflows = assignedWorkflows;
+//    }
 
     public boolean equals(Object object) {
         if (this == object) return true;
