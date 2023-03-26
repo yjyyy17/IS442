@@ -10,8 +10,9 @@ public class SpringbootBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootBackendApplication.class, args);
 
-		// run everytime the application is runs
+		// run check overdue job everytime the application runs
 		CheckAndSendEmail.checkOverdueFormsAndSendEmail();
+
 	}
 
 }
