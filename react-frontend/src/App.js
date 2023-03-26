@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Vendor from "./pages/Vendor/Vendor"
 import Admin from "./pages/Admin/Admin";
 import NewUserAccountForm from "./pages/Admin/NewUserAccountForm";
+import EditUserAccount from './pages/Admin/EditUserAccount';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <Route path='/admin/workflows' element={<Admin />} />
       <Route path='/admin/user_accounts' element={<Admin />} />
       <Route path='/admin/create_account' element={<NewUserAccountForm />} />
+      <Route path='/admin/edit_account' element={<EditUserAccount />} />
     </Routes>
     // <div className="App">
     //   <header className="App-header">

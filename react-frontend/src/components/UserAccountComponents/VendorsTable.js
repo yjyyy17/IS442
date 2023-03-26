@@ -33,6 +33,10 @@ const VendorsTable = () => {
     navigate(`../admin/create_account`);
   };
 
+  const editVendor = (id) => {
+    navigate(`../admin/edit_account?id=${id}`);
+  };
+
   const deleteVendor = (id) => {
     axios
       .delete(`http://localhost:8080/api/vendor/${id}`)
@@ -107,6 +111,7 @@ const VendorsTable = () => {
                     <Button
                       variant="contained"
                       sx={{ backgroundColor: "#93C019" }}
+                      onClick={() => editVendor(item.userId)}
                     >
                       Edit
                     </Button>

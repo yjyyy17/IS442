@@ -45,6 +45,10 @@ const VendorsTable = () => {
       });
   };
 
+  const editApprover = (id) => {
+    navigate(`../admin/edit_account?id=${id}`);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -99,6 +103,7 @@ const VendorsTable = () => {
                     <Button
                       variant="contained"
                       sx={{ backgroundColor: "#93C019" }}
+                      onClick={() => editApprover(item.userId)}
                     >
                       Edit
                     </Button>
