@@ -3,6 +3,8 @@ import SideNavigation from "../../components/UserAccountComponents/SideNavigatio
 import { useLocation } from 'react-router-dom';
 import ViewUserAccounts from "./ViewUserAccounts";
 import NewUserAccountForm from "./NewUserAccountForm";
+import ViewForms from "./ViewForms";
+import CreateNewForm from "./CreateNewForm";
 
 const Admin = () => {
   const [currentPath, setCurrentPath] = useState('')
@@ -18,7 +20,8 @@ const Admin = () => {
       <SideNavigation 
       // ***** change content prop to dynamic when more pages are up *****
       content={
-        currentPath === '/admin/user_accounts'? <ViewUserAccounts/>:<></>
+        currentPath === '/admin/user_accounts'? <ViewUserAccounts/>
+        :currentPath === '/admin/forms'? <ViewForms/>:<></>
       }
       />
     </>

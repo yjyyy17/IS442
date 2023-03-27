@@ -66,7 +66,7 @@ const Login = ({ handleClose }) => {
     const userPaths = {
       Vendor: "/vendor",
       Admin: "/admin",
-      Approver: "/approver",
+      Approver: "/approver"
     };
 
   // Navigate to main page

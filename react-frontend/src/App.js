@@ -9,6 +9,8 @@ import Admin from "./pages/Admin/Admin";
 import Approver from "./pages/Approver/Approver";
 import NewUserAccountForm from "./pages/Admin/NewUserAccountForm";
 import EditUserAccount from './pages/Admin/EditUserAccount';
+import ViewForms from './pages/Admin/ViewForms';
+import CreateNewForm from './pages/Admin/CreateNewForm';
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
       <Route path='/approver' element={<Approver />} />
       <Route path='/approver/user_accounts' element={<Approver />} />
 
+      <Route path='/admin/forms' element={<Admin />} />
+      <Route path='/admin/create_form' element={<CreateNewForm />} />
     </Routes>
     // <div className="App">
     //   <header className="App-header">
