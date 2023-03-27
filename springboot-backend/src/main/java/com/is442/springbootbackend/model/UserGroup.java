@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import java.util.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.is442.springbootbackend.model.UserGroup_Workflows;
 @Entity
 @Table(name = "user_group")
 public class UserGroup {
@@ -16,13 +16,22 @@ public class UserGroup {
     @Column(name = "user_group_id")
     private Long userGroupId;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
+
     @ManyToMany
     @JoinTable(name="user_group_users", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="user_id"))
     private Set<User> assignedUsers = new HashSet<>();
 
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "usergroupWorkflowId")
+//    private List<UserGroup_Workflows> assignedWorkflows = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(name="user_group_workflows", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="workflow_id"))
     private Set<Workflow> assignedWorkflows = new HashSet<>();
+
 
     public UserGroup(){
         super();
@@ -50,5 +59,13 @@ public class UserGroup {
 
     public void assignWorkflow(Workflow workflow) {
         assignedWorkflows.add(workflow);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

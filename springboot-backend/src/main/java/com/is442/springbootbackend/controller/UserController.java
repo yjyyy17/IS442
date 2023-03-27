@@ -2,14 +2,13 @@ package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
 import com.is442.springbootbackend.model.User;
+import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -76,6 +75,22 @@ public class UserController {
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
         response.put("User with id " + id + " has been deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
+    }
+
+
+    //soft delete user by userID
+
+    @PutMapping("/user/delete/{id}")
+    public ResponseEntity<?> softDeleteUser(@PathVariable long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist with id : " + id));
+
+        user.setStatus("Inactive");
+        userRepository.save(user);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Status", Boolean.TRUE );
         return ResponseEntity.ok(response);
     }
 }

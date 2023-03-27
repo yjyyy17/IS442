@@ -2,6 +2,7 @@ package com.is442.springbootbackend.controller;
 
 import java.util.*;
 
+import com.is442.springbootbackend.exception.ResourceNotFoundException;
 import com.is442.springbootbackend.model.User;
 import com.is442.springbootbackend.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
@@ -107,6 +108,21 @@ public class FormTemplateController {
         }
 
 
+    }
+
+    //soft delete formTemplate by formTempId
+
+    @PutMapping("/formtemplate/delete/{id}")
+    public ResponseEntity<?> softDeleteFormTemplate(@PathVariable int id){
+        FormTemplate formTemplate = formTemplateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist with id : " + id));
+
+        formTemplate.setStatus("Inactive");
+        formTemplateRepository.save(formTemplate);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Status", Boolean.TRUE );
+        return ResponseEntity.ok(response);
     }
 
 }

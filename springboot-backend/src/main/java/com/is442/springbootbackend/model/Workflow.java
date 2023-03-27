@@ -1,6 +1,6 @@
 package com.is442.springbootbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.*;
 
 import com.is442.springbootbackend.model.FormStatus;
+import com.is442.springbootbackend.model.UserGroup_Workflows;
 
 @Entity
 @Table(name="workflow")
@@ -23,9 +24,13 @@ public class Workflow {
     @Column(name = "description", nullable=false)
     private String description;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "assignedWorkflows")
-    private Set<UserGroup> userGroups = new HashSet<>();
+    @Column(name = "status", nullable = false)
+    private String status;
+
+
+    //    @JsonIgnore
+//    @ManyToMany(mappedBy = "assignedWorkflows")
+//    private Set<UserGroup> userGroups = new HashSet<>();
     @JsonIgnore
     @OneToMany(mappedBy = "workflow")
     private List<FormStatus> formStatuses = new ArrayList<>();
@@ -33,6 +38,12 @@ public class Workflow {
     @JsonIgnore
     @OneToMany(mappedBy = "workflow")
     private Set<Action> actions = new HashSet<>();
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "usergroupWorkflowId")
+//    @JsonManagedReference
+    private Set<UserGroup_Workflows> assignedWorkflows = new HashSet<>();
 
     public Workflow(){
         super();
@@ -52,9 +63,9 @@ public class Workflow {
         this.workflowId = workflowId;
     }
 
-    public Set<UserGroup> getUserGroups() {
-        return userGroups;
-    }
+//    public Set<UserGroup> getUserGroups() {
+//        return userGroups;
+//    }
 
     public Set<Action> getActions() {
         return actions;
@@ -76,16 +87,24 @@ public class Workflow {
         this.description = description;
     }
 
+    public Set<UserGroup_Workflows> getAssignedWorkflows() {
+        return assignedWorkflows;
+    }
+
+//    public void assignWorkflow(serGroup_Workflows assignedWorkflows) {
+//        this.assignedWorkflows = assignedWorkflows;
+//    }
+
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Workflow workflow = (Workflow) object;
-        return java.util.Objects.equals(workflowId, workflow.workflowId) && java.util.Objects.equals(title, workflow.title) && java.util.Objects.equals(description, workflow.description) && java.util.Objects.equals(userGroups, workflow.userGroups);
+        return java.util.Objects.equals(workflowId, workflow.workflowId) && java.util.Objects.equals(title, workflow.title) && java.util.Objects.equals(description, workflow.description) && java.util.Objects.equals(formStatuses, workflow.formStatuses) && java.util.Objects.equals(actions, workflow.actions) && java.util.Objects.equals(assignedWorkflows, workflow.assignedWorkflows);
     }
 
     public int hashCode() {
-        return java.util.Objects.hash(super.hashCode(), workflowId, title, description, userGroups);
+        return java.util.Objects.hash(super.hashCode(), workflowId, title, description, formStatuses, actions, assignedWorkflows);
     }
 
     @java.lang.Override
@@ -95,5 +114,13 @@ public class Workflow {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

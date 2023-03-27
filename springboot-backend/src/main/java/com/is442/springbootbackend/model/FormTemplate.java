@@ -25,6 +25,9 @@ public class FormTemplate {
     @Column(name = "\"description\"")
     private String description;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "assignee", referencedColumnName = "user_id")
 //    @MapsId
@@ -99,6 +102,14 @@ public class FormTemplate {
     public void setFormId(int formId) {
         this.formId = formId;
 
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getTitle() {
