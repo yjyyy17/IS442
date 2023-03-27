@@ -16,6 +16,10 @@ public class UserGroup {
     @Column(name = "user_group_id")
     private Long userGroupId;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
+
     @ManyToMany
     @JoinTable(name="user_group_users", joinColumns = @JoinColumn(name="user_group_id"), inverseJoinColumns = @JoinColumn(name="user_id"))
     private Set<User> assignedUsers = new HashSet<>();
@@ -57,4 +61,11 @@ public class UserGroup {
         assignedWorkflows.add(workflow);
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

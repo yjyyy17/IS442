@@ -64,4 +64,18 @@ public class WorkflowController {
         response.put("Workflow with id " + id + " has been deleted", Boolean.TRUE );
         return ResponseEntity.ok(response);
     }
+
+    //soft delete workflows by workflowID
+
+    @PutMapping("/workflow/delete/{id}")
+    public ResponseEntity<?> softDeleteWorkFlow(@PathVariable long id){
+        Workflow workflow = workflowRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Status", Boolean.TRUE );
+        return ResponseEntity.ok(response);
+    }
+
+
 }

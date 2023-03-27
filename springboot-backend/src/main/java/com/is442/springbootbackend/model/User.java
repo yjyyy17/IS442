@@ -34,6 +34,10 @@ public class User {
     @Column(name="user_type",insertable = false, updatable = false)
     private String userType;
 
+
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "assignedUsers")
     private Set<UserGroup> userGroups = new HashSet<>();
@@ -150,4 +154,13 @@ public class User {
     public void setResponse(Collection<Response> response) {
         this.response = response;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
+

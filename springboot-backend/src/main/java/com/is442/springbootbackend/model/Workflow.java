@@ -24,7 +24,11 @@ public class Workflow {
     @Column(name = "description", nullable=false)
     private String description;
 
-//    @JsonIgnore
+    @Column(name = "status", nullable = false)
+    private String status;
+
+
+    //    @JsonIgnore
 //    @ManyToMany(mappedBy = "assignedWorkflows")
 //    private Set<UserGroup> userGroups = new HashSet<>();
     @JsonIgnore
@@ -110,5 +114,13 @@ public class Workflow {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
