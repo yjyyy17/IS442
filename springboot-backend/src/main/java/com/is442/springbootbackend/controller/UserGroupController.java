@@ -2,10 +2,8 @@ package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
 import java.text.ParseException;
-import com.is442.springbootbackend.model.User;
-import com.is442.springbootbackend.model.UserGroup;
-import com.is442.springbootbackend.model.Workflow;
-import com.is442.springbootbackend.model.UserGroup_Workflows;
+
+import com.is442.springbootbackend.model.*;
 import com.is442.springbootbackend.repository.UserGroupRepository;
 import com.is442.springbootbackend.repository.UserRepository;
 import com.is442.springbootbackend.repository.WorkflowRepository;
@@ -127,6 +125,22 @@ public class UserGroupController {
     @GetMapping("/usergroup_workflow")
     public List<UserGroup_Workflows> getAllUserGroup_Workflows(){
         return userGroup_WorkflowsRepository.findAll();
+    }
+
+
+    //soft delete userGroup by usergroupID
+
+    @PutMapping("/usergroup/delete/{id}")
+    public ResponseEntity<?> softDeleteUserGroup(@PathVariable long id){
+        UserGroup userGroup = userGroupRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist with id : " + id));
+
+        userGroup.setStatus("Inactive");
+        userGroupRepository.save(userGroup);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Status", Boolean.TRUE );
+        return ResponseEntity.ok(response);
     }
 
 }
