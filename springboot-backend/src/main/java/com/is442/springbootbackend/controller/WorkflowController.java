@@ -72,6 +72,8 @@ public class WorkflowController {
         Workflow workflow = workflowRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
 
+        workflow.setStatus("Inactive");
+        workflowRepository.save(workflow);
         Map<String, Boolean> response = new HashMap<>();
         response.put("Status", Boolean.TRUE );
         return ResponseEntity.ok(response);
