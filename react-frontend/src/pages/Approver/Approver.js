@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import SideNavigation from "../../components/UserAccountComponents/SideNavigationAdmin";
+import SideNavigation from "../../components/UserAccountComponents/SideNavigationApprover";
 import { useLocation } from 'react-router-dom';
 import ViewUserAccounts from "./ViewUserAccounts";
-import NewUserAccountForm from "./NewUserAccountForm";
-import ViewForms from "./ViewForms";
-import CreateNewForm from "./CreateNewForm";
+// import NewUserAccountForm from "./NewUserAccountForm";
 
 const Admin = () => {
   const [currentPath, setCurrentPath] = useState('')
@@ -20,8 +18,7 @@ const Admin = () => {
       <SideNavigation 
       // ***** change content prop to dynamic when more pages are up *****
       content={
-        currentPath === '/admin/user_accounts'? <ViewUserAccounts/>
-        :currentPath === '/admin/forms'? <ViewForms/>:<></>
+        currentPath === '/approver/user_accounts'? <ViewUserAccounts/>:<></>
       }
       />
     </>

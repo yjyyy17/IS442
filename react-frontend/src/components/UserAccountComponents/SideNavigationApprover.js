@@ -26,7 +26,6 @@ import FolderIcon from "@mui/icons-material/Folder";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from '@mui/icons-material/People';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import ArticleIcon from '@mui/icons-material/Article';
 
 const drawerWidth = 240;
 
@@ -97,10 +96,9 @@ export default function PersistentDrawerLeft(props) {
   };
 
   const titleWithRoute = {
-    "Admin": "#", 
-    "Your Workflows": "/admin/workflows", 
-    "Your Forms": "/admin/forms", 
-    "User Accounts": '/admin/user_accounts', 
+    "Approver": "#", 
+    // "Your Workflows": "/admin/workflows", 
+    "User Accounts": '/approver/user_accounts', 
     "Log out": '/'
   }
 
@@ -181,16 +179,11 @@ export default function PersistentDrawerLeft(props) {
                       <></>
                     )}
                     {index === 2 ? (
-                      <ArticleIcon style={{ color: "#6FCF97" }} />
-                    ) : (
-                      <></>
-                    )}
-                    {index === 3 ? (
                       <PeopleIcon style={{ color: "#6FCF97" }} />
                     ) : (
                       <></>
                     )}
-                    {index === 4 ? (
+                    {index === 3 ? (
                       <LogoutIcon style={{ color: "#6FCF97" }} />
                     ) : (
                       <></>

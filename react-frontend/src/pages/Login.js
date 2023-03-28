@@ -65,6 +65,8 @@ const Login = ({ handleClose }) => {
     // ***** To update after log in POST request is complete *****
     const userPaths = {
       Vendor: "/vendor",
+      Admin: "/admin",
+      Approver: "/approver"
     };
 
   // Navigate to main page

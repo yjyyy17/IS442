@@ -45,9 +45,6 @@ public class FormTemplateController {
     // create new form template
 //    JSON format:
 //    {
-//        "assignee": {
-//          "userId": 6
-//         },
 //        "description": "form1",
 //        "effectiveDate": "2023-03-04",
 //        "formNumber": "abc-123-xyz",
@@ -56,14 +53,6 @@ public class FormTemplateController {
 //    }
     @PostMapping(path = "/formtemplate/add")
     public ResponseEntity<?> addForm(@RequestBody FormTemplate form) {
-        System.out.println(form.getAssignee().getUserId());
-        long userId = form.getAssignee().getUserId();
-        User user = (User) userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            form.setAssignee(user);
-        } else {
-            return ResponseEntity.badRequest().body("Assignee with ID " + userId + " does not exist.");
-        }
         return ResponseEntity.ok(formTemplateRepository.save(form));
     }
 
@@ -75,14 +64,6 @@ public class FormTemplateController {
 
         updateForm.setTitle(form.getTitle());
         updateForm.setDescription(form.getDescription());
-
-        long userId = form.getAssignee().getUserId();
-        User user = (User) userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            updateForm.setAssignee(user);
-        } else {
-            return ResponseEntity.badRequest().body("Assignee with ID " + userId + " does not exist.");
-        }
 
         updateForm.setEffectiveDate(form.getEffectiveDate());
         updateForm.setFormNumber(form.getFormNumber());
