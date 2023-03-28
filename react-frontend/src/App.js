@@ -9,8 +9,8 @@ import Admin from "./pages/Admin/Admin";
 import Approver from "./pages/Approver/Approver";
 import NewUserAccountForm from "./pages/Admin/NewUserAccountForm";
 import EditUserAccount from './pages/Admin/EditUserAccount';
-import ViewForms from './pages/Admin/ViewForms';
 import CreateNewForm from './pages/Admin/CreateNewForm';
+import EditForm from './pages/Admin/EditForm';
 
 
 function App() {
@@ -26,12 +26,13 @@ function App() {
       <Route path='/admin/user_accounts' element={<Admin />} />
       <Route path='/admin/create_account' element={<NewUserAccountForm />} />
       <Route path='/admin/edit_account' element={<EditUserAccount />} />
-
+      <Route path='/admin/forms' element={<Admin />} />
+      <Route path='/admin/create_form' element={<CreateNewForm />} />
+      <Route path='/admin/edit_form' element={<EditForm />} />
+      
       <Route path='/approver' element={<Approver />} />
       <Route path='/approver/user_accounts' element={<Approver />} />
 
-      <Route path='/admin/forms' element={<Admin />} />
-      <Route path='/admin/create_form' element={<CreateNewForm />} />
     </Routes>
     // <div className="App">
     //   <header className="App-header">

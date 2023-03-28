@@ -26,6 +26,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from '@mui/icons-material/People';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import ArticleIcon from '@mui/icons-material/Article';
 
 const drawerWidth = 240;
 
@@ -180,11 +181,16 @@ export default function PersistentDrawerLeft(props) {
                       <></>
                     )}
                     {index === 2 ? (
-                      <PeopleIcon style={{ color: "#6FCF97" }} />
+                      <ArticleIcon style={{ color: "#6FCF97" }} />
                     ) : (
                       <></>
                     )}
                     {index === 3 ? (
+                      <PeopleIcon style={{ color: "#6FCF97" }} />
+                    ) : (
+                      <></>
+                    )}
+                    {index === 4 ? (
                       <LogoutIcon style={{ color: "#6FCF97" }} />
                     ) : (
                       <></>
