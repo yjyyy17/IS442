@@ -28,10 +28,6 @@ public class FormTemplate {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "assignee", referencedColumnName = "user_id")
-//    @MapsId
-    private User assignee;
 
     @Column(nullable = true)
     @Temporal(TemporalType.DATE)
@@ -64,10 +60,9 @@ public class FormTemplate {
         // default constructor
     }
 
-    public FormTemplate(String title, String description, User assignee, Date effectiveDate, String formNumber, Integer revisionNumber) {
+    public FormTemplate(String title, String description, Date effectiveDate, String formNumber, Integer revisionNumber) {
         this.title = title;
         this.description = description;
-        this.assignee = assignee;
         this.effectiveDate = effectiveDate;
         this.formNumber = formNumber;
         this.revisionNumber = revisionNumber;
@@ -76,7 +71,6 @@ public class FormTemplate {
     public FormTemplate(int formId,
                         String title,
                         String description,
-                        User assignee,
                         Date effectiveDate,
                         String formNumber,
                         Set<Action> actions,
@@ -86,7 +80,6 @@ public class FormTemplate {
         this.formId = formId;
         this.title = title;
         this.description = description;
-        this.assignee = assignee;
         this.effectiveDate = effectiveDate;
         this.formNumber = formNumber;
         this.actions = actions;
@@ -126,14 +119,6 @@ public class FormTemplate {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public User getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(User assignee) {
-        this.assignee = assignee;
     }
 
     public Date getEffectiveDate() {
@@ -182,11 +167,11 @@ public class FormTemplate {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         FormTemplate that = (FormTemplate) object;
-        return formId == that.formId && java.util.Objects.equals(title, that.title) && java.util.Objects.equals(description, that.description) && java.util.Objects.equals(assignee, that.assignee) && java.util.Objects.equals(effectiveDate, that.effectiveDate) && java.util.Objects.equals(formNumber, that.formNumber) && java.util.Objects.equals(revisionNumber, that.revisionNumber) && java.util.Objects.equals(formStatuses, that.formStatuses);
+        return formId == that.formId && java.util.Objects.equals(title, that.title) && java.util.Objects.equals(description, that.description) && java.util.Objects.equals(effectiveDate, that.effectiveDate) && java.util.Objects.equals(formNumber, that.formNumber) && java.util.Objects.equals(revisionNumber, that.revisionNumber) && java.util.Objects.equals(formStatuses, that.formStatuses);
     }
 
     public int hashCode() {
-        return java.util.Objects.hash(super.hashCode(), formId, title, description, assignee, effectiveDate, formNumber, revisionNumber, formStatuses);
+        return java.util.Objects.hash(super.hashCode(), formId, title, description, effectiveDate, formNumber, revisionNumber, formStatuses);
     }
 
     @java.lang.Override
@@ -195,7 +180,6 @@ public class FormTemplate {
                 "formId=" + formId +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", assignee='" + assignee + '\'' +
                 ", effectiveDate=" + effectiveDate +
                 ", formNumber='" + formNumber + '\'' +
                 ", revisionNumber=" + revisionNumber +
