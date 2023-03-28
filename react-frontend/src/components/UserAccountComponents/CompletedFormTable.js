@@ -12,34 +12,90 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import jsPDF from 'jspdf';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+
+
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4, 
+  }; 
 
 const CompletedFormTable = () => {
-  const [vendors, setVendors] = useState([]);
+  const [completedForm, setcompletedForm] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const navigate = useNavigate();
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [open, setOpen] = React.useState(false);
+
+
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/completedform`)
       .then((res) => {
-        setVendors(res.data);
+        setcompletedForm(res.data);
         return true;
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [vendors]);
+  }, [completedForm]);
 
-  const newCompletedForm= () => {
-    navigate(`../addCompletedForm`);
-  };
+  
 
-  const editCompletedForm = (id) => {
-    navigate(`../admin/update?user_group_id=${user_group_id}&pdf_id=${pdf_id}`);
-  };
-
-  const deleteCompletedForm = (pdf_id) => {
+  const getCompletedFormBasedOnUserGroupId = (userGroupId,pdfId) => {
     axios
-      .delete(`http://localhost:8080/api/completedForm/${pdf_id}`)
+      .post(`http://localhost:8080/api/completedform?user_group_id=${userGroupId}&pdf_id=${pdfId}`)
+      .then((res) => {
+        console.log(res.data['form']);
+        console.log(typeof res.data['form'])
+        // downloadFile("helloworld");
+        alert("CompletedForm successfully gotten");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  
+
+  const newCompletedForm = (userGroupId,pdfId,formBlob) => {
+    axios
+    .post(`http://localhost:8080/api/addCompletedForm`,{
+        userGroupId:`${userGroupId}`,
+        pdfId:`${pdfId}`,
+        form:`${formBlob}`
+    })
+    .then((res) => {
+        console.log(res.data['form']);
+        console.log(typeof res.data['form'])
+        // downloadFile("helloworld");
+        alert("CompletedForm successfully added");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const editCompletedForm = (userGroupId,pdfId) => {
+    navigate(`../vendor/update?user_group_id=${userGroupId}&pdf_id=${pdfId}`);
+  };
+
+  const deleteCompletedForm = (pdfId) => {
+    axios
+      .delete(`http://localhost:8080/api/completedForm/${pdfId}`)
       .then((res) => {
         console.log(res.data);
         alert("CompletedForm successfully deleted");
@@ -48,6 +104,8 @@ const CompletedFormTable = () => {
         console.log(err);
       });
   };
+
+
 
   return (
     <>
@@ -58,60 +116,114 @@ const CompletedFormTable = () => {
           onChange={(e) => setSearchedVal(e.target.value)}
         />
         <div className="row align-items-center">
-          <Button variant="contained" color="primary" onClick={newCompletedForm}>
+
+          {/* <Button variant="contained" color="primary" onClick={newCompletedForm}>
             <Add />
             New
-          </Button>
+          </Button> */}
+
+            <Button onClick={handleOpen}> <Add />
+            New</Button>
+            <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >
+            <Box sx={style}>
+              
+
+                           
+                    <form>
+                    <label>User Group Id: </label>
+                    <input
+                    name="name"
+                    type="text"
+                    />
+
+                    <text><br></br></text>
+                    <text><br></br></text>
+                    
+                    <label>Pdf Id: </label>
+                    <input
+                    name="email"
+                    type="text"
+                    />
+                    <text><br></br></text>
+                    <text><br></br></text>
+                    
+                    <input type="file"/>
+
+                    <text><br></br></text>
+                    <text><br></br></text>
+
+                    
+                    
+
+                </form> 
+                <Button variant="contained" color="primary" onClick={() => add(item.userGroupId,item.pdfId)}>
+                            <Add />
+                            New
+                </Button>
+              
+            </Box>
+            
+
+
+               
+                
+            </Modal>
+
         </div>
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>User ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone Number</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Industry</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>User Group Id</TableCell>
+              <TableCell>PDF ID </TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {vendors
+            {completedForm
               .filter(
                 (row) =>
                   !searchedVal.length ||
-                  row.name
+                  row.userGroupId
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase()) ||
-                  row.email
-                    .toString()
-                    .toLowerCase()
-                    .includes(searchedVal.toString().toLowerCase()) ||
-                  row.industry
+                  row.pdfId
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
               .map((item) => (
                 <TableRow
-                  key={item.userId}
+                  key={item.userGroupId,item.pdfId}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell>{item.userId}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.phoneNo}</TableCell>
-                  <TableCell>{item.address}</TableCell>
-                  <TableCell>{item.industry}</TableCell>
+                  <TableCell>{item.userGroupId}</TableCell>
+                  <TableCell>{item.pdfId}</TableCell>
+                  <TableCell>
+                    <Button>
+                        <PictureAsPdfIcon
+                        variant="contained"
+                        //   sx={{ backgroundColor: "#93C019" }}
+                        onClick={() => getCompletedFormBasedOnUserGroupId(item.userGroupId,item.pdfId)}
+                        >
+                            
+                        </PictureAsPdfIcon>
+                    </Button>
+                  
+
+                  </TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       sx={{ backgroundColor: "#93C019" }}
-                      onClick={() => editCompletedForm(item.userId)}
+                      onClick={() => editCompletedForm(item.userGroupId,item.pdfId)}
                     >
                       Edit
                     </Button>
@@ -120,7 +232,7 @@ const CompletedFormTable = () => {
                     <Button
                       variant="contained"
                       color="error"
-                      onClick={() => deleteCompletedForm(user_group_id,pdf_id)}
+                      onClick={() => deleteCompletedForm(item.pdfId)}
                     >
                       Delete
                     </Button>
