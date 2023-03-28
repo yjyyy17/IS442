@@ -1,23 +1,11 @@
-import { Button } from 'bootstrap'
+
+import { Divider, Typography } from "@mui/material";
 import React, { useState ,useEffect} from "react";
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import axios from 'axios';
+import CompletedFormTable from "../../../components/UserAccountComponents/CompletedFormTable.js";
 
 
 
-// const rows: GridRowsProp = [
-//     { id: 1, col1: 'Hello', col2: 'World' },
-//     { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-//     { id: 3, col1: 'MUI', col2: 'is word' },
-//   ];
-
-
-const columns: GridColDef[] = [
-    { field: 'pdfId', headerName: 'PDF ID', width: 150 },
-    { field: 'form', headerName: 'PDF FORM', width: 150 },
-  ];
-
-console.log("viewcompleted forms")
 const ViewCompletedForms = () => {
   
   const [ tableData, setTableData] = useState([])
@@ -31,9 +19,15 @@ const ViewCompletedForms = () => {
 
   console.log(tableData)
   return (
-    <><div>ViewCompletedForms</div><div style={{ height: 300, width: '100%' }}>
-      <DataGrid getRowId={row => row.userGroupId} rows={tableData} columns={columns} />
-    </div></>
+
+    <>
+      <Typography variant="h5" sx={{ pb: 4 }}>
+        All Accounts
+      </Typography>
+      <Divider sx={{ mb: 4 }} />
+      <CompletedFormTable/>
+    </>
+
   );
 }
 
