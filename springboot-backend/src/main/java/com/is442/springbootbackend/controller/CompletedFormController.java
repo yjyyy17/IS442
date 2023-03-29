@@ -38,25 +38,25 @@ public class CompletedFormController {
 
 
 
-    // get completedForm by user_group_id and pdf_id
+    // get completedForm by userGroupId and pdfId
     @PostMapping(path="/completedform")
-    public CompletedForm findByUserGroupIdAndPdfId(@RequestParam int user_group_id,@RequestParam int pdf_id) {
-        return completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
+    public CompletedForm findByUserGroupIdAndPdfId(@RequestParam int userGroupId,@RequestParam int pdfId) {
+        return completedFormRepository.findByUserGroupIdAndPdfId(userGroupId,pdfId);
     }
 
 
      @PostMapping("/addCompletedForm")
-    public CompletedForm createCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam byte[] pdf_form){
-        return completedFormRepository.save(new CompletedForm(user_group_id,pdf_id,pdf_form));
+    public CompletedForm createCompletedForm(@RequestParam int userGroupId,@RequestParam int pdfId,@RequestParam byte[] pdf_form){
+        return completedFormRepository.save(new CompletedForm(userGroupId,pdfId,pdf_form));
     }
 
-    //update completedForm by user_group_id and pdf_id
+    //update completedForm by userGroupId and pdfId
     @PutMapping("/update")
-    public CompletedForm updateUser(@RequestParam int user_group_id,@RequestParam int pdf_id,@RequestParam byte[] pdf_form) {
-        CompletedForm completedForm = completedFormRepository.findByUserGroupIdAndPdfId(user_group_id,pdf_id);
-        completedForm.setPdfId(pdf_id);
-        completedForm.setUserGroupId(user_group_id);
-        completedForm.removeBlob(user_group_id,pdf_id);
+    public CompletedForm updateUser(@RequestParam int userGroupId,@RequestParam int pdfId,@RequestParam byte[] pdf_form) {
+        CompletedForm completedForm = completedFormRepository.findByUserGroupIdAndPdfId(userGroupId,pdfId);
+        completedForm.setPdfId(pdfId);
+        completedForm.setUserGroupId(userGroupId);
+        completedForm.removeBlob(userGroupId,pdfId);
         completedForm.setPdfForm(pdf_form);
 
         return completedFormRepository.save(completedForm);
@@ -66,7 +66,7 @@ public class CompletedFormController {
     // private EntityManager entityManager;
     // // create new form template
     // @PostMapping(path="/completedform/add")
-    // public String addCompletedForm(@RequestParam int user_group_id,@RequestParam int pdf_id)  {
+    // public String addCompletedForm(@RequestParam int userGroupId,@RequestParam int pdfId)  {
     //     try {
     //         // Create a new PDF entity
     //         // String currentDirectory = System.getProperty("user.dir");
@@ -89,13 +89,13 @@ public class CompletedFormController {
     //         Blob pdfBlob = new javax.sql.rowset.serial.SerialBlob(fileBytes);
 
     //         CompletedForm completedForm = new CompletedForm();
-    //         completedForm.setUserGroupId(user_group_id);
-    //         completedForm.setPdfId(pdf_id);
+    //         completedForm.setUserGroupId(userGroupId);
+    //         completedForm.setPdfId(pdfId);
     //         // System.out.println("pdfBlob: " + pdfBlob);
     //         completedForm.setPdfForm(fileBytes);
 
-    //         System.out.println(user_group_id);
-    //         System.out.println(pdf_id);
+    //         System.out.println(userGroupId);
+    //         System.out.println(pdfId);
     //         System.out.println(fileBytes);
 
 

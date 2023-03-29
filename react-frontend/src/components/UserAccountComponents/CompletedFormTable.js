@@ -68,26 +68,60 @@ const CompletedFormTable = () => {
         console.log(err);
       });
   };
-
+ 
   
 
+  // const newCompletedForm = (userGroupId,pdfId,formBlob) => {
+  //   axios
+  //   .post(`http://localhost:8080/api/addCompletedForm`,{ data:{
+  //     user_group_id:1,
+  //     pdf_id:2,
+  //     pdf_form:2121
+  //   }
+    
+  //       // userGroupId:`${userGroupId}`,
+  //       // pdfId:`${pdfId}`,
+  //       // form:`${formBlob}`
+     
+  //   })
+  //   .then((res) => {
+  //       console.log(res.data['form']);
+  //       console.log(typeof res.data['form'])
+  //       // downloadFile("helloworld");
+  //       alert("CompletedForm successfully added");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
   const newCompletedForm = (userGroupId,pdfId,formBlob) => {
-    axios
-    .post(`http://localhost:8080/api/addCompletedForm`,{
-        userGroupId:`${userGroupId}`,
-        pdfId:`${pdfId}`,
-        form:`${formBlob}`
+    const axios = require('axios');
+    const FormData = require('form-data');
+    let data = new FormData();
+    data.append('userGroupId', userGroupId);
+    data.append('pdfId', pdfId);
+    data.append('pdf_form', '212123');
+    
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:8080/api/addCompletedForm',
+      // headers: { 
+      //   ...data.getHeaders()
+      // },
+      data : data
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
     })
-    .then((res) => {
-        console.log(res.data['form']);
-        console.log(typeof res.data['form'])
-        // downloadFile("helloworld");
-        alert("CompletedForm successfully added");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }
 
   const editCompletedForm = (userGroupId,pdfId) => {
     navigate(`../vendor/update?user_group_id=${userGroupId}&pdf_id=${pdfId}`);
@@ -137,8 +171,8 @@ const CompletedFormTable = () => {
                     <form>
                     <label>User Group Id: </label>
                     <input
-                    name="name"
-                    type="text"
+                    name="userGroupId"
+                    type="number"
                     />
 
                     <text><br></br></text>
@@ -146,8 +180,8 @@ const CompletedFormTable = () => {
                     
                     <label>Pdf Id: </label>
                     <input
-                    name="email"
-                    type="text"
+                    name="pdfId"
+                    type="number"
                     />
                     <text><br></br></text>
                     <text><br></br></text>
@@ -161,7 +195,7 @@ const CompletedFormTable = () => {
                     
 
                 </form> 
-                <Button variant="contained" color="primary" onClick={() => add(item.userGroupId,item.pdfId)}>
+                <Button variant="contained" color="primary" onClick={() => newCompletedForm(parseInt(document.querySelector("form input[name='userGroupId']").value) ,parseInt(document.querySelector("form input[name='pdfId']").value) )}>
                             <Add />
                             New
                 </Button>
