@@ -207,4 +207,44 @@ public class FormStatusController {
 
     }
 
+    @GetMapping(path = "/formstatus/completedforms")
+    public HashMap<String, ArrayList> getCompletedFormsByUserID(@RequestParam long userId){
+        HashMap<String, ArrayList> completedForms = new HashMap<>();
+        List<FormStatus> allForms = new ArrayList<>();
+
+        allForms = formStatusRepository.findAll();
+
+        for(FormStatus form: allForms){
+            System.out.println(form.getForm().getFormId() + " " + form.getEvaluationStatus());
+
+            String formStatus = form.getEvaluationStatus();
+            long userID = form.getUser().getUserId();
+            System.out.println(formStatus + " || " + userID);
+            if(formStatus.equals("Approved") ){
+                if(userID == userID){
+                    ArrayList<HashMap> formInfo = new ArrayList<>();
+
+                    HashMap<String, String> title = new HashMap<>();
+                    HashMap<String, String> description = new HashMap<>();
+                    HashMap<String, String> formNumber = new HashMap<>();
+
+                    title.put("title", form.getForm().getTitle());
+                    description.put("description", form.getForm().getDescription());
+                    formNumber.put("formNumber", form.getForm().getFormNumber());
+                    formInfo.add(title);
+                    formInfo.add(description);
+                    formInfo.add(formNumber);
+                    completedForms.put(String.valueOf(form.getForm().getFormId()), formInfo);
+
+                }
+
+            }
+
+        }
+
+
+
+        return completedForms;
+    }
+
 }

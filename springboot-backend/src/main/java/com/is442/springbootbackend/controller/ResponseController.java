@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Repeatable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -178,4 +175,36 @@ public class ResponseController {
         }
         return ResponseEntity.ok().body("Updated");
     }
+
+//    @GetMapping(path = "/getCompletedForms/{userID}")
+//    public HashMap<String, HashMap> getCompletedForms(@PathVariable int userID){
+//
+//        //main
+//        HashMap<String, HashMap> completedForms = new HashMap<String, HashMap>();
+//
+//        HashMap<String, HashMap> subFields1 = new HashMap<>();
+//        HashMap<String, String> subFields2 = new HashMap<>();
+//
+//
+//        HashMap<String,String > thirdField1 = new HashMap<>();
+//        thirdField1.put("title", "hello");
+//
+//        HashMap<String,String > thirdField2 = new HashMap<>();
+//        thirdField2.put("question", "hello");
+//        thirdField2.put("question2", "hello2");
+//
+//        subFields1.put("form_info", thirdField1);
+//        subFields1.put("question_info", thirdField2);
+//
+//       completedForms.put("form1", subFields1);
+//
+//
+////       completedForms.put("form2", subFields2);
+//
+//        return completedForms;
+//    }
+
+
+
+
 }
