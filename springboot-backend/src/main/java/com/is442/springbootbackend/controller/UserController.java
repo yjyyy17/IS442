@@ -60,6 +60,7 @@ public class UserController {
         user.setEmail(userDetails.getEmail());
         user.setPhoneNo(userDetails.getPhoneNo());
         user.setPassword(userDetails.getPassword());
+        user.setStatus(userDetails.getStatus());
 
 
         User updatedUser = userRepository.save(user);

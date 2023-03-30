@@ -13,9 +13,10 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 
-const VendorsTable = () => {
+const AdminsTable = () => {
   const [admins, setAdmin] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
+  const [reloadAdmins, setReloadAdmins] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     axios
@@ -27,7 +28,7 @@ const VendorsTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [admins]);
+  }, [reloadAdmins]);
 
   const newAccount = () => {
     navigate(`../admin/create_account`);
@@ -37,15 +38,38 @@ const VendorsTable = () => {
     navigate(`../admin/edit_account?id=${id}`);
   };
 
-  const deleteAdmin = (id) => {
+  //hard delete
+  // const deleteAdmin = (id) => {
+  //   axios
+  //     .delete(`http://localhost:8080/api/admin/${id}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       alert("Admin successfully deleted");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
+  const deactivateAdmin = (admin) => {
     axios
-      .delete(`http://localhost:8080/api/admin/${id}`)
+      .put(`http://localhost:8080/api/user/${admin.userId}`, {
+        name: admin.name,
+        email: admin.email,
+        phoneNo: admin.phoneNo,
+        password: admin.password,
+        address: admin.address,
+        industry: admin.industry,
+        status: "inactive",
+      })
       .then((res) => {
         console.log(res.data);
-        alert("Admin successfully deleted");
+        setReloadAdmins(!reloadAdmins);
+        alert(`${admin.name} successfully deleted!`);
       })
       .catch((err) => {
         console.log(err);
+        alert(err);
       });
   };
 
@@ -90,35 +114,42 @@ const VendorsTable = () => {
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
-              .map((item) => (
-                <TableRow
-                  key={item.userId}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell>{item.userId}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.phoneNo}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      sx={{ backgroundColor: "#93C019" }}
-                      onClick={() => editAdmin(item.userId)}
+              .map((item) => {
+                if (item.status === "active") {
+                  return (
+                    <TableRow
+                      key={item.userId}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
                     >
-                      Edit
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => deleteAdmin(item.userId)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                      <TableCell>{item.userId}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.email}</TableCell>
+                      <TableCell>{item.phoneNo}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#93C019" }}
+                          onClick={() => editAdmin(item.userId)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => deactivateAdmin(item)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+                return null;
+              })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -126,4 +157,4 @@ const VendorsTable = () => {
   );
 };
 
-export default VendorsTable;
+export default AdminsTable;
