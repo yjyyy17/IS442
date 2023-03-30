@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 //import com.is442.springbootbackend.CompositeID.QuestionID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.*;
 
 import java.io.File;
 
@@ -40,8 +41,8 @@ public class Question {
     private FormTemplate formID;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private Response response;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private Set<Response> response;
 
 
 
@@ -126,11 +127,11 @@ public class Question {
         this.formID = formID;
     }
 
-    public Response getResponse() {
+    public Set<Response> getResponse() {
         return response;
     }
 
-    public void setResponse(Response response) {
+    public void setResponse(Set<Response> response) {
         this.response = response;
     }
 
