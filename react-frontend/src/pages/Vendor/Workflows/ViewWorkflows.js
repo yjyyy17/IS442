@@ -11,62 +11,33 @@ import {
 } from "../../../mui";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
-import getAllUserGroups from "../../../services/getAllUserGroups";
-import getFormStatus from "../../../services/getFormStatus";
+// import getAllUserGroups from "../../../services/getAllUserGroups";
+// import getFormStatus from "../../../services/getFormStatus";
+import getVendorWorkflows from "../../../services/getVendorWorkflows"
 
 const ViewWorkflows = (props) => {
   const { viewIndivWorkflow } = props;
   const [searchInput, setSearchInput] = useState("");
   const userId = sessionStorage.getItem("userId");
-  const [userGroupData, setUserGroupData] = useState([]);
-  const [workflowData, setWorkflowData] = useState([]);
-  const [workflowDataWithStatus, setWorkflowDataWithStatus] = useState([]);
+  const [workflowData, setWorkflowData] = useState([])
+  // const [userGroupData, setUserGroupData] = useState([]);
+  // const [workflowData, setWorkflowData] = useState([]);
+  // const [workflowDataWithStatus, setWorkflowDataWithStatus] = useState([]);
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getAllUserGroups();
-      setUserGroupData(data);
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const workflows = [];
-
-    userGroupData.forEach((group) => {
-      group.assignedUsers.forEach((user) => {
-        if (parseInt(user.userId) === parseInt(userId)) {
-          workflows.push(...group.assignedWorkflows);
-        }
-      });
-    });
-
-    setWorkflowData(workflows);
-  }, [userGroupData]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      for (let i = 0; i < workflowData.length; i++) {
-        var wfId = parseInt(workflowData[i].workflowId);
-        const data = await getFormStatus(parseInt(userId), wfId)
-
-        setWorkflowDataWithStatus(
-          workflowData.map(wf => 
-            wf.workflowId = wfId 
-              ? {...wf, status : data.evaluationStatus}
-              : wf 
-      ))
-      }
-    };
-
-    fetchData();
-  }, [workflowData]);
+      const fetchData = async () => {
+        const data = await getVendorWorkflows(userId);
+        setWorkflowData(data);
+      };
+  
+      fetchData();
+    }, []);
 
 
-  function handleWorkflowClick(workflowID) {
+  function handleWorkflowClick(wf) {
     // pass workflowID to Vendor component
-    viewIndivWorkflow(workflowID);
+    viewIndivWorkflow(wf);
   }
 
   return (
@@ -93,19 +64,19 @@ const ViewWorkflows = (props) => {
       />
 
       {/* **** To change to map when GET request for all workflows is complete **** */}
-      {workflowDataWithStatus.map((wf) => (
-        <Card sx={{ p: 3, mb: 5 }} key={wf.workflowId}>
+      {workflowData.map((wf) => (
+        <Card sx={{ p: 3, mb: 5 }} key={wf.workflow.workflowId}>
           <CardContent>
-            <Typography variant='h6'>{wf.title}</Typography>
+            <Typography variant='h6'>{wf.workflow.title}</Typography>
             <br></br>
-            <Typography sx={{ color: "grey" }}>Status: {wf.status}</Typography>
+            <Typography sx={{ color: "grey" }}>Status: {wf.evaluationStatus}</Typography>
             {wf.status === "Rejected" && (
               <Typography sx={{ color: "grey" }}>
                 Reason: {wf.reason}
               </Typography>
             )}
             <br></br>
-            <Typography sx={{ color: "grey" }}>{wf.description}</Typography>
+            <Typography sx={{ color: "grey" }}>{wf.workflow.description}</Typography>
           </CardContent>
           <CardActions>
             <Link

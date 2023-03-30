@@ -1,20 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Grid,
   Box,
   Card,
-  TextField,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Select,
-  MenuItem,
-  Button,
 } from "../../../mui";
 import { styled } from "@mui/system";
 import { useLocation } from "react-router-dom";
 import DynamicForm from "./DynamicForm";
+import getFormQuestions from '../../../services/getFormQuestions';
 
 const Item = styled(Box)(() => ({
   padding: 1,
@@ -32,55 +26,19 @@ const IndividualWorkflow = () => {
   const workflowData = location.state ? location.state.data : [];
 
   // Initialising form data and question data state variables
-  const [formData, setFormData] = useState({
-    form_id: 0,
-    title: "New Vendor Assessment Form",
-    description: "",
-    assignee: "",
-    effective_date: "24/05/2022",
-    form_no: "123",
-    revision_no: 1,
-  });
+  const formData = workflowData.form;
+  const formID = formData.formId;
 
-  const [questionData, setQuestionData] = useState([
-    {
-      form_id: 0,
-      question_id: 0,
-      order: 1,
-      label: "Company's name",
-      options: "NA",
-      type: "Text Input",
-      status: "Active",
-    },
-    {
-      form_id: 0,
-      question_id: 1,
-      order: 3,
-      label: "GST Registered",
-      options: "Yes,No,Others",
-      type: "Radio",
-      status: "Active",
-    },
-    {
-      form_id: 0,
-      question_id: 2,
-      order: 4,
-      label: "Type of Business License/ Registration",
-      options:
-        "Sole proprietorship,Limited Company,Partnership Agreement,Others",
-      type: "Select",
-      status: "Active",
-    },
-    {
-      form_id: 0,
-      question_id: 4,
-      order: 2,
-      label: "Company's Registration No",
-      options: "NA",
-      type: "Text Input",
-      status: "Active",
-    },
-  ]);
+  const [questionData, setQuestionData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getFormQuestions(formID.toString());
+      setQuestionData(data);
+    };
+
+    fetchData();
+  }, [formID])
 
   const [answerData, setAnswerData] = useState([]);
   // function to handle user's answer
@@ -102,11 +60,6 @@ const IndividualWorkflow = () => {
       setAnswerData(newArray);
     }
   };
-
-  // Order questions based on their 'order' key
-  const questionDataFormatted = questionData.sort((q1, q2) =>
-    q1.order > q2.order ? 1 : -1
-  );
 
   const handleSubmit = () => {
     // event.preventDefault();

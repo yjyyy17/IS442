@@ -25,18 +25,18 @@ const DynamicForm = ({
   // function to handle RadioGroup and Select input change
   const handleSelectChange = (event, question) => {
     const answer = event.target.value;
-    handleAnswerChange(question.question_id, answer);
+    handleAnswerChange(question.questionID, answer);
 
     // check if the question has "Others" option and is currently selected
-    if (answer === "Others" && question.type === "Select") {
+    if (answer === "Others" && question.type === "Dropdown") {
       setSelectedOthersDropdown(question);
     } else {
       // clear answer for the question if "Others" is not selected
       if (
         selectedOthersDropdown &&
-        selectedOthersDropdown.question_id === question.question_id
+        selectedOthersDropdown.questionID === question.questionID
       ) {
-        handleAnswerChange(selectedOthersDropdown.question_id, answer);
+        handleAnswerChange(selectedOthersDropdown.questionID, answer);
         setSelectedOthersDropdown(null);
       }
     }
@@ -44,7 +44,7 @@ const DynamicForm = ({
 
   const handleRadioChange = (event, question) => {
     const answer = event.target.value;
-    handleAnswerChange(question.question_id, answer);
+    handleAnswerChange(question.questionID, answer);
 
     // check if the question has "Others" option and is currently selected
     if (answer === "Others" && question.type === "Radio") {
@@ -53,9 +53,9 @@ const DynamicForm = ({
       // clear answer for the question if "Others" is not selected
       if (
         selectedOthersRadio &&
-        selectedOthersRadio.question_id === question.question_id
+        selectedOthersRadio.questionID === question.questionID
       ) {
-        handleAnswerChange(selectedOthersRadio.question_id, answer);
+        handleAnswerChange(selectedOthersRadio.questionID, answer);
         setSelectedOthersRadio(null);
       }
     }
@@ -64,13 +64,13 @@ const DynamicForm = ({
   // function to handle TextField input change
   const handleTextFieldChange = (event, question) => {
     const answer = event.target.value;
-    handleAnswerChange(question.question_id, answer);
+    handleAnswerChange(question.questionID, answer);
   };
 
   // render RadioGroup component
   const renderRadioGroup = (question) => {
     return (
-      <Box m={2} key={question.question_id}>
+      <Box m={2} key={question.questionID}>
         <Typography>{question.label}</Typography>
         <RadioGroup
           aria-label={question.label}
@@ -87,7 +87,7 @@ const DynamicForm = ({
           ))}
         </RadioGroup>
         {selectedOthersRadio &&
-          selectedOthersRadio.question_id === question.question_id && (
+          selectedOthersRadio.questionID === question.questionID && (
             <Box m={2}>
               <Typography>Please specify:</Typography>
               <TextField
@@ -103,12 +103,12 @@ const DynamicForm = ({
   // render Select component
   const renderSelect = (question) => {
     const answer = answerData.find(
-      (ans) => ans.question_id === question.question_id
+      (ans) => ans.questionID === question.questionID
     );
     const value = answer ? answer.answer : question.options.split(",")[0];
 
     return (
-      <Box m={2} key={question.question_id}>
+      <Box m={2} key={question.questionID}>
         <Typography>{question.label}</Typography>
         <Select
           value={
@@ -125,7 +125,7 @@ const DynamicForm = ({
             </MenuItem>
           ))}
         </Select>
-        {selectedOthersDropdown && selectedOthersDropdown.question_id === question.question_id && (
+        {selectedOthersDropdown && selectedOthersDropdown.questionID === question.questionID && (
           <Box m={2}>
             <Typography>Please specify:</Typography>
             <TextField
@@ -141,12 +141,12 @@ const DynamicForm = ({
   // render Text Input component
   const renderTextInput = (question) => {
     return (
-      <Box m={2} key={question.question_id}>
+      <Box m={2} key={question.questionID}>
         <Typography>{question.label}</Typography>
         <TextField
           fullWidth
           onChange={(event) =>
-            handleAnswerChange(question.question_id, event.target.value)
+            handleAnswerChange(question.questionID, event.target.value)
           }
         />
       </Box>
@@ -158,7 +158,7 @@ const DynamicForm = ({
     switch (question.type) {
       case "Radio":
         return renderRadioGroup(question);
-      case "Select":
+      case "Dropdown":
         return renderSelect(question);
       default:
         return renderTextInput(question);
