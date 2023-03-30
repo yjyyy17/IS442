@@ -17,8 +17,11 @@ import {
   TextField,
   Typography,
   Snackbar,
+  InputLabel,
 } from "@mui/material";
 import Alert from "@mui/material/Alert";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { Add, Delete, ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -50,8 +53,10 @@ const Field = ({
       onClick={() => handleSelectField(field.id)}
     >
       {/* Render the field content here */}
-      {field.type === "text" && <TextField label={field.label} fullWidth />}
-      {field.type === "radio" && (
+      {field.type === "Text Field" && (
+        <TextField label={field.label} fullWidth />
+      )}
+      {field.type === "Radio" && (
         <FormControl component="fieldset" fullWidth>
           <FormLabel component="legend">{field.label}</FormLabel>
           <RadioGroup>
@@ -66,7 +71,7 @@ const Field = ({
           </RadioGroup>
         </FormControl>
       )}
-      {field.type === "checkbox" && (
+      {field.type === "Checkbox" && (
         <FormControl component="fieldset" fullWidth>
           <FormLabel component="legend">{field.label}</FormLabel>
           <FormGroup>
@@ -80,7 +85,44 @@ const Field = ({
           </FormGroup>
         </FormControl>
       )}
-      {field.type === "heading1" && (
+      {field.type === "Dropdown" && (
+        <FormControl fullWidth>
+          <InputLabel id="dropdown-label">{field.label}</InputLabel>
+          <Select labelId="dropdown-label" id="dropdown" label="Dropdown">
+            {field.options.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+              // <MenuItem
+              //   key={option}
+              //   value={option}
+              // />
+            ))}
+          </Select>
+        </FormControl>
+      )}
+
+      {field.type === "Text Area" && (
+        <TextField
+          label={field.label}
+          multiline
+          rows={4}
+          style={{ width: "100%", marginTop: "16px", marginBottom: "8px" }}
+        />
+      )}
+
+      {field.type === "Datetime" && (
+        <TextField
+          fullWidth
+          label={field.label}
+          type="datetime-local"
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      )}
+      {field.type === "Heading1" && (
         <FormControl component="fieldset" fullWidth>
           <FormGroup>
             <Typography key={field.id} variant="h4" sx={{ mb: 1 }}>
@@ -89,7 +131,7 @@ const Field = ({
           </FormGroup>
         </FormControl>
       )}
-      {field.type === "heading2" && (
+      {field.type === "Heading2" && (
         <FormControl component="fieldset" fullWidth>
           <FormGroup>
             <Typography key={field.id} variant="h5" sx={{ mb: 1 }}>
@@ -114,6 +156,63 @@ const Field = ({
           <ArrowDownward />
         </IconButton>
       </Box>
+    </Box>
+  );
+};
+
+{/* Radio, Checkbox, Dropdown options Preparation section */}
+const OptionsField = ({ selectedField, handleUpdateField }) => {
+  const [options, setOptions] = useState(selectedField.options);
+
+  const handleOptionChange = (event, index) => {
+    const newOptions = [...options];
+    newOptions[index] = event.target.value;
+    setOptions(newOptions);
+    handleUpdateField(selectedField.id, "options", newOptions);
+  };
+
+  const addOption = () => {
+    const newOptions = [...options, ""];
+    setOptions(newOptions);
+    handleUpdateField(selectedField.id, "options", newOptions);
+  };
+
+  const removeOption = (index) => {
+    const newOptions = options.filter((_, i) => i !== index);
+    setOptions(newOptions);
+    handleUpdateField(selectedField.id, "options", newOptions);
+  };
+
+  return (
+    <Box sx={{ mt: 2, p: 3, border: '1px dashed grey' }}>
+      <Typography variant="h7">{selectedField.type} options</Typography>
+      {selectedField.options.map((option, index) => (
+        <Box key={index} display="flex" alignItems="center">
+          <TextField
+            fullWidth
+            label={`Option ${index + 1}`}
+            value={option}
+            onChange={(event) => handleOptionChange(event, index)}
+            margin="normal"
+          />
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={() => removeOption(index)}
+          >
+            <RemoveIcon />
+          </IconButton>
+        </Box>
+      ))}
+      <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<AddIcon />}
+        onClick={addOption}
+        sx={{ mt: 1 }}
+      >
+        Add more options
+      </Button>
     </Box>
   );
 };
@@ -197,7 +296,7 @@ const FormTemplateGenerator = ({
     const newField = {
       id: uuidv4(),
       label: "",
-      type: "text",
+      type: "Text Field",
       options: [],
     };
     setFormFields([...formFields, newField]);
@@ -248,21 +347,21 @@ const FormTemplateGenerator = ({
     }
   };
 
-  const handleDeleteForm = () => {
-    console.log("Form deleted");
-    // Add your logic to delete the form
-    axios
-      .put(`http://localhost:8080/api/formtemplate/delete/${id}`)
-      .then((res) => {
-        console.log(res.data);
-        // alert("Form successfully deleted");
-        setDeleteSnackbar({ open: true, type: "success" });
-      })
-      .catch((err) => {
-        console.log(err);
-        setDeleteSnackbar({ open: true, type: "error" });
-      });
-  };
+  // const handleDeleteForm = () => {
+  //   console.log("Form deleted");
+  //   // Add your logic to delete the form
+  //   axios
+  //     .put(`http://localhost:8080/api/formtemplate/delete/${id}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       // alert("Form successfully deleted");
+  //       setDeleteSnackbar({ open: true, type: "success" });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setDeleteSnackbar({ open: true, type: "error" });
+  //     });
+  // };
 
   const handleSaveForm = () => {
     const form = {
@@ -381,6 +480,7 @@ const FormTemplateGenerator = ({
                 console.log(err);
                 // alert(err);
                 setSnackbar({ open: true, type: "error" });
+                console.log("Error saving field:", field.label);
               });
             // setSnackbar({ open: true, type: "success" });
           });
@@ -406,14 +506,14 @@ const FormTemplateGenerator = ({
               value={formTitle}
               onChange={(e) => setFormTitle(e.target.value)}
               fullWidth
-              sx={{ mb: 1 }}
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Form Description"
               value={formDescription}
               onChange={(e) => setFormDescription(e.target.value)}
               fullWidth
-              sx={{ mb: 1 }}
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Form Number"
@@ -423,13 +523,13 @@ const FormTemplateGenerator = ({
             />
           </Box>
         </Grid>
-        <Divider sx={{ mb: 4 }} />
+        {/* <Divider sx={{ mb: 4 }} /> */}
         {/* Field Preparation section */}
-        <Grid item xs={6}>
+        <Grid item xs={5} sx={{ mt: 2, p:1 }}>
           <Box
             sx={{
               position: "sticky",
-              top: "5em",
+              top: "7em",
             }}
           >
             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -456,42 +556,36 @@ const FormTemplateGenerator = ({
                       )
                     }
                   >
-                    <MenuItem value="text">Text</MenuItem>
-                    <MenuItem value="radio">Radio</MenuItem>
-                    <MenuItem value="checkbox">Checkbox</MenuItem>
-                    <MenuItem value="heading1">Heading 1</MenuItem>
-                    <MenuItem value="heading2">Heading 2</MenuItem>
+                    <MenuItem value="Text Field">Text Field</MenuItem>
+                    <MenuItem value="Radio">Radio</MenuItem>
+                    <MenuItem value="Checkbox">Checkbox</MenuItem>
+                    <MenuItem value="Text Area">Text Area</MenuItem>
+                    <MenuItem value="Dropdown">Dropdown</MenuItem>
+                    <MenuItem value="Datetime">Datetime</MenuItem>
+                    <MenuItem value="Heading1">Heading 1</MenuItem>
+                    <MenuItem value="Heading2">Heading 2</MenuItem>
                   </Select>
                 </FormControl>
-                {(selectedField.type === "radio" ||
-                  selectedField.type === "checkbox") && (
-                  <TextField
-                    label="Options (comma separated)"
-                    value={selectedField.options.join(", ")}
-                    onChange={(e) =>
-                      handleUpdateField(
-                        selectedField.id,
-                        "options",
-                        e.target.value
-                          .split(", ")
-                          .map((option) => option.trim())
-                      )
-                    }
-                    fullWidth
-                    sx={{ mt: 1 }}
+                {(selectedField.type === "Radio" ||
+                  selectedField.type === "Checkbox" ||
+                  selectedField.type === "Dropdown") && (
+                  <OptionsField
+                    selectedField={selectedField}
+                    handleUpdateField={handleUpdateField}
                   />
                 )}
-                <IconButton
-                  sx={{ mt: 2 }}
-                  edge="end"
-                  color="error"
-                  onClick={() => handleRemoveField(selectedField.id)}
-                >
-                  <Delete />
-                </IconButton>
               </Box>
             )}
-            <Box>
+            <Box sx={{ mt: 4 }}>
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<Delete />}
+                onClick={() => handleRemoveField(selectedField.id)}
+                sx={{ mr: 2 }}
+              >
+                Remove field
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
@@ -500,21 +594,13 @@ const FormTemplateGenerator = ({
               >
                 Add Field
               </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<Delete />}
-                onClick={handleClearFields}
-                sx={{ ml: 2 }}
-              >
-                Clear All Fields
-              </Button>
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6}>
+        {/* Field Preview section */}
+        <Grid item xs={7} sx={{ mb: 10, mt: 2 }}>
           <Typography variant="h6">Form Preview</Typography>
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: 2, backgroundColor: "background.paper" }}>
             <Box
               sx={{
                 p: 1,
@@ -556,10 +642,19 @@ const FormTemplateGenerator = ({
             <Button
               variant="contained"
               color="error"
+              startIcon={<Delete />}
+              onClick={handleClearFields}
+              // sx={{ ml: 2 }}
+            >
+              Clear All Fields
+            </Button>
+            {/* <Button
+              variant="contained"
+              color="error"
               onClick={handleDeleteForm}
             >
               Delete Form
-            </Button>
+            </Button> */}
             <Button
               variant="contained"
               color="primary"

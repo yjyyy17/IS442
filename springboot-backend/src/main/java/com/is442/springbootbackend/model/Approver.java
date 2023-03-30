@@ -9,7 +9,7 @@ public class Approver extends User{
     public Approver() {
     }
 
-    public Approver(String userType, String name, String email, String phoneNo, String password) {
-        super(userType, name, email, phoneNo, password);
+    public Approver(String userType, String name, String email, String phoneNo, String password, String status) {
+        super(userType, name, email, phoneNo, password, status);
     }
 }

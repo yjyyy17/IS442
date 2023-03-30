@@ -49,6 +49,7 @@ const NewUserAccountForm = () => {
         password: password,
         address: address == "" ? null : address,
         industry: industry == "" ? null : industry,
+        status: "active"
       })
       .then((res) => {
         console.log(res.data);

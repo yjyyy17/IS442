@@ -1,11 +1,9 @@
 package com.is442.springbootbackend.scheduledJobs;
 import com.is442.springbootbackend.scheduledJobs.OverdueEmailJob;
 
-import com.is442.springbootbackend.repository.UserGroup_WorkflowsRepository;
 import com.is442.springbootbackend.repository.FormStatusRepository;
 import com.is442.springbootbackend.controller.UserGroupController;
 //import com.is442.springbootbackend.controller.FormStatusController;
-import com.is442.springbootbackend.model.UserGroup_Workflows;
 import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.model.UserGroup;
 import com.is442.springbootbackend.model.User;
@@ -36,8 +34,6 @@ public class CheckAndSendEmail{
     //		--- scheduled job to send overdue forms email ---
     public static void checkOverdueFormsAndSendEmail(){
 
-//        allVendors = userGroup_WorkflowsRepository.findAll();
-
         SchedulerFactory schedFact = new StdSchedulerFactory();
         try {
 
@@ -63,7 +59,5 @@ public class CheckAndSendEmail{
     public static String getApikey(){
         return apikey;
     }
-//    public static List<UserGroup_Workflows> getFromUserGroup_WorkflowRepository(){
-//        return allVendors;
-//    }
+
 }

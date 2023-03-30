@@ -1,11 +1,11 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import VendorsTable from './VendorsTable';
-import AdminsTable from './AdminsTable';
-import ApproversTable from './ApproversTable';
+import * as React from "react";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import VendorsTable from "./VendorsTable";
+import AdminsTable from "./AdminsTable";
+import ApproversTable from "./ApproversTable";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -18,11 +18,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -36,7 +32,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -48,22 +44,26 @@ export default function UserAccountTabs() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
           <Tab label="Vendor" {...a11yProps(0)} />
           <Tab label="Admin" {...a11yProps(1)} />
           <Tab label="Approver" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <VendorsTable/>
+        <VendorsTable />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <AdminsTable/>
+        <AdminsTable />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <ApproversTable/>
+        <ApproversTable />
       </TabPanel>
     </Box>
   );

@@ -13,9 +13,10 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 
-const VendorsTable = () => {
+const ApproversTable = () => {
   const [approvers, setApprover] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
+  const [reloadApprovers, setReloadApprovers] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     axios
@@ -27,21 +28,44 @@ const VendorsTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [approvers]);
+  }, [reloadApprovers]);
 
   const newAccount = () => {
     navigate(`../admin/create_account`);
   };
 
-  const deleteApprover = (id) => {
+  //hard delete
+  // const deleteApprover = (id) => {
+  //   axios
+  //     .delete(`http://localhost:8080/api/approver/${id}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       alert("Admin successfully deleted");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
+  const deactivateApprover = (approver) => {
     axios
-      .delete(`http://localhost:8080/api/approver/${id}`)
+      .put(`http://localhost:8080/api/user/${approver.userId}`, {
+        name: approver.name,
+        email: approver.email,
+        phoneNo: approver.phoneNo,
+        password: approver.password,
+        address: approver.address,
+        industry: approver.industry,
+        status: "inactive",
+      })
       .then((res) => {
         console.log(res.data);
-        alert("Admin successfully deleted");
+        setReloadApprovers(!reloadApprovers);
+        alert(`${approver.name} successfully deleted!`);
       })
       .catch((err) => {
         console.log(err);
+        alert(err);
       });
   };
 
@@ -65,7 +89,7 @@ const VendorsTable = () => {
         </div>
       </div>
       <TableContainer component={Paper}>
-        <Table sx={{ width: "100%" }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>User ID</TableCell>
@@ -90,35 +114,42 @@ const VendorsTable = () => {
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
-              .map((item) => (
-                <TableRow
-                  key={item.userId}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell>{item.userId}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.phoneNo}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      sx={{ backgroundColor: "#93C019" }}
-                      onClick={() => editApprover(item.userId)}
+              .map((item) => {
+                if (item.status === "active") {
+                  return (
+                    <TableRow
+                      key={item.userId}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
                     >
-                      Edit
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => deleteApprover(item.userId)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                      <TableCell>{item.userId}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.email}</TableCell>
+                      <TableCell>{item.phoneNo}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#93C019" }}
+                          onClick={() => editApprover(item.userId)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => deactivateApprover(item)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+                return null;
+              })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -126,4 +157,4 @@ const VendorsTable = () => {
   );
 };
 
-export default VendorsTable;
+export default ApproversTable;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import SideNavigation from "../../components/UserAccountComponents/SideNavigationAdmin";
 import {
   Button,
@@ -23,31 +24,38 @@ const EditForm = () => {
   const [fields, setFields] = useState([]);
   const queryParameters = new URLSearchParams(window.location.search);
   const id = queryParameters.get("id");
+
+  const location = useLocation();
+  const formData = location.state.form;
+  console.log("Form details passed from ViewForms.js", formData);
+
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/questions/${id}`)
       .then((res) => {
-        console.log("Form questions");
-        console.log(res.data);
-        console.log("Form details");
-        console.log(res.data[0].formID);
+        console.log("Form questions", res.data);
 
-        // console.log(res.data);
-        setFormTitle(res.data[0].formID.title);
-        setFormDescription(res.data[0].formID.description);
-        setFormNumber(res.data[0].formID.formNumber);
-        setTemplateStatus(res.data[0].formID.status);
-        var activeQns = [];
-        res.data.forEach((field, index) => {
-          if (field.status == "Active") {
-            activeQns.push(field);
-          }
-        });
-        setFields([...activeQns]);
+        // set form template details first
+        setFormTitle(formData.title);
+        setFormDescription(formData.description);
+        setFormNumber(formData.formNumber);
+        setTemplateStatus(formData.status);
+
+        // if the form has existing qns, loop thru, else set questions as []
+        if(res.data != []){
+          var activeQns = [];
+          res.data.forEach((field, index) => {
+            if (field.status == "Active") {
+              activeQns.push(field);
+            }
+          });
+          setFields([...activeQns]);
+        }
         setLoaded(true);
       })
       .catch((err) => {
         console.log(err);
+
       });
   }, []);
 

@@ -43,8 +43,8 @@ const FormsTable = () => {
     navigate(`../admin/create_form`);
   };
 
-  const editForm = (formId) => {
-    navigate(`../admin/edit_form?id=${formId}`);
+  const editForm = (form) => {
+    navigate(`../admin/edit_form?id=${form.formId}`, { state: { form } });
   };
 
   const deleteForm = (id) => {
@@ -131,7 +131,7 @@ const FormsTable = () => {
                     <Button
                       variant="contained"
                       sx={{ backgroundColor: "#93C019" }}
-                      onClick={() => editForm(item.formId)}
+                      onClick={() => editForm(item)}
                     >
                       Edit
                     </Button>

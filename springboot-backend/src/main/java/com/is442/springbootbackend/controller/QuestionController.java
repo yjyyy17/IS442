@@ -34,14 +34,15 @@ public class QuestionController {
     @GetMapping(path = "/{formID}")
     public List<Question> getQuestionsByID(@PathVariable int formID) {
         // returns null or a form template
-        Optional<FormTemplate> form = formTemplateRepository.findById(formID);
+        FormTemplate form = formTemplateRepository.findById(formID).orElse(null);
         List<Question> allQuestions = getAllQuestions();
         List<Question> filteredQuestions = new ArrayList<>();
-
-        for (Question q : allQuestions) {
-            System.out.println(q.getQuestionID());
-            if (q.getFormID().getFormId() == formID) {
-                filteredQuestions.add(q);
+        if(form!=null){
+            for (Question q : allQuestions) {
+                System.out.println(q.getQuestionID());
+                if (q.getFormID().getFormId() == formID) {
+                    filteredQuestions.add(q);
+                }
             }
         }
 //
