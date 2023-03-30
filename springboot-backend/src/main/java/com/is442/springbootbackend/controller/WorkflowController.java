@@ -1,9 +1,11 @@
 package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
+import com.is442.springbootbackend.model.FormStatus;
 import com.is442.springbootbackend.model.User;
 import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.repository.WorkflowRepository;
+import com.is442.springbootbackend.repository.FormStatusRepository;
 import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,18 @@ public class WorkflowController {
     @Autowired
     private WorkflowRepository workflowRepository;
 
+    @Autowired
+    private FormStatusRepository formStatusRepository;
+
     //get all workflows
     @GetMapping("/workflow")
     public List<Workflow> getAllWorkflows(){
-        return workflowRepository.findAll();
+        List<Workflow> workflows = workflowRepository.findAll();
+        for(Workflow workflow: workflows){
+            List<FormStatus> formStatuses = formStatusRepository.findByWorkflowWorkflowId(workflow.getWorkflowId());
+            workflow.setFormStatuses(formStatuses);
+        }
+        return workflows;
     }
 
     //get workflow by id
@@ -31,6 +41,8 @@ public class WorkflowController {
     public ResponseEntity<Workflow> getWorkflowById(@PathVariable Long id){
         Workflow workflow = workflowRepository.findById(id)
                 . orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
+        List<FormStatus> formStatuses = formStatusRepository.findByWorkflowWorkflowId(id);
+        workflow.setFormStatuses(formStatuses);
         return ResponseEntity.ok(workflow);
     }
 
