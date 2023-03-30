@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Blob;
 import java.util.*;
+
+import com.is442.springbootbackend.repository.FormTemplateRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,8 @@ import jakarta.persistence.criteria.Path;
 public class CompletedFormController {
     @Autowired
     private CompletedFormRepository completedFormRepository;
+    @Autowired
+    private FormTemplateRepository formTemplateRepository;
 
     // get all form templates
     @GetMapping(path="/completedform")
@@ -43,6 +47,7 @@ public class CompletedFormController {
     public CompletedForm findByUserGroupIdAndPdfId(@RequestParam int userGroupId,@RequestParam int pdfId) {
         return completedFormRepository.findByUserGroupIdAndPdfId(userGroupId,pdfId);
     }
+
 
 
      @PostMapping("/addCompletedForm")
@@ -61,6 +66,8 @@ public class CompletedFormController {
 
         return completedFormRepository.save(completedForm);
     }
+
+
 
     // @PersistenceContext
     // private EntityManager entityManager;
