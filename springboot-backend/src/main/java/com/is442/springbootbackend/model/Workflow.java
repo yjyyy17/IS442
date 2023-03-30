@@ -29,8 +29,9 @@ public class Workflow {
         @JsonIgnore
     @ManyToMany(mappedBy = "assignedWorkflows")
     private Set<UserGroup> userGroups = new HashSet<>();
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "workflow")
+    @JsonIgnoreProperties("workflow")
     private List<FormStatus> formStatuses = new ArrayList<>();
 
     @JsonIgnore
@@ -87,5 +88,13 @@ public class Workflow {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<FormStatus> getFormStatuses() {
+        return formStatuses;
+    }
+
+    public void setFormStatuses(List<FormStatus> formStatuses) {
+        this.formStatuses = formStatuses;
     }
 }
