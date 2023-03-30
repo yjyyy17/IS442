@@ -5,6 +5,7 @@ import java.io.*;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.Arrays;
 
 import com.fasterxml.jackson.core.io.doubleparser.FastDoubleParser;
 
@@ -13,16 +14,17 @@ import com.fasterxml.jackson.core.io.doubleparser.FastDoubleParser;
 public class CompletedForm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_group_id")
+    @Column(name = "userGroupId")
     private int userGroupId;
     
-    @Column(name="pdf_id", nullable=false)
+    @Column(name="pdfId", nullable=false)
     private int pdfId;
 
     @Lob
-    // @Column(name="pdf_form", nullable=true)
+    @Column(name = "pdf_form")
     private byte[] pdfForm;
- 
+
+
 //    @OneToMany(mappedBy = "formTemplateQuestion")
 //    private HashMap<int, FormTemplateQuestion> questions;
 
@@ -33,26 +35,8 @@ public class CompletedForm {
         return pdfId;
     }
    
-    public String getForm() throws Exception {
-        // Retrieve the byte array from the BLOB object
-        byte[] blobBytes;
-        // blobBytes = pdfForm.getBytes(1, (int) pdfForm.length());
-        blobBytes = pdfForm;
-      
-
-        // Create an input stream from the byte array
-        InputStream inputStream = new ByteArrayInputStream(blobBytes);
-
-        // Now you can use the input stream to read the contents of the BLOB object
-        // For example, you could read the contents into a file like this:
-        FileOutputStream outputStream = new FileOutputStream("myFile.pdf");
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-        outputStream.close();
-        return pdfForm.toString();
+    public byte[] getForm() throws Exception {
+        return pdfForm;
 
     }
 

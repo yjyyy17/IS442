@@ -18,7 +18,37 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 
+import pako from 'pako';
 
+function downloadBlob(compressedBlob){
+  const reader = new FileReader();
+  var myblob = new Blob([compressedBlob])
+    // , {
+    // type: 'application/pdf'
+// });
+  console.log(myblob)
+  reader.readAsArrayBuffer(myblob);
+  const arrayBuffer = reader.result;
+  const uint8Array = new Uint8Array(arrayBuffer);
+  
+  const decompressedUint8Array = pako.ungzip(uint8Array);
+  console.log(decompressedUint8Array)
+  const decompressedBlob = new Blob([decompressedUint8Array], { type: 'application/pdf' });
+  // create a URL object from the decompressedBlob
+  const url = URL.createObjectURL(decompressedBlob);
+
+  // create a hyperlink with download attribute that points to the URL
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'decompressed.pdf';
+  link.click();
+
+  // release the URL object
+  URL.revokeObjectURL(url);
+
+  return "Pdf downloaded"
+  
+}
 
 const style = {
     position: 'absolute',
@@ -57,11 +87,11 @@ const CompletedFormTable = () => {
 
   const getCompletedFormBasedOnUserGroupId = (userGroupId,pdfId) => {
     axios
-      .post(`http://localhost:8080/api/completedform?user_group_id=${userGroupId}&pdf_id=${pdfId}`)
+      .post(`http://localhost:8080/api/completedform?userGroupId=${userGroupId}&pdfId=${pdfId}`)
       .then((res) => {
         console.log(res.data['form']);
         console.log(typeof res.data['form'])
-        // downloadFile("helloworld");
+        downloadBlob(res.data['form']);
         alert("CompletedForm successfully gotten");
       })
       .catch((err) => {
@@ -69,42 +99,28 @@ const CompletedFormTable = () => {
       });
   };
  
+
   
-
-  // const newCompletedForm = (userGroupId,pdfId,formBlob) => {
-  //   axios
-  //   .post(`http://localhost:8080/api/addCompletedForm`,{ data:{
-  //     user_group_id:1,
-  //     pdf_id:2,
-  //     pdf_form:2121
-  //   }
-    
-  //       // userGroupId:`${userGroupId}`,
-  //       // pdfId:`${pdfId}`,
-  //       // form:`${formBlob}`
-     
-  //   })
-  //   .then((res) => {
-  //       console.log(res.data['form']);
-  //       console.log(typeof res.data['form'])
-  //       // downloadFile("helloworld");
-  //       alert("CompletedForm successfully added");
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
   const newCompletedForm = (userGroupId,pdfId,formBlob) => {
     const axios = require('axios');
     const FormData = require('form-data');
     let data = new FormData();
+    const fileBlob = new Blob([formBlob], { type: 'application/pdf' });
+    
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(fileBlob);
+
+    const compressedBlob = pako.gzip(new Uint8Array(reader.result));
+    
     data.append('userGroupId', userGroupId);
     data.append('pdfId', pdfId);
-    data.append('pdf_form', '212123');
-    
+    data.append('pdf_form',compressedBlob);
+
+    // data.append('pdf_form', formBlob);
     let config = {
       method: 'post',
+      headers: {'Access-Control-Allow-Origin': '*'},
+ 
       maxBodyLength: Infinity,
       url: 'http://localhost:8080/api/addCompletedForm',
       // headers: { 
@@ -122,6 +138,35 @@ const CompletedFormTable = () => {
     });
 
   }
+
+  // const newCompletedForm = (userGroupId,pdfId,formBlob) => {
+  //   const axios = require('axios');
+  //   const FormData = require('form-data');
+  //   let data = new FormData();
+  //   data.append('userGroupId', userGroupId);
+  //   data.append('pdfId', pdfId);
+  //   data.append('pdf_form', formBlob);
+    
+  //   let config = {
+  //     method: 'post',
+  //     headers: {'Access-Control-Allow-Origin': '*'},
+  //     maxBodyLength: Infinity,
+  //     url: 'http://localhost:8080/api/addCompletedForm',
+  //     // headers: { 
+  //     //   ...data.getHeaders()
+  //     // },
+  //     data : data
+  //   };
+    
+  //   axios.request(config)
+  //   .then((response) => {
+  //     console.log(JSON.stringify(response.data));
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+
+  // }
 
   const editCompletedForm = (userGroupId,pdfId) => {
     navigate(`../vendor/update?user_group_id=${userGroupId}&pdf_id=${pdfId}`);
@@ -185,8 +230,8 @@ const CompletedFormTable = () => {
                     />
                     <text><br></br></text>
                     <text><br></br></text>
-                    
-                    <input type="file"/>
+
+                    <input name = "pdfFile" type="file"/>
 
                     <text><br></br></text>
                     <text><br></br></text>
@@ -195,7 +240,7 @@ const CompletedFormTable = () => {
                     
 
                 </form> 
-                <Button variant="contained" color="primary" onClick={() => newCompletedForm(parseInt(document.querySelector("form input[name='userGroupId']").value) ,parseInt(document.querySelector("form input[name='pdfId']").value) )}>
+                <Button variant="contained" color="primary" onClick={() => newCompletedForm(parseInt(document.querySelector("form input[name='userGroupId']").value) ,parseInt(document.querySelector("form input[name='pdfId']").value),document.querySelector("form input[name='pdfFile']").files[0] )}>
                             <Add />
                             New
                 </Button>
