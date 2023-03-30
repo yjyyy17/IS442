@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import Vendor from "./pages/Vendor/Vendor"
 import Admin from "./pages/Admin/Admin";
 import Approver from "./pages/Approver/Approver";
+import ViewWorkflows from "./pages/Approver/ViewWorkflows";
+
 import NewUserAccountForm from "./pages/Admin/NewUserAccountForm";
 import EditUserAccount from './pages/Admin/EditUserAccount';
 import CreateNewForm from './pages/Admin/CreateNewForm';
@@ -32,6 +34,7 @@ function App() {
       
       <Route path='/approver' element={<Approver />} />
       <Route path='/approver/user_accounts' element={<Approver />} />
+      <Route path='/approver/ViewWorkflows' element={<Approver />} />
 
     </Routes>
     // <div className="App">
