@@ -3,7 +3,6 @@ import SideNavigation from "../../components/UserAccountComponents/SideNavigatio
 import { useLocation } from 'react-router-dom';
 import ViewUserAccounts from "./ViewUserAccounts";
 import ViewWorkflows from "./ViewWorkflows";
-import ApproveForms from "./ViewForms";
 
 // import NewUserAccountForm from "./NewUserAccountForm";
 
@@ -22,9 +21,7 @@ const Approver = () => {
       // ***** change content prop to dynamic when more pages are up *****
       content={
         currentPath === '/approver/user_accounts'? <ViewUserAccounts/>
-        :currentPath === '/approver/ViewWorkflows'? <ViewWorkflows/>
-        :currentPath === '/approver/ViewForms'? <ApproveForms/>:<></>
-
+        :currentPath === '/approver/ViewWorkflows'? <ViewWorkflows/>:<></>
         
       }
       />

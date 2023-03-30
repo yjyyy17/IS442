@@ -1,7 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-// import { makeStyles } from "@mui/styles";
-// import { useTheme } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import axios from "axios";
 import Table from "@mui/material/Table";
@@ -14,50 +12,23 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import TablePagination from "@mui/material/TablePagination";
 
 const VendorsTable = () => {
   const [vendors, setVendors] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadVendors, setReloadVendors] = useState(false);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/vendor`)
       .then((res) => {
-        console.log(res.data)
-        var vendorsList = [];
-        res.data.forEach((vendor, index) => {
-          if (vendor.status == "active") {
-            // console.log(vendor.name, " is active")
-            vendorsList.push(vendor);
-          }
-        });
-        setVendors([...vendorsList]);
+        setVendors(res.data);
         return true;
       })
       .catch((err) => {
         console.log(err);
       });
   }, [reloadVendors]);
-
-  // const useStyles = makeStyles((theme) => ({
-  //   tablePagination: {
-  //     display: "flex",
-  //     alignItems: "center",
-  //   },
-  // }));
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const newAccount = () => {
     navigate(`../admin/create_account`);
@@ -148,54 +119,44 @@ const VendorsTable = () => {
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((item) => {
-                // if (item.status === "active") {
-                return (
-                  <TableRow
-                    key={item.userId}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell>{item.userId}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.email}</TableCell>
-                    <TableCell>{item.phoneNo}</TableCell>
-                    <TableCell>{item.address}</TableCell>
-                    <TableCell>{item.industry}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        sx={{ backgroundColor: "#93C019" }}
-                        onClick={() => editVendor(item.userId)}
-                      >
-                        Edit
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => deactivateVendor(item)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-                // }
-                // return null;
+                if (item.status === "active") {
+                  return (
+                    <TableRow
+                      key={item.userId}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell>{item.userId}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.email}</TableCell>
+                      <TableCell>{item.phoneNo}</TableCell>
+                      <TableCell>{item.address}</TableCell>
+                      <TableCell>{item.industry}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#93C019" }}
+                          onClick={() => editVendor(item.userId)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => deactivateVendor(item)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+                return null;
               })}
           </TableBody>
         </Table>
-        <TablePagination
-          component="div"
-          count={vendors.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
       </TableContainer>
     </>
   );
