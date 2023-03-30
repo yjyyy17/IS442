@@ -262,7 +262,7 @@ const FormTemplateGenerator = ({
             id: field.questionID,
             label: field.label,
             type: field.type,
-            options: field.options != "" ? field.options.split(", ") : [],
+            options: field.options != "" ? field.options.split(",") : [],
             order: field.order,
           };
           existingFormFields.push(field);
@@ -395,7 +395,7 @@ const FormTemplateGenerator = ({
             axios
               .post("http://localhost:8080/api/questions/add", {
                 label: field.label != "" ? field.label : null,
-                options: field.options != [] ? field.options.join(", ") : "",
+                options: field.options != [] ? field.options.join(",") : "",
                 type: field.type,
                 order: index + 1,
                 status: "Active",
@@ -463,7 +463,7 @@ const FormTemplateGenerator = ({
             axios
               .post("http://localhost:8080/api/questions/add", {
                 label: field.label != "" ? field.label : null,
-                options: field.options != [] ? field.options.join(", ") : "",
+                options: field.options != [] ? field.options.join(",") : "",
                 type: field.type,
                 order: index + 1,
                 status: "Active",
