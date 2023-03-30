@@ -41,19 +41,24 @@ public class FormStatus {
     private String rejectionComments;
     private long rejectionPersonnel;
 
+    @Column(name = "due_date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date dueDate;
+
     // Constructors, getters and setters
 
 
     public FormStatus() {
     }
 
-    public FormStatus(FormTemplate form, User user, Workflow workflow, String evaluationStatus, String rejectionComments, long rejectionPersonnel) {
+    public FormStatus(FormTemplate form, User user, Workflow workflow, String evaluationStatus, String rejectionComments, long rejectionPersonnel, Date dueDate) {
         this.form = form;
         this.user = user;
         this.workflow = workflow;
         this.evaluationStatus = evaluationStatus;
         this.rejectionComments = rejectionComments;
         this.rejectionPersonnel = rejectionPersonnel;
+        this.dueDate = dueDate;
     }
     
     public String getEvaluationStatus() {
@@ -104,16 +109,25 @@ public class FormStatus {
         this.rejectionPersonnel = rejectionPersonnel;
     }
 
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        FormStatus that = (FormStatus) object;
-        return rejectionPersonnel == that.rejectionPersonnel && java.util.Objects.equals(form, that.form) && java.util.Objects.equals(user, that.user) && java.util.Objects.equals(workflow, that.workflow) && java.util.Objects.equals(evaluationStatus, that.evaluationStatus) && rejectionComments.equals(that.rejectionComments);
+    public Date getDueDate() {
+        return dueDate;
     }
 
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FormStatus that = (FormStatus) o;
+        return id == that.id && rejectionPersonnel == that.rejectionPersonnel && Objects.equals(form, that.form) && Objects.equals(user, that.user) && Objects.equals(workflow, that.workflow) && Objects.equals(evaluationStatus, that.evaluationStatus) && Objects.equals(rejectionComments, that.rejectionComments) && Objects.equals(dueDate, that.dueDate);
+    }
+
+    @Override
     public int hashCode() {
-        return java.util.Objects.hash(super.hashCode(), form, user, workflow, evaluationStatus, rejectionComments, rejectionPersonnel);
+        return Objects.hash(id, form, user, workflow, evaluationStatus, rejectionComments, rejectionPersonnel, dueDate);
     }
 }
 

@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 //import java.util.List;
 //import java.util.Map;
 
-import com.is442.springbootbackend.repository.UserGroup_WorkflowsRepository;
 import com.is442.springbootbackend.repository.FormStatusRepository;
-import com.is442.springbootbackend.model.UserGroup_Workflows;
 import com.is442.springbootbackend.model.Workflow;
 import com.is442.springbootbackend.model.UserGroup;
 import com.is442.springbootbackend.model.User;
@@ -42,8 +40,6 @@ public class VendorController {
     @Autowired
     private VendorRepository vendorRepository;
 
-    @Autowired
-    private UserGroup_WorkflowsRepository userGroup_WorkflowsRepository;
 
     @Autowired
     private FormStatusRepository formStatusRepository;
@@ -96,7 +92,7 @@ public class VendorController {
         return ResponseEntity.ok(response);
     }
 
-    // send overdue emails (fallback incase automated email cannot be implemented)
+    // send overdue emails
     @GetMapping("/sendOverdueEmails")
     public ResponseEntity<?> sendOverdueEmails() throws JobExecutionException{
         String apikey = env.getProperty("spring.sendgrid.apikey");
@@ -144,30 +140,21 @@ public class VendorController {
     public HashMap<String, HashMap<String, String>> getVendorsToEmail(){
         HashMap<String, HashMap<String, String>> allVendorsToEmail = new HashMap<String, HashMap<String, String>>();
 
-        List<UserGroup_Workflows> allWorkflowsWithDueDate = userGroup_WorkflowsRepository.findAll();
-        for(UserGroup_Workflows oneWorkflow: allWorkflowsWithDueDate){
-            HashMap<String, String> oneVendor = new HashMap<>();
-            Date dueDate = oneWorkflow.getDueDate();
-            Date today = new Date();
-            if(today.compareTo(dueDate) > 0 ) {  // form is overdue
-                // for each overdue workflow, get the userId and workflowId
-                Long workflowId = oneWorkflow.getWorkflow().getWorkflowId();
-                User vendor = null;
-                UserGroup usergroup = oneWorkflow.getUserGroup();
-                for(User user:usergroup.getAssignedUsers()){
-                    if (user.getUserType().equals("Vendor")){
-                        vendor = user;
-                    }
-                }
-                // get the form status
-                FormStatus formStatus = formStatusRepository.findByWorkflowWorkflowIdAndUserUserId(workflowId, vendor.getUserId());
-                // check the formstatus if its "In Review"
-                if(formStatus!=null && formStatus.getEvaluationStatus().equals("Assigned")){
-                    if(getDaysBetween(dueDate, today) == 8 || getDaysBetween(dueDate, today) == 10 || getDaysBetween(dueDate, today) == 13 || getDaysBetween(dueDate, today) >= 20 ){
-                        oneVendor.put("workflowTitle", oneWorkflow.getWorkflow().getTitle());
-                        oneVendor.put("vendorName", vendor.getName());
-                        allVendorsToEmail.put(vendor.getEmail(), oneVendor);
-                    }
+        // retrieve all vendor id, workflow id and due date from formStatusRepo
+        List<FormStatus> formStatusList = formStatusRepository.findAll();
+        for(FormStatus oneFS: formStatusList){
+            if(oneFS.getEvaluationStatus().equals("Assigned")){
+                Date today = new Date();
+                Date dueDate = oneFS.getDueDate();
+                if(getDaysBetween(dueDate, today) == 8 || getDaysBetween(dueDate, today) == 10 || getDaysBetween(dueDate, today) == 13 || getDaysBetween(dueDate, today) >= 20 ){
+                    System.out.println("One form due");
+                    HashMap<String, String> oneVendor = new HashMap<>();
+                    User vendor = oneFS.getUser();
+                    Workflow workflow = oneFS.getWorkflow();
+                    oneVendor.put("workflowTitle", workflow.getTitle());
+                    oneVendor.put("vendorName", vendor.getName());
+                    System.out.println("vendorName:" + vendor.getName());
+                    allVendorsToEmail.put(vendor.getEmail(), oneVendor);
                 }
 
             }

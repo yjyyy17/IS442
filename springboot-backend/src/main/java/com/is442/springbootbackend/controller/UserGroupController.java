@@ -7,7 +7,6 @@ import com.is442.springbootbackend.model.*;
 import com.is442.springbootbackend.repository.UserGroupRepository;
 import com.is442.springbootbackend.repository.UserRepository;
 import com.is442.springbootbackend.repository.WorkflowRepository;
-import com.is442.springbootbackend.repository.UserGroup_WorkflowsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +29,6 @@ public class UserGroupController {
     @Autowired
     private WorkflowRepository workflowRepository;
 
-    @Autowired
-    private UserGroup_WorkflowsRepository userGroup_WorkflowsRepository;
 
     //get all user groups
     // returns list of UserGroup objects that show the usergroup and assigned workflows without the due date
@@ -41,13 +38,11 @@ public class UserGroupController {
     }
 
     //get user group by id
-    // returns list of UserGroup_Workflows objects that show the usergroup, workflows and their duedates
     @GetMapping("/userGroup/{id}")
-    public ResponseEntity<List<UserGroup_Workflows>> getUserGroupById(@PathVariable Long id){
+    public ResponseEntity<UserGroup> getUserGroupById(@PathVariable Long id){
         UserGroup userGroup = userGroupRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User Group does not exist with id : " + id));
-        List<UserGroup_Workflows> userGroupWorkflows = userGroup_WorkflowsRepository.findByUsergroupUserGroupId(id);
-        return ResponseEntity.ok(userGroupWorkflows);
+        return ResponseEntity.ok(userGroup);
     }
 
     //create new user group
@@ -79,35 +74,14 @@ public class UserGroupController {
     }
 
     //update mapping for workflows
-//    {
-//        "dueDate": "2023-03-16"
-//    }
     @PutMapping("/userGroup/{userGroupId}/workflow/{workflowId}")
-    public UserGroup_Workflows assignWorkflows(@PathVariable Long userGroupId, @PathVariable Long workflowId, @RequestBody Map<String, Date> reqBody) throws ParseException{
+    public UserGroup assignWorkflows(@PathVariable Long userGroupId, @PathVariable Long workflowId) throws ParseException{
 //        try{
             UserGroup userGroup = userGroupRepository.findById(userGroupId).orElseThrow(() -> new ResourceNotFoundException("User group does not exist with id : " + userGroupId));
             Workflow workflow = workflowRepository.findById(workflowId).orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + workflowId));
             userGroup.assignWorkflow(workflow);
-            userGroupRepository.save(userGroup);
+            return userGroupRepository.save(userGroup);
 
-            Date dbDueDate = reqBody.get("dueDate");
-
-            // Check if the mapping already exists, and update the due date if it does.
-            UserGroup_Workflows userGroupWorkflows = (UserGroup_Workflows) userGroup_WorkflowsRepository.findByUsergroupUserGroupIdAndWorkflowWorkflowId(userGroupId, workflowId);
-            if(userGroupWorkflows != null){
-                userGroupWorkflows.setDueDate(dbDueDate);
-            }
-            else{
-                // if doesnt exist, create a new row in the User_group_Workflows table
-                userGroupWorkflows = new UserGroup_Workflows(workflow, userGroup, dbDueDate);
-            }
-//            userGroup_WorkflowsRepository.save(userGroupWorkflows);
-//            return (UserGroup_Workflows) userGroup_WorkflowsRepository.findByUsergroupUserGroupIdAndWorkflowWorkflowId(userGroupId, workflowId);
-
-            return userGroup_WorkflowsRepository.save(userGroupWorkflows);
-//        }catch(ParseException pe){
-//            throw new ParseException("Invalid input for due date", pe.getErrorOffset());
-//        }
     }
 
     //delete user group by id
@@ -119,12 +93,6 @@ public class UserGroupController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("User Group with id " + id + " has been deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
-    }
-
-    // to get all usergroups, workflows and duedates (for overdue email functionality)
-    @GetMapping("/usergroup_workflow")
-    public List<UserGroup_Workflows> getAllUserGroup_Workflows(){
-        return userGroup_WorkflowsRepository.findAll();
     }
 
 
