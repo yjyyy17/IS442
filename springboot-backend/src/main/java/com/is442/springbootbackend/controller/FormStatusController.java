@@ -2,21 +2,15 @@ package com.is442.springbootbackend.controller;
 
 import java.util.*;
 
+import com.is442.springbootbackend.model.*;
+import com.is442.springbootbackend.repository.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
-import com.is442.springbootbackend.model.FormStatus;
-import com.is442.springbootbackend.model.Workflow;
-import com.is442.springbootbackend.model.User;
-import com.is442.springbootbackend.model.FormTemplate;
 //import com.is442.springbootbackend.model.FormStatusId;
-import com.is442.springbootbackend.repository.FormStatusRepository;
-import com.is442.springbootbackend.repository.FormTemplateRepository;
-import com.is442.springbootbackend.repository.WorkflowRepository;
-import com.is442.springbootbackend.repository.UserRepository;
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -28,6 +22,9 @@ public class FormStatusController {
     private FormStatusRepository formStatusRepository;
 
     @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
     private FormTemplateRepository formTemplateRepository;
 
     @Autowired
@@ -35,6 +32,8 @@ public class FormStatusController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ResponseRepository responseRepository;
 
     @GetMapping(path = "/formstatus")
     public List<FormStatus> getAllForm() {
@@ -242,9 +241,52 @@ public class FormStatusController {
 
         }
 
-
-
         return completedForms;
     }
+
+    @GetMapping(path = "/formstatus/questions")
+    public HashMap<String, ArrayList> getCompletedQuestionsByUserID(@RequestParam long userId , @RequestParam long formId){
+        HashMap<String, ArrayList> questionsResponse = new HashMap<>();
+        List<Response> allResponses = new ArrayList<>();
+
+        allResponses = responseRepository.findAll();
+
+        for(Response response: allResponses){
+
+            int formID = response.getQuestion().getFormID().getFormId();
+            long userID = response.getUserID().getUserId();
+            System.out.println(formID + " || " + userID);
+
+            if(formID == formId && userID == userId){
+                    int questionID = response.getQuestion().getQuestionID();
+                    Question question = questionRepository.findById(questionID).orElseThrow(() -> new ResourceNotFoundException("Question does not exist with id : " + questionID));
+
+                    String questionLabel = question.getLabel();
+                    String questionResponse = response.getAnswer();
+
+                    ArrayList<HashMap> qnInfo = new ArrayList<>();
+
+                    HashMap<String, String> label = new HashMap<>();
+                    HashMap<String, String> qnResponse = new HashMap<>();
+//                    HashMap<String, String> formNumber = new HashMap<>();
+
+
+                label.put("question", questionLabel);
+                qnResponse.put("response", questionResponse);
+                qnInfo.add(label);
+                qnInfo.add(qnResponse);
+
+                questionsResponse.put(String.valueOf(questionID), qnInfo);
+
+
+
+            }
+
+        }
+
+        return questionsResponse;
+    }
+
+
 
 }
