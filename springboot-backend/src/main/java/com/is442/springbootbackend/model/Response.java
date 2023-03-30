@@ -17,9 +17,9 @@ public class Response{
     @Column(name = "status", nullable = false)
     private String status;
 
-    @OneToOne
-    @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
-    @JoinColumn(name = "formID", referencedColumnName = "form_id")})
+    @ManyToOne
+//    @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
+    @JoinColumn(name = "questionID", referencedColumnName = "questionID")
     private Question question;
 
     @ManyToOne
