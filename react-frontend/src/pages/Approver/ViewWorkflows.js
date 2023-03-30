@@ -150,7 +150,7 @@ const WorkflowsTable = () => {
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        {/* <Alert
+        <Alert
           onClose={handleCloseSnackbar}
           severity={snackbar.type}
           sx={{ width: "100%" }}
@@ -158,7 +158,7 @@ const WorkflowsTable = () => {
           {snackbar.type === "success"
             ? "Form deleted successfully."
             : "Error deleting form."}
-        </Alert> */}
+        </Alert>
       </Snackbar>
     </>
   );
@@ -168,7 +168,7 @@ const ViewWorkflows = () => {
   return (
     <>
       <Typography variant="h5" sx={{ pb: 4 }}>
-        All Workflows
+        All Forms
       </Typography>
       <Divider sx={{ mb: 4 }} />
       <WorkflowsTable />
