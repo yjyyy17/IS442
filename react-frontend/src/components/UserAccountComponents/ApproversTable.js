@@ -89,7 +89,9 @@ const ApproversTable = (props) => {
   };
 
   const editApprover = (id) => {
-    navigate(`../admin/edit_account?id=${id}`);
+    navigate(`../admin/edit_account?id=${id}`, {
+      state: { userType: props.userType },
+    });
   };
 
   return (

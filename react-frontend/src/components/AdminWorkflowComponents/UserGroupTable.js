@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,14 +14,17 @@ import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 import TablePagination from "@mui/material/TablePagination";
 
-const AdminsTable = (props) => {
+const UserGroupTable = (props) => {
   const [admins, setAdmin] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadAdmins, setReloadAdmins] = useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [users, setUsers] = React.useState([]);
+
   const navigate = useNavigate();
   useEffect(() => {
+    // setUsers(props.users);
     axios
       .get(`http://localhost:8080/api/admin`)
       .then((res) => {
@@ -51,7 +54,7 @@ const AdminsTable = (props) => {
   };
 
   const newAccount = () => {
-    navigate(`../admin/create_account`, {
+    navigate(`../admin/create_usergroup`, {
       state: { userType: props.userType },
     });
   };
@@ -99,6 +102,8 @@ const AdminsTable = (props) => {
 
   return (
     <>
+    {console.log(props.users)}
+    <Typography variant="h5" sx={{mb:2}}>User Groups </Typography>
       <div className="d-flex justify-content-between">
         <TextField
           label="Search"
@@ -116,28 +121,29 @@ const AdminsTable = (props) => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>User ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Phone Number</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>Form</TableCell>
+              <TableCell>Form due date</TableCell>
               <TableCell>Actions</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {admins
-              .filter(
-                (row) =>
-                  !searchedVal.length ||
-                  row.name
-                    .toString()
-                    .toLowerCase()
-                    .includes(searchedVal.toString().toLowerCase()) ||
-                  row.email
-                    .toString()
-                    .toLowerCase()
-                    .includes(searchedVal.toString().toLowerCase())
-              )
+            {users
+              // .filter(
+              //   (row) =>
+              //     !searchedVal.length ||
+              //     row.name
+              //       .toString()
+              //       .toLowerCase()
+              //       .includes(searchedVal.toString().toLowerCase()) ||
+              //     row.email
+              //       .toString()
+              //       .toLowerCase()
+              //       .includes(searchedVal.toString().toLowerCase())
+              // )
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((item) => {
                 // if (item.status === "active") {
@@ -148,11 +154,12 @@ const AdminsTable = (props) => {
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
-                    <TableCell>{item.userId}</TableCell>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.userType}</TableCell>
                     <TableCell>{item.phoneNo}</TableCell>
-                    <TableCell>
+                    <TableCell>{item.phoneNo}</TableCell>
+                    {/* <TableCell>
                       <Button
                         variant="contained"
                         sx={{ backgroundColor: "#93C019" }}
@@ -160,14 +167,14 @@ const AdminsTable = (props) => {
                       >
                         Edit
                       </Button>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Button
                         variant="contained"
                         color="error"
                         onClick={() => deactivateAdmin(item)}
                       >
-                        Delete
+                        Remove
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -179,7 +186,7 @@ const AdminsTable = (props) => {
         </Table>
         <TablePagination
           component="div"
-          count={admins.length}
+          count={users.length}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
@@ -191,4 +198,4 @@ const AdminsTable = (props) => {
   );
 };
 
-export default AdminsTable;
+export default UserGroupTable;

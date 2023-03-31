@@ -5,11 +5,13 @@ import {
   Paper,
   TextField,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import SideNavigation from "../../components/UserAccountComponents/SideNavigationAdmin";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EditUserAccount = () => {
   const userTypes = [
@@ -33,7 +35,10 @@ const EditUserAccount = () => {
   const [address, setAddress] = useState("");
   const [industry, setIndustry] = useState("");
   const [password, setPassword] = useState("");
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
 
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const queryParameters = new URLSearchParams(window.location.search);
   const id = queryParameters.get("id");
   useEffect(() => {
@@ -53,7 +58,10 @@ const EditUserAccount = () => {
       });
   }, []);
 
-  const navigate = useNavigate();
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   const onCancel = (e) => {
     navigate(-1);
   };
@@ -71,11 +79,18 @@ const EditUserAccount = () => {
       })
       .then((res) => {
         console.log(res.data);
-        alert(`${userType} successfully updated!`);
+        // alert(`${userType} successfully updated!`);
+        setSnackbar({ open: true, type: "success" });
+        setTimeout(function () {
+          navigate(`../admin/user_accounts`, {
+            state: { userType: state.userType },
+          });
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        // alert(err);
+        setSnackbar({ open: true, type: "error" });
       });
   };
 
@@ -190,6 +205,21 @@ const EditUserAccount = () => {
                 </div>
               </form>
             </Paper>
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={6000}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert
+                onClose={handleCloseSnackbar}
+                severity={snackbar.type}
+                sx={{ width: "100%" }}
+              >
+                {snackbar.type === "success"
+                  ? "User successfully saved."
+                  : "Error saving user."}
+              </Alert>
+            </Snackbar>
           </>
         }
       />

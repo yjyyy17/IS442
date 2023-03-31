@@ -56,7 +56,9 @@ const VendorsTable = (props) => {
   };
 
   const editVendor = (id) => {
-    navigate(`../admin/edit_account?id=${id}`);
+    navigate(`../admin/edit_account?id=${id}`, {
+      state: { userType: props.userType },
+    });
   };
   // hard delete
   // const deleteVendor = (id) => {
