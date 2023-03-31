@@ -36,12 +36,14 @@ function a11yProps(index) {
   };
 }
 
-export default function UserAccountTabs() {
-  const [value, setValue] = React.useState(0);
-
+export default function UserAccountTabs(props) {
+  const [value, setValue] = React.useState(props.prevViewedTab);
+  console.log(props.prevViewedTab);
   const handleChange = (event, newValue) => {
+    console.log("value:", newValue);
     setValue(newValue);
   };
+
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -57,13 +59,13 @@ export default function UserAccountTabs() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <VendorsTable />
+        <VendorsTable userType={value} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <AdminsTable />
+        <AdminsTable userType={value} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <ApproversTable />
+        <ApproversTable userType={value} />
       </TabPanel>
     </Box>
   );

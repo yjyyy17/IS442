@@ -25,6 +25,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { Add, Delete, ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Field = ({
   field,
@@ -160,7 +161,9 @@ const Field = ({
   );
 };
 
-{/* Radio, Checkbox, Dropdown options Preparation section */}
+{
+  /* Radio, Checkbox, Dropdown options Preparation section */
+}
 const OptionsField = ({ selectedField, handleUpdateField }) => {
   const [options, setOptions] = useState(selectedField.options);
 
@@ -184,7 +187,7 @@ const OptionsField = ({ selectedField, handleUpdateField }) => {
   };
 
   return (
-    <Box sx={{ mt: 2, p: 3, border: '1px dashed grey' }}>
+    <Box sx={{ mt: 2, p: 3, border: "1px dashed grey" }}>
       <Typography variant="h7">{selectedField.type} options</Typography>
       {selectedField.options.map((option, index) => (
         <Box key={index} display="flex" alignItems="center">
@@ -221,6 +224,7 @@ const FormTemplateGenerator = ({
   initialFormTitle,
   initialFormDescription,
   initialFormNumber,
+  initialRevisionNumber,
   initialFormFields,
 }) => {
   // console.log("initialFormTitle", initialFormTitle);
@@ -229,6 +233,7 @@ const FormTemplateGenerator = ({
   // console.log("initialFormFields", initialFormFields);
   const queryParameters = new URLSearchParams(window.location.search);
   const id = queryParameters.get("id");
+  const navigate = useNavigate();
   const [formTitle, setFormTitle] = useState(
     initialFormTitle ? initialFormTitle : ""
   );
@@ -238,9 +243,9 @@ const FormTemplateGenerator = ({
   const [formNumber, setFormNumber] = useState(
     initialFormNumber ? initialFormNumber : ""
   );
-  // const [formFields, setFormFields] = useState(
-  //   initialFormFields ? initialFormFields : []
-  // );
+  const [revisionNumber, setRevisionNumber] = useState(
+    initialRevisionNumber ? initialRevisionNumber : 0
+  );
   const [formFields, setFormFields] = useState(() => {
     if (initialFormFields == undefined) {
       // alert("Setting intitialFormFields as []")
@@ -384,7 +389,7 @@ const FormTemplateGenerator = ({
           formNumber: formNumber,
           status: "Waiting for Approval",
           effectiveDate: "2023-03-04",
-          revisionNumber: 1,
+          revisionNumber: 0,
         })
         .then((res) => {
           console.log(res.data);
@@ -406,7 +411,7 @@ const FormTemplateGenerator = ({
               .then((res) => {
                 console.log(res.data);
                 // alert("Form successfully created with id:", res.data.formId);
-                setSnackbar({ open: true, type: "success" });
+                // setSnackbar({ open: true, type: "success" });
                 // call save question api
               })
               .catch((err) => {
@@ -415,6 +420,12 @@ const FormTemplateGenerator = ({
                 setSnackbar({ open: true, type: "error" });
               });
           });
+        })
+        .then(() => {
+          setSnackbar({ open: true, type: "success" });
+          setTimeout(function () {
+            navigate(`../admin/forms`);
+          }, 2000);
         })
         .catch((err) => {
           console.log(err);
@@ -433,7 +444,7 @@ const FormTemplateGenerator = ({
           formNumber: formNumber,
           status: "Waiting for Approval",
           effectiveDate: Date.now(),
-          revisionNumber: 1,
+          revisionNumber: revisionNumber + 1,
         })
         .then((res) => {
           // console.log(res.data);
@@ -485,6 +496,9 @@ const FormTemplateGenerator = ({
             // setSnackbar({ open: true, type: "success" });
           });
           setSnackbar({ open: true, type: "success" });
+          setTimeout(function () {
+            navigate(`../admin/forms`);
+          }, 2000);
         })
         .catch((err) => {
           console.log(err);
@@ -510,6 +524,8 @@ const FormTemplateGenerator = ({
             />
             <TextField
               label="Form Description"
+              multiline
+              rows={4}
               value={formDescription}
               onChange={(e) => setFormDescription(e.target.value)}
               fullWidth
@@ -525,7 +541,7 @@ const FormTemplateGenerator = ({
         </Grid>
         {/* <Divider sx={{ mb: 4 }} /> */}
         {/* Field Preparation section */}
-        <Grid item xs={5} sx={{ mt: 2, p:1 }}>
+        <Grid item xs={5} sx={{ mt: 2, p: 1 }}>
           <Box
             sx={{
               position: "sticky",

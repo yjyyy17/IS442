@@ -12,17 +12,28 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
+import TablePagination from "@mui/material/TablePagination";
 
-const AdminsTable = () => {
+const AdminsTable = (props) => {
   const [admins, setAdmin] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadAdmins, setReloadAdmins] = useState(false);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/admin`)
       .then((res) => {
-        setAdmin(res.data);
+        console.log(res.data);
+        var adminList = [];
+        res.data.forEach((admin, index) => {
+          if (admin.status == "active") {
+            // console.log(admin.name, " is active")
+            adminList.push(admin);
+          }
+        });
+        setAdmin([...adminList]);
         return true;
       })
       .catch((err) => {
@@ -30,8 +41,19 @@ const AdminsTable = () => {
       });
   }, [reloadAdmins]);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const newAccount = () => {
-    navigate(`../admin/create_account`);
+    navigate(`../admin/create_account`, {
+      state: { userType: props.userType },
+    });
   };
 
   const editAdmin = (id) => {
@@ -114,44 +136,54 @@ const AdminsTable = () => {
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((item) => {
-                if (item.status === "active") {
-                  return (
-                    <TableRow
-                      key={item.userId}
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                      }}
-                    >
-                      <TableCell>{item.userId}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.email}</TableCell>
-                      <TableCell>{item.phoneNo}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          sx={{ backgroundColor: "#93C019" }}
-                          onClick={() => editAdmin(item.userId)}
-                        >
-                          Edit
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => deactivateAdmin(item)}
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }
-                return null;
+                // if (item.status === "active") {
+                return (
+                  <TableRow
+                    key={item.userId}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
+                  >
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.phoneNo}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        sx={{ backgroundColor: "#93C019" }}
+                        onClick={() => editAdmin(item.userId)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => deactivateAdmin(item)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+                // }
+                // return null;
               })}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={admins.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
     </>
   );
