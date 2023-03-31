@@ -17,58 +17,74 @@ import jsPDF from 'jspdf';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import autoTable from 'jspdf-autotable'
 
 
 import pako from 'pako';
 
-function downloadPdf(formId,data,title,description){
-  
+
+function downloadPdf(formId,formNumber,data,title,description){
 
     var doc = new jsPDF();
-    var chosen_form = data
+    var questionArrList = []
+    var y_counter = 0;
+    const userId =3; //hardcoded for now
 
-    // doc title
-    doc.setFontSize(20)
-    doc.text(20, 25, title );
+  for(var i =0; i <data.length ; i++){
+    questionArrList.push([data[i][i+1]['question'],data[i][i+1]['response']])
+  }
+
+  //Image 
+  var imgURL = 'https://static.wixstatic.com/media/4ebc73_49f82740a16644d195b1ee67ff4899d3~mv2.png/v1/fill/w_180,h_163,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/circle-logo.png';
+
+  doc.addImage(imgURL, 'JPEG', 184 ,5, 18, 18);
+  doc.setFontSize(8)
+  doc.setTextColor(48,120,480);
+  doc.text(182, 27, "Quantum Leap Inc");
+
+
+
+
+  //form Id
+  doc.setFontSize(10)
+  doc.setTextColor(0,0,0);
+  doc.text(8, 10, `UserId : ${userId}` );
+
+  //form Id
+  doc.setFontSize(10)
+  doc.text(8, 14, `FormId : ${formId}` );
+
+  //form number
+  doc.setFontSize(10)
+  doc.text(8, 18, `FormNumber : ${formNumber}`);
+
+
+
+  // doc title
+  doc.setFontSize(20)
+  doc.text(20, 40, title );
+  y_counter += 30;
 
 
   // Add a description to the document
   doc.setFontSize(12);
   var splitDescription= doc.splitTextToSize(description, 180);
-  doc.text(20 ,40, splitDescription);
+  doc.text(20 ,50, splitDescription);
+  y_counter += 40;
 
-  doc.setFontSize(12);
-  var counter = 0;
-  for(var i =0; i <data.length ; i++){
-    console.log(data[i][i+1])
-    // var qn = data[i][i+1]['question'].toString() + (i+1).toString()
-    // console.log(qn)
-    doc.text(data[i][i+1]['question'] , 20, 60+counter)
-    doc.text(data[i][i+1]['response'], 100, 60+counter);
-    counter += 20
-  }
+  autoTable(doc, {
+    startY: y_counter,
+    // margin: {horizontal: 7},
+    columnStyles: { europe: { halign: 'center' } },
+    cellWidth: 'auto'|'wrap'|'number',
+    cellPadding:10,
+    styles: {columnWidth: 'wrap'},
+    columnStyles: {text: {columnWidth: 'auto'}},
+    head: [['Question', 'Response']],
+    body: questionArrList,
+  })
 
-
-  // Add a question and answer pairing to the document
-  // doc.setFontSize(16);
-  // doc.text('Question 1:', 20, 60);
-  // doc.setFontSize(12);
-  // doc.text('Answer 1', 60, 60);
-
-  // // Add another question and answer pairing to the document
-  // doc.setFontSize(16);
-  // doc.text('Question 2:', 20, 80);
-  // doc.setFontSize(12);
-  // doc.text('Answer 2', 60, 80);
-
-  // // Add a third question and answer pairing to the document
-  // doc.setFontSize(16);
-  // doc.text('Question 3:', 20, 100);
-  // doc.setFontSize(12);
-  // doc.text('Answer 3', 60, 100);
-
-  // Save the document
-  doc.save('my-form.pdf');
+ doc.save('my-form.pdf');
 }
 
 const style = {
@@ -105,7 +121,7 @@ const CompletedFormTable = () => {
       });
   }, [completedForm]);
 
-  const getCompletedFormBasedOnFormId = (formId,title,description) => {
+  const getCompletedFormBasedOnFormId = (formId,formNumber,title,description) => {
     const axios = require('axios');
 
     let config = {
@@ -116,7 +132,7 @@ const CompletedFormTable = () => {
     };
     axios.request(config)
     .then((response) => {
-      downloadPdf(formId,response.data,title,description)
+      downloadPdf(formId,formNumber,response.data,title,description)
       console.log(JSON.stringify(response.data));
       return true;
     })
@@ -256,6 +272,8 @@ const CompletedFormTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>Form ID</TableCell>
+              <TableCell>Form </TableCell>
+
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>PDF</TableCell>
@@ -271,14 +289,15 @@ const CompletedFormTable = () => {
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase()) ||
-                  row.title
-                    .toString()
-                    .toLowerCase()
-                    .includes(searchedVal.toString().toLowerCase())||
                   row.formNumber
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())||
+                  row.title
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchedVal.toString().toLowerCase())||
+
                   row.description
                     .toString()
                     .toLowerCase()
@@ -291,6 +310,7 @@ const CompletedFormTable = () => {
                 >
                   <TableCell>{item.FormId}</TableCell>
                   {/* <TableCell>{item.pdfId}</TableCell> */}
+                  <TableCell>{item.formNumber}</TableCell>
 
                   <TableCell>{item.title}</TableCell>
                   <TableCell>{item.description}</TableCell>
@@ -300,7 +320,8 @@ const CompletedFormTable = () => {
                         <PictureAsPdfIcon
                         variant="contained"
                         //   sx={{ backgroundColor: "#93C019" }}
-                        onClick={() => getCompletedFormBasedOnFormId(item.FormId,item.title,item.description)}
+
+                        onClick={() => getCompletedFormBasedOnFormId(item.FormId,item.formNumber,item.title,item.description)}
                         >
                             
                         </PictureAsPdfIcon>
