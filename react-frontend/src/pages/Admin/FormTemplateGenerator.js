@@ -411,11 +411,8 @@ const FormTemplateGenerator = ({
               .then((res) => {
                 console.log(res.data);
                 // alert("Form successfully created with id:", res.data.formId);
-                setSnackbar({ open: true, type: "success" });
+                // setSnackbar({ open: true, type: "success" });
                 // call save question api
-                setTimeout(function () {
-                  navigate(`../admin/forms`);
-                }, 2000);
               })
               .catch((err) => {
                 console.log(err);
@@ -423,6 +420,12 @@ const FormTemplateGenerator = ({
                 setSnackbar({ open: true, type: "error" });
               });
           });
+        })
+        .then(() => {
+          setSnackbar({ open: true, type: "success" });
+          setTimeout(function () {
+            navigate(`../admin/forms`);
+          }, 2000);
         })
         .catch((err) => {
           console.log(err);
@@ -441,7 +444,7 @@ const FormTemplateGenerator = ({
           formNumber: formNumber,
           status: "Waiting for Approval",
           effectiveDate: Date.now(),
-          revisionNumber: revisionNumber+1,
+          revisionNumber: revisionNumber + 1,
         })
         .then((res) => {
           // console.log(res.data);
