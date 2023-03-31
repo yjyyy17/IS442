@@ -34,32 +34,42 @@ function downloadPdf(formId,formNumber,data,title,description){
     questionArrList.push([data[i][i+1]['question'],data[i][i+1]['response']])
   }
 
+  //Image 
+  var imgURL = 'https://static.wixstatic.com/media/4ebc73_49f82740a16644d195b1ee67ff4899d3~mv2.png/v1/fill/w_180,h_163,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/circle-logo.png';
+
+  doc.addImage(imgURL, 'JPEG', 184 ,5, 18, 18);
+  doc.setFontSize(8)
+  doc.setTextColor(48,120,480);
+  doc.text(182, 27, "Quantum Leap Inc");
+
+
+
+
   //form Id
   doc.setFontSize(10)
+  doc.setTextColor(0,0,0);
   doc.text(8, 10, `UserId : ${userId}` );
 
   //form Id
   doc.setFontSize(10)
-  doc.text(8, 13, `FormId : ${formId}` );
+  doc.text(8, 14, `FormId : ${formId}` );
 
   //form number
   doc.setFontSize(10)
-  doc.text(8, 16, `FormNumber : ${formNumber}`);
+  doc.text(8, 18, `FormNumber : ${formNumber}`);
 
 
-
-  
 
   // doc title
   doc.setFontSize(20)
-  doc.text(20, 25, title );
-  y_counter += 25;
+  doc.text(20, 40, title );
+  y_counter += 30;
 
 
   // Add a description to the document
   doc.setFontSize(12);
   var splitDescription= doc.splitTextToSize(description, 180);
-  doc.text(20 ,40, splitDescription);
+  doc.text(20 ,50, splitDescription);
   y_counter += 40;
 
   autoTable(doc, {
