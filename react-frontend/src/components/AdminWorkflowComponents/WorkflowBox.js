@@ -17,6 +17,19 @@ const WorkflowBox = (props) => {
   const [actions, setActions] = useState([]);
   const current = new Date();
 
+  const deleteWorkflow = (id) => {
+    axios
+      .put(`http://localhost:8080/api/workflow/delete/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        alert(`Workflow successfully deleted!`);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+      });
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/workflow`)
@@ -70,7 +83,9 @@ const WorkflowBox = (props) => {
             !props.filterSwitch || action.overdueVendors.length >0
           )
           .map((action, index) => {
-
+            if (action.workflow.status == "Inactive"){
+              return
+            }
             return(
                   <Card sx={{ p: 3, mb: 5 }} key={index}>
                     <CardContent>
@@ -101,9 +116,8 @@ const WorkflowBox = (props) => {
                         <Button variant="text">View</Button>
                       </Link>
                       <Link
-                        to={""}
+                        onClick={() => deleteWorkflow(action.workflow.workflowId)}
                         style={{ textDecoration: "none" }}
-                        // state={{ data: wf }}
                       >
                         <Button variant="text" color="error">
                           Delete
