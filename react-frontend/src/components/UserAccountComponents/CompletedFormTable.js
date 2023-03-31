@@ -23,12 +23,12 @@ import autoTable from 'jspdf-autotable'
 import pako from 'pako';
 
 
-function downloadPdf(formId,formNumber,data,title,description){
+function downloadPdf(formId,userId,formNumber,data,title,description){
 
     var doc = new jsPDF();
     var questionArrList = []
     var y_counter = 0;
-    const userId =3; //hardcoded for now
+
 
   for(var i =0; i <data.length ; i++){
     questionArrList.push([data[i][i+1]['question'],data[i][i+1]['response']])
@@ -45,7 +45,7 @@ function downloadPdf(formId,formNumber,data,title,description){
 
 
 
-  //form Id
+  //User Id
   doc.setFontSize(10)
   doc.setTextColor(0,0,0);
   doc.text(8, 10, `UserId : ${userId}` );
@@ -84,7 +84,7 @@ function downloadPdf(formId,formNumber,data,title,description){
     body: questionArrList,
   })
 
- doc.save('my-form.pdf');
+ doc.save(`${formNumber}.pdf`);
 }
 
 const style = {
@@ -102,6 +102,7 @@ const style = {
 const CompletedFormTable = () => {
   const [completedForm, setcompletedForm] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
+  const userId = sessionStorage.getItem("userId");
   const navigate = useNavigate();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -111,7 +112,7 @@ const CompletedFormTable = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/formstatus/completedforms?userId=3`)
+      .get(`http://localhost:8080/api/formstatus/completedforms?userId=${userId}`)
       .then((res) => {
         setcompletedForm(res.data);
         return true;
@@ -121,7 +122,7 @@ const CompletedFormTable = () => {
       });
   }, [completedForm]);
 
-  const getCompletedFormBasedOnFormId = (formId,formNumber,title,description) => {
+  const getCompletedFormBasedOnFormId = (formId,userId,formNumber,title,description) => {
     const axios = require('axios');
 
     let config = {
@@ -132,7 +133,7 @@ const CompletedFormTable = () => {
     };
     axios.request(config)
     .then((response) => {
-      downloadPdf(formId,formNumber,response.data,title,description)
+      downloadPdf(formId,userId,formNumber,response.data,title,description)
       console.log(JSON.stringify(response.data));
       return true;
     })
@@ -141,60 +142,60 @@ const CompletedFormTable = () => {
     });
   }
   
-  const newCompletedForm = (userGroupId,pdfId,formBlob) => {
-    const axios = require('axios');
-    const FormData = require('form-data');
-    let data = new FormData();
-    const fileBlob = new Blob([formBlob], { type: 'application/pdf' });
+  // const newCompletedForm = (userGroupId,pdfId,formBlob) => {
+  //   const axios = require('axios');
+  //   const FormData = require('form-data');
+  //   let data = new FormData();
+  //   const fileBlob = new Blob([formBlob], { type: 'application/pdf' });
     
-    const reader = new FileReader();
-    reader.readAsArrayBuffer(fileBlob);
+  //   const reader = new FileReader();
+  //   reader.readAsArrayBuffer(fileBlob);
 
-    const compressedBlob = pako.gzip(new Uint8Array(reader.result));
+  //   const compressedBlob = pako.gzip(new Uint8Array(reader.result));
     
-    data.append('userGroupId', userGroupId);
-    data.append('pdfId', pdfId);
-    data.append('pdf_form',compressedBlob);
+  //   data.append('userGroupId', userGroupId);
+  //   data.append('pdfId', pdfId);
+  //   data.append('pdf_form',compressedBlob);
 
-    // data.append('pdf_form', formBlob);
-    let config = {
-      method: 'post',
-      headers: {'Access-Control-Allow-Origin': '*'},
+  //   // data.append('pdf_form', formBlob);
+  //   let config = {
+  //     method: 'post',
+  //     headers: {'Access-Control-Allow-Origin': '*'},
  
-      maxBodyLength: Infinity,
-      url: 'http://localhost:8080/api/addCompletedForm',
-      // headers: { 
-      //   ...data.getHeaders()
-      // },
-      data : data
-    };
+  //     maxBodyLength: Infinity,
+  //     url: 'http://localhost:8080/api/addCompletedForm',
+  //     // headers: { 
+  //     //   ...data.getHeaders()
+  //     // },
+  //     data : data
+  //   };
     
-    axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  //   axios.request(config)
+  //   .then((response) => {
+  //     console.log(JSON.stringify(response.data));
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
 
-  }
+  // }
 
 
-  const editCompletedForm = (userGroupId,pdfId) => {
-    navigate(`../vendor/update?user_group_id=${userGroupId}&pdf_id=${pdfId}`);
-  };
+  // const editCompletedForm = (userGroupId,pdfId) => {
+  //   navigate(`../vendor/update?user_group_id=${userGroupId}&pdf_id=${pdfId}`);
+  // };
 
-  const deleteCompletedForm = (pdfId) => {
-    axios
-      .delete(`http://localhost:8080/api/completedForm/${pdfId}`)
-      .then((res) => {
-        console.log(res.data);
-        alert("CompletedForm successfully deleted");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const deleteCompletedForm = (pdfId) => {
+  //   axios
+  //     .delete(`http://localhost:8080/api/completedForm/${pdfId}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       alert("CompletedForm successfully deleted");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
 
 
@@ -213,8 +214,9 @@ const CompletedFormTable = () => {
             New
           </Button> */}
 
-            <Button onClick={handleOpen}> <Add />
+            {/* <Button onClick={handleOpen}> <Add />
             New</Button>
+            
             <Modal
             open={open}
             onClose={handleClose}
@@ -263,7 +265,7 @@ const CompletedFormTable = () => {
 
                
                 
-            </Modal>
+            </Modal> */}
 
         </div>
       </div>
@@ -321,7 +323,7 @@ const CompletedFormTable = () => {
                         variant="contained"
                         //   sx={{ backgroundColor: "#93C019" }}
 
-                        onClick={() => getCompletedFormBasedOnFormId(item.FormId,item.formNumber,item.title,item.description)}
+                        onClick={() => getCompletedFormBasedOnFormId(item.FormId,userId,item.formNumber,item.title,item.description)}
                         >
                             
                         </PictureAsPdfIcon>
