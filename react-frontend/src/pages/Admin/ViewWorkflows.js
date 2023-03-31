@@ -1,4 +1,11 @@
-import { InputAdornment, Switch, TextField, Button, Divider, Typography } from "@mui/material";
+import {
+  InputAdornment,
+  Switch,
+  TextField,
+  Button,
+  Divider,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import WorkflowBox from "../../components/AdminWorkflowComponents/WorkflowBox";
 import React, { useState } from "react";
@@ -9,7 +16,8 @@ import UserGroupTable from "../../components/AdminWorkflowComponents/UserGroupTa
 
 const ViewWorkflows = () => {
   const label = { inputProps: { "aria-label": "Switch Late Form" } };
-  const [searchedVal, setSearchedVal] = useState("")
+  const [searchedVal, setSearchedVal] = useState("");
+  const [isLate, setIsLate] = useState(false);
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -43,13 +51,15 @@ const ViewWorkflows = () => {
             <Typography variant="subtitle2">
               Show all with late forms
             </Typography>
-            <Switch {...label} />
+            <Switch
+              {...label}
+              checked={isLate}
+              onChange={() => setIsLate((prev) => !prev)}
+            />
           </div>
         </Grid>
         <Grid item xs={8}>
-          <WorkflowBox 
-          filterSearch ={searchedVal}
-          />
+          <WorkflowBox filterSearch={searchedVal} filterSwitch={isLate}/>
         </Grid>
       </Grid>
     </>
