@@ -45,9 +45,12 @@ public class UserGroupController {
         return ResponseEntity.ok(userGroup);
     }
 
+
     //create new user group
     @PostMapping("/userGroup")
     public UserGroup createUserGroup(@RequestBody UserGroup userGroup){
+        userGroup.setStatus("active");
+
         return userGroupRepository.save(userGroup);
     }
 

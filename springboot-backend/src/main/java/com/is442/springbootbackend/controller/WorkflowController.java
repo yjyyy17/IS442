@@ -3,7 +3,9 @@ package com.is442.springbootbackend.controller;
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
 import com.is442.springbootbackend.model.FormStatus;
 import com.is442.springbootbackend.model.User;
+import com.is442.springbootbackend.model.UserGroup;
 import com.is442.springbootbackend.model.Workflow;
+import com.is442.springbootbackend.repository.UserGroupRepository;
 import com.is442.springbootbackend.repository.WorkflowRepository;
 import com.is442.springbootbackend.repository.FormStatusRepository;
 import org.hibernate.jdbc.Work;
@@ -11,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -24,6 +24,9 @@ public class WorkflowController {
 
     @Autowired
     private FormStatusRepository formStatusRepository;
+    @Autowired
+    private UserGroupRepository userGroupRepository;
+
 
     //get all workflows
     @GetMapping("/workflow")
@@ -43,6 +46,11 @@ public class WorkflowController {
                 . orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
         List<FormStatus> formStatuses = formStatusRepository.findByWorkflowWorkflowId(id);
         workflow.setFormStatuses(formStatuses);
+
+        Set<UserGroup> usergroups = userGroupRepository.findByAssignedWorkflows_WorkflowId(id);
+        workflow.setUserGroups(usergroups);
+
+
         return ResponseEntity.ok(workflow);
     }
 

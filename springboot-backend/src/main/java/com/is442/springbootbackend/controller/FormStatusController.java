@@ -178,6 +178,7 @@ public class FormStatusController {
             formStatus.setEvaluationStatus(formStatusDetails.getEvaluationStatus());
             formStatus.setRejectionPersonnel(formStatusDetails.getRejectionPersonnel());
             formStatus.setRejectionComments(formStatusDetails.getRejectionComments());
+            formStatus.setDueDate(formStatusDetails.getDueDate());
 
             final FormStatus updatedFormStatus = formStatusRepository.save(formStatus);
             return ResponseEntity.ok().body("Successfully saved.");
