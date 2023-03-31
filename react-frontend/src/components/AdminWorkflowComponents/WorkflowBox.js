@@ -109,9 +109,8 @@ const WorkflowBox = (props) => {
                     </CardContent>
                     <CardActions>
                       <Link
-                        to={""}
+                        to={`../admin/indiv_workflow?id=${action.workflow.workflowId}`}
                         style={{ textDecoration: "none" }}
-                        // state={{ data: wf }}
                       >
                         <Button variant="text">View</Button>
                       </Link>
