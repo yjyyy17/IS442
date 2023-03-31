@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-const VendorsTable = () => {
+const VendorsTable = (props) => {
   const [vendors, setVendors] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadVendors, setReloadVendors] = useState(false);
@@ -31,7 +31,7 @@ const VendorsTable = () => {
   }, [reloadVendors]);
 
   const newAccount = () => {
-    navigate(`../admin/create_account`);
+    navigate(`../admin/create_account`, {state:{userType:props.userType}});
   };
 
   const editVendor = (id) => {

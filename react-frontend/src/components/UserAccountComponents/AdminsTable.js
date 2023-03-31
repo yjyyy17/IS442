@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 
-const AdminsTable = () => {
+const AdminsTable = (props) => {
   const [admins, setAdmin] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadAdmins, setReloadAdmins] = useState(false);
@@ -31,7 +31,7 @@ const AdminsTable = () => {
   }, [reloadAdmins]);
 
   const newAccount = () => {
-    navigate(`../admin/create_account`);
+    navigate(`../admin/create_account`, {state:{userType:props.userType}});
   };
 
   const editAdmin = (id) => {

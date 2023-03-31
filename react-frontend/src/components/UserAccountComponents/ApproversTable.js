@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 
-const ApproversTable = () => {
+const ApproversTable = (props) => {
   const [approvers, setApprover] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadApprovers, setReloadApprovers] = useState(false);
@@ -31,7 +31,7 @@ const ApproversTable = () => {
   }, [reloadApprovers]);
 
   const newAccount = () => {
-    navigate(`../admin/create_account`);
+    navigate(`../admin/create_account`, {state:{userType:props.userType}});
   };
 
   //hard delete
