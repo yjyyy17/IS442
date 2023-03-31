@@ -12,43 +12,23 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
-import TablePagination from "@mui/material/TablePagination";
 
 const AdminsTable = () => {
   const [admins, setAdmin] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [reloadAdmins, setReloadAdmins] = useState(false);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/admin`)
       .then((res) => {
-        console.log(res.data)
-        var adminList = [];
-        res.data.forEach((admin, index) => {
-          if (admin.status == "active") {
-            // console.log(admin.name, " is active")
-            adminList.push(admin);
-          }
-        });
-        setAdmin([...adminList]);
+        setAdmin(res.data);
         return true;
       })
       .catch((err) => {
         console.log(err);
       });
   }, [reloadAdmins]);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const newAccount = () => {
     navigate(`../admin/create_account`);
@@ -134,10 +114,8 @@ const AdminsTable = () => {
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
               .map((item) => {
-                // if (item.status === "active") {
+                if (item.status === "active") {
                   return (
                     <TableRow
                       key={item.userId}
@@ -169,20 +147,11 @@ const AdminsTable = () => {
                       </TableCell>
                     </TableRow>
                   );
-                // }
-                // return null;
+                }
+                return null;
               })}
           </TableBody>
         </Table>
-        <TablePagination
-          component="div"
-          count={admins.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
       </TableContainer>
     </>
   );

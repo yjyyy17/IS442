@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,6 +147,13 @@ public class QuestionController {
 
         }
 
+    }
+
+    @PutMapping(path = "/upload")
+    public ResponseEntity<?> uploadDocuments(@RequestParam HashMap<String, Object> formData){
+        System.out.println(formData);
+
+        return null;
     }
 
 }
