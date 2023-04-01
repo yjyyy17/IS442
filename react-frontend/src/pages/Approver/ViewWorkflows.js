@@ -113,7 +113,7 @@ const WorkflowsTable = () => {
                   <TableCell>{item.workflowId}</TableCell>
                   <TableCell>{item.title}</TableCell>
                   <TableCell>{item.description}</TableCell>
-                  <TableCell>{item.status}</TableCell>
+                  <TableCell>{item.status.charAt(0).toUpperCase()+ item.status.slice(1)}</TableCell>
                   {/* if status is to be displayed in a chip */}
                   {/* <TableCell>
                     <Chip

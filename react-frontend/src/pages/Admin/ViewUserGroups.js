@@ -32,7 +32,7 @@ const ViewUserGroups = () => {
       .then((res) => {
         console.log(res.data);
         res.data.forEach((usergroup, index) => {
-          if (usergroup.status == "Active") {
+          if (usergroup.status == "active") {
             setUsergroups((prevArray) => [...prevArray, usergroup]);
           }
         });
@@ -60,7 +60,7 @@ const ViewUserGroups = () => {
         `http://localhost:8080/api/usergroup/delete/${userGroup.userGroupId}`,
         {
           assignedUsers: userGroup.assignedUsers,
-          status: "Inactive",
+          status: "inactive",
         }
       )
       .then((res) => {

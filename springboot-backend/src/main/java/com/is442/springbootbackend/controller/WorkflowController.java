@@ -57,7 +57,7 @@ public class WorkflowController {
     //create new workflow
     @PostMapping("/workflow")
     public Workflow createWorkflow(@RequestBody Workflow workflow){
-        workflow.setStatus("Active");
+        workflow.setStatus("active");
         return workflowRepository.save(workflow);
     }
 
@@ -93,7 +93,7 @@ public class WorkflowController {
         Workflow workflow = workflowRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
 
-        workflow.setStatus("Inactive");
+        workflow.setStatus("inactive");
         workflowRepository.save(workflow);
         Map<String, Boolean> response = new HashMap<>();
         response.put("Status", Boolean.TRUE );
