@@ -39,6 +39,22 @@ const FormsTable = () => {
       });
   }, [snackbar]);
 
+  const updateFormStatus = (formId, userId, workflowId) => {
+    axios
+      .put(`http://localhost:8080/api/formstatus?formId=${formId}&workflowId=${workflowId}&userId=${userId}`, {
+        evaluationStatus: "Approved",
+        rejectionPersonnel: null,
+        rejectionComments: null
+      })
+      .then((res) => {
+        setSnackbar({ open: true, type: "success", message: "Form status updated successfully." });
+      })
+      .catch((err) => {
+        console.log(err);
+        setSnackbar({ open: true, type: "error", message: "Error updating form status." });
+      });
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -93,10 +109,10 @@ const FormsTable = () => {
                     .includes(searchedVal.toString().toLowerCase())
               )
               .map((item, index) => (
-                <TableRow
-                  key={item?.form?.formId || index}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
+                  <TableRow
+                    key={`${item?.form?.for}-${item?.user?.name}` || index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
                   <TableCell>{item?.form?.formNumber}</TableCell>
                   <TableCell>{item?.form?.title}</TableCell>
                   <TableCell>{item?.form?.description}</TableCell>
@@ -117,6 +133,18 @@ const FormsTable = () => {
                       }}
                     >
                       View
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => {
+                        if (item) {
+                          // You need to pass the formId, userId, and workflowId from the item object as appropriate.
+                          updateFormStatus(item.form.formId, item.user.userId, item.workflow.workflowId);
+                        }
+                      }}
+                    >
+                      Approve
                     </Button>
                   </TableCell>
                 </TableRow>
