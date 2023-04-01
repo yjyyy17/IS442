@@ -21,7 +21,7 @@ public class Response{
 ////    @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
 //    @JoinColumn(name = "questionID", referencedColumnName = "questionID")
 //    private Question question;
-        @OneToOne
+        @ManyToOne
         @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
         @JoinColumn(name = "formID", referencedColumnName = "form_id")})
         private Question question;
