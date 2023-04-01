@@ -29,7 +29,7 @@ const ViewUserGroups = () => {
   const [reloadUserGroups, setReloadUserGroups] = useState(false);
   const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
-
+  const [searchedVal, setSearchedVal] = useState("");
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/userGroup`)
@@ -91,14 +91,21 @@ const ViewUserGroups = () => {
             All User Groups
           </Typography>
           <Divider sx={{ mb: 4 }} />
-          <div className="d-flex justify-content-end mb-4">
-            <Button
-              variant="contained"
-              color="warning"
-              onClick={() => newUserGroup()}
-            >
-              Create
-            </Button>
+          <div className="d-flex justify-content-between mb-4">
+            <TextField
+              label="Search"
+              sx={{ mb: 4 }}
+              onChange={(e) => setSearchedVal(e.target.value)}
+            />
+            <div>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={() => newUserGroup()}
+              >
+                Create
+              </Button>
+            </div>
           </div>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -111,6 +118,16 @@ const ViewUserGroups = () => {
               </TableHead>
               <TableBody>
                 {usergroups
+                  .filter((row) =>
+                    row.assignedUsers.some(
+                      (user) =>
+                        !searchedVal.length ||
+                        user.name
+                          .toString()
+                          .toLowerCase()
+                          .includes(searchedVal.toString().toLowerCase())
+                    )
+                  )
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((item) => {
                     // if (item.status === "Active") {
