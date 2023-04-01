@@ -124,39 +124,51 @@ public class FormStatusController {
 //    }
     @PostMapping(path = "/formstatus")
     public ResponseEntity<String> createFormStatus(@RequestBody FormStatus formStatus) {
-
-        int formId = formStatus.getForm().getFormId();
-        long userId = formStatus.getUser().getUserId();
-        long workflowId = formStatus.getWorkflow().getWorkflowId();
-
-        FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(formId).orElse(null);
-        if (formtemplate != null) {
-            formStatus.setForm(formtemplate);
-        } else {
-            return ResponseEntity.badRequest().body("Form with ID " + formId + " does not exist.");
-        }
-
-        Workflow workflow = (Workflow) workflowRepository.findById(workflowId).orElse(null);
-        formStatus.setWorkflow(workflow);
-        if (workflow != null) {
-            formStatus.setWorkflow(workflow);
-        } else {
-            return ResponseEntity.badRequest().body("Workflow with ID " + workflowId + " does not exist.");
-        }
-
-        User user = (User) userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            formStatus.setUser(user);
-        } else {
-            return ResponseEntity.badRequest().body("User with ID " + userId + " does not exist.");
-        }
-
         try{
-            formStatusRepository.save(formStatus);
+            int formId = formStatus.getForm().getFormId();
+            long userId = formStatus.getUser().getUserId();
+            long workflowId = formStatus.getWorkflow().getWorkflowId();
+
+            FormStatus fs = formStatusRepository.findByFormFormIdAndWorkflowWorkflowIdAndUserUserId(formId, workflowId, userId);
+
+            if(fs == null){
+                FormTemplate formtemplate = (FormTemplate) formTemplateRepository.findById(formId).orElse(null);
+                if (formtemplate != null) {
+                    formStatus.setForm(formtemplate);
+                } else {
+                    return ResponseEntity.badRequest().body("Form with ID " + formId + " does not exist.");
+                }
+
+                Workflow workflow = (Workflow) workflowRepository.findById(workflowId).orElse(null);
+                formStatus.setWorkflow(workflow);
+                if (workflow != null) {
+                    formStatus.setWorkflow(workflow);
+                } else {
+                    return ResponseEntity.badRequest().body("Workflow with ID " + workflowId + " does not exist.");
+                }
+
+                User user = (User) userRepository.findById(userId).orElse(null);
+                if (user != null) {
+                    formStatus.setUser(user);
+                } else {
+                    return ResponseEntity.badRequest().body("User with ID " + userId + " does not exist.");
+                }
+                formStatusRepository.save(formStatus);
+
+            }
+            else{
+                // if already created, update the due date only
+                fs.setEvaluationStatus(formStatus.getEvaluationStatus());
+                fs.setDueDate(formStatus.getDueDate());
+                formStatusRepository.save(fs);
+            }
+
             return ResponseEntity.ok().body("Successfully created.");
         }
         catch(DataAccessException e){
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body("Error creating form status.");
+
         }
     }
 
