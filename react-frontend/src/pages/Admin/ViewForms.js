@@ -33,7 +33,9 @@ const FormsTable = () => {
       .get(`http://localhost:8080/api/formtemplate`)
       .then((res) => {
         console.log(res.data);
-        setForms(res.data);
+        // var formsList = [];
+        const formsList = res.data.filter((form) => form.status == "Approved");
+        setForms(formsList);
         return true;
       })
       .catch((err) => {

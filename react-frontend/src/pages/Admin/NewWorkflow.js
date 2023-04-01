@@ -7,10 +7,8 @@ import {
   CardContent,
   Chip,
   Divider,
-  InputLabel,
   MenuItem,
   Paper,
-  Select,
   Step,
   StepLabel,
   Stepper,
@@ -22,10 +20,10 @@ import {
   TableRow,
   TextField,
   Typography,
-  Autocomplete,
   Modal,
   Box,
   IconButton,
+  Snackbar,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import axios from "axios";
@@ -43,12 +41,32 @@ const style = {
 };
 
 const NewWorkflow = (props) => {
-  console.log(
-    sessionStorage.getItem("workflow")
-      ? JSON.parse(sessionStorage.getItem("workflow"))
-      : "no props"
-  );
+  const userTypes = [
+    {
+      value: "Vendor",
+      label: "Vendor",
+    },
+    {
+      value: "Admin",
+      label: "Admin",
+    },
+    {
+      value: "Approver",
+      label: "Approver",
+    },
+  ];
   const queryParameters = new URLSearchParams(window.location.search);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [userGroups, setUserGroups] = useState([]);
+  const [forms, setForms] = useState([]);
+  const [currentUserGroup, setCurrentUserGroup] = useState("");
+  const [currentDueDate, setCurrentDueDate] = useState("");
+  const [savedWorkflowId, setSavedWorkflowId] = useState("");
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
+  // set workflow fields if sessionstorage is not empty
   const [title, setTitle] = useState(
     sessionStorage.getItem("workflow")
       ? JSON.parse(sessionStorage.getItem("workflow")).name
@@ -59,15 +77,6 @@ const NewWorkflow = (props) => {
       ? JSON.parse(sessionStorage.getItem("workflow")).description
       : ""
   );
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [userGroups, setUserGroups] = useState([]);
-  const [forms, setForms] = useState([]);
-  const [currentUserGroup, setCurrentUserGroup] = useState("");
-  const [currentDueDate, setCurrentDueDate] = useState("");
-  const [savedWorkflowId, setSavedWorkflowId] = useState("");
   const [assignedUG, setAssignedUsergroups] = useState(() => {
     var ugList = [];
     var ugDuedateList = sessionStorage.getItem("workflow")
@@ -78,7 +87,6 @@ const NewWorkflow = (props) => {
     });
     return ugList;
   });
-
   const [actions, setActions] = useState(
     sessionStorage.getItem("workflow")
       ? JSON.parse(sessionStorage.getItem("workflow")).actions
@@ -95,6 +103,39 @@ const NewWorkflow = (props) => {
         }
   );
 
+  // get all form templates and user groups from db
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/formtemplate`)
+      .then((res) => {
+        console.log("forms", res.data);
+        // var formsList = [];
+        const formsList = res.data.filter((form) => form.status == "Approved");
+        setForms(formsList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(`http://localhost:8080/api/userGroup`)
+      .then((res) => {
+        console.log("usergroups", res.data);
+        const usergroupList = res.data.filter(
+          (usergroup) => usergroup.status == "active"
+        );
+        setUserGroups(usergroupList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  // save changes to sessionStorage workflow
   const handleUpdateSession = () =>
     sessionStorage.setItem("workflow", JSON.stringify(workflow));
 
@@ -124,47 +165,6 @@ const NewWorkflow = (props) => {
   const addAction = () => {
     setActions([...actions, { id: uuidv4() }]);
   };
-
-  const userTypes = [
-    {
-      value: "Vendor",
-      label: "Vendor",
-    },
-    {
-      value: "Admin",
-      label: "Admin",
-    },
-    {
-      value: "Approver",
-      label: "Approver",
-    },
-  ];
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/formtemplate`)
-      .then((res) => {
-        console.log("forms", res.data);
-        // var formsList = [];
-        const formsList = res.data.filter((form) => form.status == "Approved");
-        setForms(formsList);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    axios
-      .get(`http://localhost:8080/api/userGroup`)
-      .then((res) => {
-        console.log("usergroups", res.data);
-        const usergroupList = res.data.filter(
-          (usergroup) => usergroup.status == "active"
-        );
-        setUserGroups(usergroupList);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const newUserGroup = () => {
     navigate(`../admin/create_usergroup`, {
@@ -227,13 +227,13 @@ const NewWorkflow = (props) => {
           axios
             .post(`http://localhost:8080/api/action`, {
               title: action.title,
-              assigneeRole: workflow.assigneeRole,
+              assigneeRole: action.assigneeRole,
             })
             .then((res) => {
               console.log("created new action");
               var actionId = res.data.actionId;
               var formTemplateId = action.form.formId;
-              if (workflow.assigneeRole == "Vendor") {
+              if (action.assigneeRole == "Vendor") {
                 vendorFormTemplateIds.push(formTemplateId);
               }
 
@@ -268,14 +268,12 @@ const NewWorkflow = (props) => {
               console.log(err);
             });
         });
-      })
-      .then((res) => {
         // map workflow to user groups
         workflow.assignedUsergroups.forEach((userGroup) => {
           var ugId = userGroup.usergroupId;
           var dueDate = userGroup.dueDate;
           var workflowId = savedWorkflowId;
-          console.log("WORKFLOWID: ", workflowId);
+          console.log("WORKFLOWID: ", savedWorkflowId);
           axios
             .put(
               `http://localhost:8080/api/userGroup/${ugId}/workflow/${workflowId}`
@@ -307,7 +305,7 @@ const NewWorkflow = (props) => {
                   .post(`http://localhost:8080/api/formstatus`, {
                     form: { formId: formTemplateId },
                     user: { userId: userId },
-                    workflow: { workflowId: workflowId },
+                    workflow: { workflowId: savedWorkflowId },
                     evaluationStatus: "Assigned to vendor",
                     rejectionPersonnel: null,
                     rejectionComments: null,
@@ -328,8 +326,10 @@ const NewWorkflow = (props) => {
       })
       .catch((err) => {
         console.log(err);
+        setSnackbar({ open: true, type: "error" });
       });
     sessionStorage.removeItem("workflow");
+    setSnackbar({ open: true, type: "success" });
   };
 
   return (
@@ -419,9 +419,6 @@ const NewWorkflow = (props) => {
                       </Button>
                     </div>
                   </div>
-                  {/* <Button variant="contained" color="warning" type="submit">
-                    Add
-                  </Button> */}
                 </form>
               </Box>
             </Modal>
@@ -483,22 +480,11 @@ const NewWorkflow = (props) => {
                           value={action.title || ""}
                           sx={{ width: "100%", mb: 2 }}
                         />
-
-                        {/* <TextField
-                          label="Form"
-                          onChange={(e) =>
-                            handleActionChange(index, "form", e.target.value)
-                          }
-                          value={action.form || ""}
-                          sx={{ width: "100%", mb: 2 }}
-                        /> */}
                         <TextField
                           select
                           required
                           label="Form"
-                          defaultValue={
-                            actions[index].form ? actions[index].form.title : ""
-                          }
+                          defaultValue={action.form ? action.form.title : ""}
                           onChange={(event, value) => {
                             console.log(value.props.value);
                             handleActionChange(
@@ -659,6 +645,21 @@ const NewWorkflow = (props) => {
             >
               Save
             </Button>
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={6000}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert
+                onClose={handleCloseSnackbar}
+                severity={snackbar.type}
+                sx={{ width: "100%" }}
+              >
+                {snackbar.type === "success"
+                  ? "Workflow successfully created."
+                  : "Error saving workflow."}
+              </Alert>
+            </Snackbar>
           </>
         }
       />

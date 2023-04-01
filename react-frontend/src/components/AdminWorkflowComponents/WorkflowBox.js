@@ -48,7 +48,7 @@ const WorkflowBox = (props) => {
           var overdueAssignees = [];
           formStatuses.forEach((fs, index) => {
             var formDueDate = new Date(fs.dueDate).getTime();
-            if (formDueDate < current) {
+            if (formDueDate < current && !overdueAssignees.includes(fs.user.name)) {
               overdueAssignees.push(fs.user.name);
             }
             console.log(overdueAssignees);

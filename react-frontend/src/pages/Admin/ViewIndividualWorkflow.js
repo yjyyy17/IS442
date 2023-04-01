@@ -204,13 +204,20 @@ const ViewIndividualWorkflow = () => {
     // console.log("currentUserGroup", currentUserGroup);
     // console.log("wfId", id);
 
-    var formId = null;
+    var vendorForms = [];
     var userId = null;
     var workflowId = id;
 
     actions.forEach((action) => {
+      console.log("action", action);
       // console.log("one action ft: ", action.formTemplate);
-      formId = action.formTemplate.formId;
+      if (
+        action.assigneeRole == "Vendor" &&
+        !vendorForms.includes(action.formTemplate.formId)
+      ) {
+        vendorForms.push(action.formTemplate.formId);
+      }
+      console.log("vendorForms", vendorForms);
     });
 
     dbUserGroups.forEach((usergroupObj) => {
@@ -220,31 +227,48 @@ const ViewIndividualWorkflow = () => {
           user.userType == "Vendor"
         ) {
           // console.log("user to assign to", user);
+          console.log(usergroupObj.userGroupId, " vs ", currentUserGroup);
           userId = user.userId;
+          vendorForms.forEach((oneForm) => {
+            console.log("oneForm", oneForm);
+            // var formId = oneForm
+            axios
+              .put(
+                `http://localhost:8080/api/userGroup/${currentUserGroup}/workflow/${id}`
+              )
+              .then((res) => {
+                console.log({
+                  form: { formId: oneForm },
+                  user: { userId: userId },
+                  workflow: { workflowId: workflowId },
+                  evaluationStatus: "Assigned to vendor",
+                  rejectionPersonnel: null,
+                  rejectionComments: null,
+                  dueDate: currentDueDate,
+                })
+                axios
+                  .post(`http://localhost:8080/api/formstatus`, {
+                    form: { formId: oneForm },
+                    user: { userId: userId },
+                    workflow: { workflowId: workflowId },
+                    evaluationStatus: "Assigned to vendor",
+                    rejectionPersonnel: null,
+                    rejectionComments: null,
+                    dueDate: currentDueDate,
+                  })
+                  .then((res) => {
+                    setReloadActions(!reloadActions);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          });
         }
       });
-      axios
-        .put(
-          `http://localhost:8080/api/userGroup/${currentUserGroup}/workflow/${id}`
-        )
-        .then((res) => {
-          axios
-            .post(`http://localhost:8080/api/formstatus`, {
-              form: { formId: formId },
-              user: { userId: userId },
-              workflow: { workflowId: workflowId },
-              evaluationStatus: "Assigned to vendor",
-              rejectionPersonnel: null,
-              rejectionComments: null,
-              dueDate: currentDueDate,
-            })
-            .then((res) => {
-              setReloadActions(!reloadActions);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
     });
 
     handleCloseUG();
