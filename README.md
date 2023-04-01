@@ -7,6 +7,12 @@ Members:
 - Nolin Ho Rui Ling
 - Fok Jia Yi
 
+## Table of contents
+[Setup Guide](#setupguide)  
+[Documentations](#docs)  
+[Other third-party components/resources](#others)  
+
+<a name="setupguide"></a>
 ## Setup Guide
 ### Method 1: Using Visual Studio Code (VSC)
 Backend services:
@@ -43,10 +49,12 @@ Frontend application:
 ![](installation-guide-images/installationguide5.png)
 
 
+<a name="docs"></a>
 ## Documentations
 - [API Documentation](http://https://documenter.getpostman.com/view/17615314/2s93JtRisF "API Documentation")
-- 
 
+
+<a name="others"></a>
 ## Other third-party components/resources
 ### Email sending using Sendgrid
 1. [Sign up for an account ](https://signup.sendgrid.com/ "Sign up for an account ")
