@@ -179,8 +179,8 @@ const ViewUserGroups = () => {
               sx={{ width: "100%" }}
             >
               {snackbar.type === "success"
-                ? "User group successfully created."
-                : "Error creating user group."}
+                ? "User group successfully deleted."
+                : "Error deleting user group."}
             </Alert>
           </Snackbar>
         </>
