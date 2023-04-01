@@ -25,6 +25,11 @@ import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import UserGroupTable from "../../components/AdminWorkflowComponents/UserGroupTable";
 
 const NewUserGroupForm = (props) => {
+  console.log(
+    sessionStorage.getItem("workflow")
+      ? JSON.parse(sessionStorage.getItem("workflow"))
+      : "no props"
+  );
   const userTypes = [
     {
       value: "Vendor",
@@ -48,6 +53,11 @@ const NewUserGroupForm = (props) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [dueDate, setDueDate] = useState("");
   const [forms, setForms] = useState({});
+  const [workflow, setWorkflow] = useState(
+    sessionStorage.getItem("workflow")
+      ? JSON.parse(sessionStorage.getItem("workflow"))
+      : {}
+  );
 
   const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
 
@@ -91,7 +101,7 @@ const NewUserGroupForm = (props) => {
   };
   const returnToWorkflow = (e) => {
     // to change the location to the prev page
-    navigate(-1, { state: { workflowDetails: {} } });
+    navigate(`../admin/create_workflow`, { state: { workflow: workflow } });
   };
 
   const handleSearchChange = (event, value) => {
@@ -256,7 +266,7 @@ const NewUserGroupForm = (props) => {
                     />
                   )}
                 </div>
-                {userType == "Vendor" && (
+                {/* {userType == "Vendor" && (
                   <div className="mb-4 d-flex justify-content-between">
                     <TextField
                       onChange={(e) => {
@@ -272,7 +282,7 @@ const NewUserGroupForm = (props) => {
                       }}
                     />
                   </div>
-                )}
+                )} */}
                 <div className="d-flex justify-content-between">
                   <Button
                     variant="contained"
@@ -300,8 +310,8 @@ const NewUserGroupForm = (props) => {
                     <TableCell>Name</TableCell>
                     <TableCell>Email</TableCell>
                     <TableCell>Role</TableCell>
-                    <TableCell>Form</TableCell>
-                    <TableCell>Form due date</TableCell>
+                    {/* <TableCell>Form</TableCell>
+                    <TableCell>Form due date</TableCell> */}
                     <TableCell>Actions</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -329,10 +339,10 @@ const NewUserGroupForm = (props) => {
                             }
                           />
                         </TableCell>
-                        <TableCell>formname</TableCell>
+                        {/* <TableCell>formname</TableCell>
                         <TableCell>
                           {item.userType == "Vendor" ? dueDate : "-"}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <Button
                             variant="contained"

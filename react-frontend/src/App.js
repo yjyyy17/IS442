@@ -16,6 +16,7 @@ import CreateNewForm from './pages/Admin/CreateNewForm';
 import EditForm from './pages/Admin/EditForm';
 import NewUserGroupForm from './pages/Admin/NewUserGroupForm';
 import ViewIndividualWorkflow from './pages/Admin/ViewIndividualWorkflow';
+import NewWorkflow from './pages/Admin/NewWorkflow';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
       <Route path='/admin/create_form' element={<CreateNewForm />} />
       <Route path='/admin/edit_form' element={<EditForm />} />
       <Route path='/admin/indiv_workflow' element={<ViewIndividualWorkflow/>} />
+      <Route path='/admin/create_workflow' element={<NewWorkflow/>} />
       
       <Route path='/approver' element={<Approver />} />
       <Route path='/approver/user_accounts' element={<Approver />} />

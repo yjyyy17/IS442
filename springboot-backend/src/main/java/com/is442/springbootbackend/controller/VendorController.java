@@ -143,7 +143,7 @@ public class VendorController {
         // retrieve all vendor id, workflow id and due date from formStatusRepo
         List<FormStatus> formStatusList = formStatusRepository.findAll();
         for(FormStatus oneFS: formStatusList){
-            if(oneFS.getEvaluationStatus().equals("Assigned")){
+            if(oneFS.getEvaluationStatus().equals("Assigned to vendor")){
                 Date today = new Date();
                 Date dueDate = oneFS.getDueDate();
                 if(getDaysBetween(dueDate, today) == 8 || getDaysBetween(dueDate, today) == 10 || getDaysBetween(dueDate, today) == 13 || getDaysBetween(dueDate, today) >= 20 ){

@@ -57,6 +57,7 @@ public class WorkflowController {
     //create new workflow
     @PostMapping("/workflow")
     public Workflow createWorkflow(@RequestBody Workflow workflow){
+        workflow.setStatus("Active");
         return workflowRepository.save(workflow);
     }
 
