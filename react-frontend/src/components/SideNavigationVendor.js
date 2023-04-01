@@ -96,7 +96,7 @@ export default function PersistentDrawerLeft(props) {
   };
 
   const titleWithRoute = {
-    "Vendor Company": "#", 
+    [sessionStorage.getItem("userEmail")]: "#", 
     "Workflows": "/vendor", 
     "Completed forms": '/vendor/forms', 
     "Log out": '/'

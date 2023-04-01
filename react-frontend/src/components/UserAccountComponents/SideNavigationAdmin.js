@@ -98,7 +98,7 @@ export default function PersistentDrawerLeft(props) {
   };
 
   const titleWithRoute = {
-    Admin: "#",
+    [sessionStorage.getItem("userEmail")]: "#",
     "Your Workflows": "/admin/workflows",
     "Your Forms": "/admin/forms",
     "User Accounts": "/admin/user_accounts",

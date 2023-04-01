@@ -23,7 +23,7 @@ const Approver = () => {
       content={
         currentPath === '/approver/user_accounts'? <ViewUserAccounts/>
         :currentPath === '/approver/ViewWorkflows'? <ViewWorkflows/>
-        :currentPath === '/approver/ViewForms'? <ApproveForms/>:<></>
+        :currentPath === '/approver/ViewForms'? <ApproveForms/>:<ApproveForms/>
         
       }
       />

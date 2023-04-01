@@ -96,7 +96,7 @@ export default function PersistentDrawerLeft(props) {
   };
 
   const titleWithRoute = {
-    "Approver": "#", 
+    [sessionStorage.getItem("userEmail")]: "#", 
     "All Forms": "/approver/ViewForms", 
     "Workflows": "/approver/ViewWorkflows", 
     "User Accounts": '/approver/user_accounts', 

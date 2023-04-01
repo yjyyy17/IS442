@@ -30,6 +30,8 @@ const Admin = () => {
             <ViewWorkflows />
           ) : currentPath === "/admin/user_groups" ? (
             <ViewUserGroups />
+          ) : currentPath === "/admin" ? (
+            <ViewWorkflows />
           ) : (
             <></>
           )
