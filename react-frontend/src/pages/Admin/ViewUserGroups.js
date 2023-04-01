@@ -15,6 +15,8 @@ import {
   ListItem,
   ListItemText,
   Chip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SideNavigation from "../../components/UserAccountComponents/SideNavigationAdmin";
@@ -26,6 +28,8 @@ const ViewUserGroups = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [reloadUserGroups, setReloadUserGroups] = useState(false);
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
+
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/userGroup`)
@@ -42,6 +46,10 @@ const ViewUserGroups = () => {
       });
   }, [reloadUserGroups]);
 
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -51,9 +59,9 @@ const ViewUserGroups = () => {
     setPage(0);
   };
 
-  const newUserGroup = () =>{
+  const newUserGroup = () => {
     navigate(`../admin/create_usergroup`);
-  }
+  };
   const deactivateUserGroup = (userGroup) => {
     axios
       .put(
@@ -66,11 +74,11 @@ const ViewUserGroups = () => {
       .then((res) => {
         console.log(res.data);
         setReloadUserGroups(!reloadUserGroups);
-        alert(`User Group successfully deleted!`);
+        setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        setSnackbar({ open: true, type: "error" });
       });
   };
 
@@ -83,9 +91,13 @@ const ViewUserGroups = () => {
           </Typography>
           <Divider sx={{ mb: 4 }} />
           <div className="d-flex justify-content-end mb-4">
-            <Button variant="contained" color="warning"
-            onClick={()=>newUserGroup()}
-            >Create</Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => newUserGroup()}
+            >
+              Create
+            </Button>
           </div>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -156,6 +168,21 @@ const ViewUserGroups = () => {
               rowsPerPageOptions={[5, 10, 25]}
             />
           </TableContainer>
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity={snackbar.type}
+              sx={{ width: "100%" }}
+            >
+              {snackbar.type === "success"
+                ? "User group successfully created."
+                : "Error creating user group."}
+            </Alert>
+          </Snackbar>
         </>
       }
     />

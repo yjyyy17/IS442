@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Alert, Button, Snackbar } from "@mui/material";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -21,6 +21,7 @@ const ApproversTable = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/approver`)
@@ -80,12 +81,16 @@ const ApproversTable = (props) => {
       .then((res) => {
         console.log(res.data);
         setReloadApprovers(!reloadApprovers);
-        alert(`${approver.name} successfully deleted!`);
+        setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        setSnackbar({ open: true, type: "error" });
       });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   const editApprover = (id) => {
@@ -184,6 +189,21 @@ const ApproversTable = (props) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </TableContainer>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.type === "success"
+            ? "Approver successfully deleted."
+            : "Error deleting approver."}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

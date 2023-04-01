@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button, Typography } from "@mui/material";
+import { Alert, Button, Snackbar, Typography } from "@mui/material";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -21,6 +21,7 @@ const UserGroupTable = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [users, setUsers] = React.useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -65,6 +66,10 @@ const UserGroupTable = (props) => {
     });
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   //hard delete
   // const deleteAdmin = (id) => {
   //   axios
@@ -92,18 +97,20 @@ const UserGroupTable = (props) => {
       .then((res) => {
         console.log(res.data);
         setReloadAdmins(!reloadAdmins);
-        alert(`${admin.name} successfully deleted!`);
+        setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        setSnackbar({ open: true, type: "error" });
       });
   };
 
   return (
     <>
-    {console.log(props.users)}
-    <Typography variant="h5" sx={{mb:2}}>User Groups </Typography>
+      {console.log(props.users)}
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        User Groups{" "}
+      </Typography>
       <div className="d-flex justify-content-between">
         <TextField
           label="Search"
@@ -194,6 +201,21 @@ const UserGroupTable = (props) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </TableContainer>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.type === "success"
+            ? "User Group successfully deleted."
+            : "Error deleting user group."}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

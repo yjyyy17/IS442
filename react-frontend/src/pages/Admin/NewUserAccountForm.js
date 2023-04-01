@@ -64,7 +64,7 @@ const NewUserAccountForm = () => {
       })
       .then((res) => {
         console.log(res.data);
-        alert("User successfully created");
+        // alert("User successfully created");
         setUserType("Vendor");
         setName("");
         setEmail("");
@@ -79,7 +79,7 @@ const NewUserAccountForm = () => {
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        // alert(err);
         setSnackbar({ open: true, type: "error" });
 
       });

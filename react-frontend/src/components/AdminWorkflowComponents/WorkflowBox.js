@@ -8,6 +8,7 @@ import {
   Stepper,
   Typography,
   Alert,
+  Snackbar,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -16,18 +17,22 @@ import { Link } from "react-router-dom";
 const WorkflowBox = (props) => {
   const [actions, setActions] = useState([]);
   const current = new Date();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
 
   const deleteWorkflow = (id) => {
     axios
       .put(`http://localhost:8080/api/workflow/delete/${id}`)
       .then((res) => {
         console.log(res.data);
-        alert(`Workflow successfully deleted!`);
+        setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        setSnackbar({ open: true, type: "error" });
       });
+  };
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   useEffect(() => {
@@ -78,56 +83,70 @@ const WorkflowBox = (props) => {
                 .toString()
                 .toLowerCase()
                 .includes(props.filterSearch.toString().toLowerCase())
-          ).filter(
-            (action) =>
-            !props.filterSwitch || action.overdueVendors.length >0
+          )
+          .filter(
+            (action) => !props.filterSwitch || action.overdueVendors.length > 0
           )
           .map((action, index) => {
-            if (action.workflow.status == "Inactive"){
-              return
+            if (action.workflow.status == "Inactive") {
+              return;
             }
-            return(
-                  <Card sx={{ p: 3, mb: 5 }} key={index}>
-                    <CardContent>
-                      <Typography variant="h6">{action.workflow.title}</Typography>
-                      <br></br>
-                      {action.overdueVendors.length != 0 && (
-                        <Alert severity="error">
-                          Late forms: {action.overdueVendors.length}
-                          <br />
-                          Late assignee(s): {action.overdueVendors.join(", ")}
-                        </Alert>
-                      )}
-                      <Typography variant="caption">Action to be taken</Typography>
-                      <Stepper activeStep={-1}>
-                        {action.actions.map((oneaction) => (
-                          <Step key={oneaction.actionId}>
-                            <StepLabel>{oneaction.title}</StepLabel>
-                          </Step>
-                        ))}
-                      </Stepper>
-                    </CardContent>
-                    <CardActions>
-                      <Link
-                        to={`../admin/indiv_workflow?id=${action.workflow.workflowId}`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button variant="text">View</Button>
-                      </Link>
-                      <Link
-                        onClick={() => deleteWorkflow(action.workflow.workflowId)}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button variant="text" color="error">
-                          Delete
-                        </Button>
-                      </Link>
-                    </CardActions>
-                  </Card>
-
-            )
+            return (
+              <Card sx={{ p: 3, mb: 5 }} key={index}>
+                <CardContent>
+                  <Typography variant="h6">{action.workflow.title}</Typography>
+                  <br></br>
+                  {action.overdueVendors.length != 0 && (
+                    <Alert severity="error">
+                      Late forms: {action.overdueVendors.length}
+                      <br />
+                      Late assignee(s): {action.overdueVendors.join(", ")}
+                    </Alert>
+                  )}
+                  <Typography variant="caption">Action to be taken</Typography>
+                  <Stepper activeStep={-1}>
+                    {action.actions.map((oneaction) => (
+                      <Step key={oneaction.actionId}>
+                        <StepLabel>{oneaction.title}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </CardContent>
+                <CardActions>
+                  <Link
+                    to={`../admin/indiv_workflow?id=${action.workflow.workflowId}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Button variant="text">View</Button>
+                  </Link>
+                  <Link
+                    onClick={() => deleteWorkflow(action.workflow.workflowId)}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Button variant="text" color="error">
+                      Delete
+                    </Button>
+                  </Link>
+                </CardActions>
+              </Card>
+            );
           })}
       </div>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.type === "success"
+            ? "Workflow successfully deleted."
+            : "Error deleting workflow."}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

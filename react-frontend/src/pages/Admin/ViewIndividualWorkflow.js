@@ -12,6 +12,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Step,
   StepLabel,
   Stepper,
@@ -67,6 +68,7 @@ const ViewIndividualWorkflow = () => {
   const [reloadActions, setReloadActions] = useState(false);
   const [currentUserGroup, setCurrentUserGroup] = useState("");
   const [currentDueDate, setCurrentDueDate] = useState("");
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
   const userTypes = [
     {
       value: "Vendor",
@@ -81,6 +83,11 @@ const ViewIndividualWorkflow = () => {
       label: "Approver",
     },
   ];
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/workflow/${id}`)
@@ -141,10 +148,10 @@ const ViewIndividualWorkflow = () => {
     axios
       .get(`http://localhost:8080/api/sendOverdueEmails`)
       .then((res) => {
-        alert("An email reminder is sent");
+        setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
-        console.log(err);
+        setSnackbar({ open: true, type: "error" });
       });
   };
 
@@ -600,6 +607,21 @@ const ViewIndividualWorkflow = () => {
           </>
         }
       />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.type === "success"
+            ? "An email has been sent to user."
+            : "Error sending email to user."}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

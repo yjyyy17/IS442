@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Alert, Button, Snackbar } from "@mui/material";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -21,6 +21,7 @@ const VendorsTable = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/vendor`)
@@ -39,6 +40,10 @@ const VendorsTable = (props) => {
         console.log(err);
       });
   }, [reloadVendors]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -87,11 +92,11 @@ const VendorsTable = (props) => {
       .then((res) => {
         console.log(res.data);
         setReloadVendors(!reloadVendors);
-        alert(`${vendor.name} successfully deleted!`);
+        setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
+        setSnackbar({ open: true, type: "error" });
       });
   };
 
@@ -191,6 +196,21 @@ const VendorsTable = (props) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </TableContainer>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.type === "success"
+            ? "Vendor successfully deleted."
+            : "Error deleting vendor."}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
