@@ -23,7 +23,7 @@ public class Question {
     @Column(name = "questionID")
     private int questionID;
 
-    private File test;
+//    private File test;
 
     @Column(name = "order", nullable = false)
     private int order;

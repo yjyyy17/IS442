@@ -52,9 +52,9 @@ public class Response{
         return responseID;
     }
 
-    public void setResponseID(int responseID) {
-        this.responseID = responseID;
-    }
+//    public void setResponseID(int responseID) {
+//        this.responseID = responseID;
+//    }
 
     public String getAnswer() {
         return answer;

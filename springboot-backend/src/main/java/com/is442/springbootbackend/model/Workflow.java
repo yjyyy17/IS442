@@ -54,21 +54,21 @@ public class Workflow {
         return workflowId;
     }
 
-    public void setWorkflowId(Long workflowId) {
-        this.workflowId = workflowId;
-    }
-
-    public Set<UserGroup> getUserGroups() {
-        return userGroups;
-    }
+//    public void setWorkflowId(Long workflowId) {
+//        this.workflowId = workflowId;
+//    }
+//
+//    public Set<UserGroup> getUserGroups() {
+//        return userGroups;
+//    }
 
     public void setUserGroups(Set<UserGroup> userGroups) {
         this.userGroups = userGroups;
     }
 
-    public Set<Action> getActions() {
-        return actions;
-    }
+//    public Set<Action> getActions() {
+//        return actions;
+//    }
 
     public String getTitle() {
         return title;
@@ -95,9 +95,9 @@ public class Workflow {
         this.status = status;
     }
 
-    public List<FormStatus> getFormStatuses() {
-        return formStatuses;
-    }
+//    public List<FormStatus> getFormStatuses() {
+//        return formStatuses;
+//    }
 
     public void setFormStatuses(List<FormStatus> formStatuses) {
         this.formStatuses = formStatuses;

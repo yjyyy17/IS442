@@ -32,13 +32,13 @@ public class Action {
         this.assigneeRole = assigneeRole;
     }
 
-    public long getActionId() {
-        return actionId;
-    }
-
-    public void setActionId(long actionId) {
-        this.actionId = actionId;
-    }
+//    public long getActionId() {
+//        return actionId;
+//    }
+//
+//    public void setActionId(long actionId) {
+//        this.actionId = actionId;
+//    }
 
     public String getTitle() {
         return title;
@@ -60,9 +60,9 @@ public class Action {
         return workflow;
     }
 
-    public FormTemplate getFormTemplate() {
-        return formTemplate;
-    }
+//    public FormTemplate getFormTemplate() {
+//        return formTemplate;
+//    }
 
     public void setWorkflow(Workflow workflow) {
         this.workflow = workflow;

@@ -74,13 +74,13 @@ public class User {
         return userId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public Set<UserGroup> getUserGroups() {
-        return userGroups;
-    }
+//    public void setUserId(long userId) {
+//        this.userId = userId;
+//    }
+//
+//    public Set<UserGroup> getUserGroups() {
+//        return userGroups;
+//    }
 
     public String getName() {
         return name;
@@ -114,13 +114,13 @@ public class User {
         this.password = password;
     }
 
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
+//    public String getUserType() {
+//        return userType;
+//    }
+//
+//    public void setUserType(String userType) {
+//        this.userType = userType;
+//    }
 
     @Override
     public boolean equals(Object o) {
