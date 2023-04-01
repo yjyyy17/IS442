@@ -28,7 +28,7 @@ const FormsTable = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/forms-to-approve`)
+      .get(`http://localhost:8080/api/formstatus`)
       .then((res) => {
         console.log(res.data);
         setForms(res.data);
@@ -38,19 +38,6 @@ const FormsTable = () => {
         console.log(err);
       });
   }, [snackbar]);
-
-  const approveForm = (form) => {
-    axios
-      .put(`http://localhost:8080/api/approve-form/${form.formId}`)
-      .then((res) => {
-        console.log(res.data);
-        setSnackbar({ open: true, type: "success" });
-      })
-      .catch((err) => {
-        console.log(err);
-        setSnackbar({ open: true, type: "error" });
-      });
-  };
 
   return (
     <>
@@ -78,8 +65,9 @@ const FormsTable = () => {
               <TableCell>Revision Number</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Created By</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Phone</TableCell>
               <TableCell>Actions</TableCell>
-              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -87,59 +75,50 @@ const FormsTable = () => {
               .filter(
                 (row) =>
                   !searchedVal.length ||
-                  row.formNumber
+                  row.form.formNumber
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase()) ||
-                  row.title
+                  row.form.title
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase()) ||
-                  row.description
+                  row.form.description
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase()) ||
-                  row.createdBy
+                  row.user.name
                     .toString()
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
-              .map((item) => (
+              .map((item, index) => (
                 <TableRow
-                  key={item.formId}
+                  key={item?.form?.formId || index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell>{item.formNumber}</TableCell>
-                  <TableCell>{item.title}</TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>{item.effectiveDate}</TableCell>
-                  <TableCell>{item.revisionNumber}</TableCell>
-                  <TableCell>
-                    <Chip
-                      color={
-                        item.status === "Pending"
-                          ? "warning"
-                          : item.status === "Approved"
-                          ? "success"
-                          : item.status === "Rejected"
-                          ? "error"
-                          : ""
-                      }
-                      label={item.status}
-                    />
-                  </TableCell>
-                  <TableCell>{item.createdBy}</TableCell>
+                  <TableCell>{item?.form?.formNumber}</TableCell>
+                  <TableCell>{item?.form?.title}</TableCell>
+                  <TableCell>{item?.form?.description}</TableCell>
+                  <TableCell>{item?.form?.effectiveDate}</TableCell>
+                  <TableCell>{item?.form?.revisionNumber}</TableCell>
+                  <TableCell>{item?.form?.status}</TableCell>
+                  <TableCell>{item?.user?.name}</TableCell>
+                  <TableCell>{item?.user?.email}</TableCell>
+                  <TableCell>{item?.user?.phoneNo}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
-                      sx={{ backgroundColor: "#93C019" }}
-                      disabled={item.status !== "Pending"}
-                      onClick={() => approveForm(item)}
+                      color="primary"
+                      onClick={() => {
+                        if (item) {
+                          navigate(`/form/${item.form.formId}`);
+                        }
+                      }}
                     >
-                      Approve
+                      View
                     </Button>
                   </TableCell>
-                  <TableCell></TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -149,31 +128,17 @@ const FormsTable = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbar.type}
-            sx={{ width: "100%" }}
-          >
-            {snackbar.type === "success"
-              ? "Form approved successfully."
-              : "Error approving form."}
-          </Alert>
-        </Snackbar>
-      </>
-    );
-  };
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
+  );
+};
 
-  const ApproveForms = () => {
-    return (
-      <>
-        <Typography variant="h5" sx={{ pb: 4 }}>
-          Approve Forms 
-        </Typography>
-        <Divider sx={{ mb: 4 }} />
-        <FormsTable />
-      </>
-    );
-  };
-
-  export default ApproveForms;
+export default FormsTable;
