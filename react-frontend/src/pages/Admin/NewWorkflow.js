@@ -25,11 +25,11 @@ import {
   Autocomplete,
   Modal,
   Box,
+  IconButton,
 } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-// import UserGroupTable from "../../components/AdminWorkflowComponents/UserGroupTable";
 import { useNavigate } from "react-router-dom";
 const style = {
   position: "absolute",
@@ -49,7 +49,6 @@ const NewWorkflow = (props) => {
       : "no props"
   );
   const queryParameters = new URLSearchParams(window.location.search);
-  const id = queryParameters.get("id");
   const [title, setTitle] = useState(
     sessionStorage.getItem("workflow")
       ? JSON.parse(sessionStorage.getItem("workflow")).name
@@ -60,14 +59,15 @@ const NewWorkflow = (props) => {
       ? JSON.parse(sessionStorage.getItem("workflow")).description
       : ""
   );
-  const [status, setStatus] = useState("");
-  // const [actions, setActions] = useState([]);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [actionCount, setActionCount] = useState(1);
+  const [userGroups, setUserGroups] = useState([]);
+  const [forms, setForms] = useState([]);
   const [currentUserGroup, setCurrentUserGroup] = useState("");
   const [currentDueDate, setCurrentDueDate] = useState("");
+  const [savedWorkflowId, setSavedWorkflowId] = useState("");
   const [assignedUG, setAssignedUsergroups] = useState(() => {
     var ugList = [];
     var ugDuedateList = sessionStorage.getItem("workflow")
@@ -78,12 +78,6 @@ const NewWorkflow = (props) => {
     });
     return ugList;
   });
-  const [userGroups, setUserGroups] = useState([]);
-  const [forms, setForms] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedOption, setSelectedOption] = useState([]);
-  const [selectedAsigneeRole, setSelectedAsigneeRole] = useState([]);
-  const navigate = useNavigate();
 
   const [actions, setActions] = useState(
     sessionStorage.getItem("workflow")
@@ -96,23 +90,25 @@ const NewWorkflow = (props) => {
       : {
           name: "",
           description: "",
-          // form: {},
           actions: [],
           assignedUsergroups: [],
         }
   );
 
+  const handleUpdateSession = () =>
+    sessionStorage.setItem("workflow", JSON.stringify(workflow));
+
   const handleNameChange = (event) => {
     setTitle(event.target.value);
     setWorkflow({ ...workflow, name: event.target.value });
+    handleUpdateSession();
   };
 
   const handleDescriptionChange = (event) => {
     setDesc(event.target.value);
     setWorkflow({ ...workflow, description: event.target.value });
+    handleUpdateSession();
   };
-
-  const setDueDate = (event) => {};
 
   const handleActionChange = (actionIndex, field, value) => {
     const newActions = [...actions];
@@ -122,6 +118,7 @@ const NewWorkflow = (props) => {
     const newWorkflow = { ...workflow };
     newWorkflow.actions = newActions;
     setWorkflow(newWorkflow);
+    handleUpdateSession();
   };
 
   const addAction = () => {
@@ -162,79 +159,28 @@ const NewWorkflow = (props) => {
       .catch((err) => {
         console.log(err);
       });
-    // axios
-    //   .get(`http://localhost:8080/api/action/workflow/${id}`)
-    //   .then((res) => {
-    //     setActions(res.data);
-    //     setAssignee(res.data.assigneeRole);
-    //     setUserGroups(res.data[0].workflow.userGroups);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }, []);
 
-  // const addNewAction = () => {
-  //   const newAction = {
-  //     id: actions.length + 1,
-  //     title: "",
-  //     formTemplate: {
-  //       title: "",
-  //     },
-  //     asigneeRole: "",
-  //   };
-  //   setActions([...actions, newAction]);
-  // };
-
-  // const setAction = (actionObj, field, value) => {
-  //   console.log(actionObj);
-  //   actionObj[field] = value;
-  //   actions[actionObj.id - 1] = actionObj;
-  //   setActions([...actions]);
-  // };
-
-  const handleSearchChange = (event, value) => {
-    setSearchValue(value);
-  };
-
-  const newAccount = () => {
+  const newUserGroup = () => {
     navigate(`../admin/create_usergroup`, {
       state: { workflow: workflow },
     });
-    sessionStorage.setItem("workflow", JSON.stringify(workflow));
+    handleUpdateSession();
   };
 
-  // const handleOptionSelect = (actionObj, value) => {
-  //   console.log(actionObj)
-  //   if (selectedOption.length == actions.length) {
-  //     selectedOption[actionObj.id - 1] = value;
-  //   } else {
-  //     setSelectedOption([...selectedOption, value]);
-  //   }
-  //   // actionObj.formTemplate = value;
-  //   // actions[actionObj.id - 1] = actionObj;
-  //   // console.log(actions);
-  //   // setActions([...actions]);
-  // };
-  // const handleAssigneeRole = (actionObj, value) => {
-  //   console.log(actionObj);
-
-  //   console.log(value.props.value);
-  //   if (selectedAsigneeRole.length == actions.length) {
-  //     selectedAsigneeRole[actionObj.id - 1] = value.props.value;
-  //   } else {
-  //     setSelectedAsigneeRole([...selectedAsigneeRole, value.props.value]);
-  //   }
-  //   // actionObj.formTemplate = value;
-  //   // actions[actionObj.id - 1] = actionObj;
-  //   // console.log(actions);
-  //   // setActions([...actions]);
-  // };
-
-  const filterOptions = (forms, { inputValue }) => {
-    return forms.filter((option) =>
-      option.title.toLowerCase().includes(inputValue.toLowerCase())
+  const deleteUserGroup = (usergroupIdToRemove) => {
+    const filteredAssignedUG = assignedUG.filter(
+      (ug) => ug !== usergroupIdToRemove
     );
+    setAssignedUsergroups(filteredAssignedUG);
+    const filteredUserGroups = workflow.assignedUsergroups.filter(
+      (userGroup) => userGroup.usergroupId !== usergroupIdToRemove
+    );
+    setWorkflow({
+      ...workflow,
+      assignedUsergroups: [...filteredUserGroups],
+    });
+    handleUpdateSession();
   };
 
   const addUsergroupToWorkflow = (e) => {
@@ -246,20 +192,13 @@ const NewWorkflow = (props) => {
         { usergroupId: currentUserGroup, dueDate: currentDueDate },
       ],
     });
-
-    // console.log("workflow", workflow);
+    handleUpdateSession();
     handleClose();
-    // console.log("actions", actions)
-    // console.log("selectedOption", selectedOption)
-    // console.log("selectedAsigneeRole", selectedAsigneeRole)
   };
 
   const saveNewWorkflow = () => {
     setWorkflow({ ...workflow, name: title });
     console.log("workflow", workflow);
-    // console.log("actions", actions)
-    // console.log("selectedOption", selectedOption)
-    // console.log("selectedAsigneeRole", selectedAsigneeRole)
     var workflowId = null;
     var vendorFormTemplateIds = [];
     var userGroupIdList = [];
@@ -275,8 +214,9 @@ const NewWorkflow = (props) => {
       .then((res) => {
         console.log("created new workflow");
         workflowId = res.data.workflowId;
+        setSavedWorkflowId(workflowId);
       })
-      .then((res)=>{
+      .then((res) => {
         // create new actions
         workflow.actions.forEach((action) => {
           axios
@@ -291,7 +231,7 @@ const NewWorkflow = (props) => {
               if (workflow.assigneeRole == "Vendor") {
                 vendorFormTemplateIds.push(formTemplateId);
               }
-    
+
               // map formtemplate to action
               axios
                 .put(
@@ -323,35 +263,39 @@ const NewWorkflow = (props) => {
               console.log(err);
             });
         });
-
       })
-      .then((res)=>{
+      .then((res) => {
         // map workflow to user groups
         workflow.assignedUsergroups.forEach((userGroup) => {
           var ugId = userGroup.usergroupId;
           var dueDate = userGroup.dueDate;
+          var workflowId = savedWorkflowId;
+          console.log("WORKFLOWID: ", workflowId);
           axios
             .put(
-              `http://localhost:8080/api/userGroup/${ugId}/workflow/${workflowId}` //workflow here is null for some reason 
+              `http://localhost:8080/api/userGroup/${ugId}/workflow/${workflowId}` //workflow here is null for some reason
             )
             .then((res) => {
-              console.log(`mapped user group ${ugId} to workflow ${workflowId}`);
-    
+              console.log(
+                `mapped user group ${ugId} to workflow ${workflowId}`
+              );
+
               // create new form statuses
               var userId = null;
-    
+
               // find vendor User id from usergroups fetched
               userGroups.forEach((ug) => {
+                console.log("UG:", ug);
                 if (ug.userGroupId == userGroup.usergroupId) {
                   // find the vendor userid
-                  ug.forEach((user) => {
+                  ug.assignedUsers.forEach((user) => {
                     if (user.userType == "Vendor") {
                       userId = user.userId;
                     }
                   });
                 }
               });
-    
+
               // for each vendor form template, create a form status
               vendorFormTemplateIds.forEach((formTemplateId) => {
                 axios
@@ -376,12 +320,11 @@ const NewWorkflow = (props) => {
               console.log(err);
             });
         });
-
       })
       .catch((err) => {
         console.log(err);
       });
-
+    sessionStorage.removeItem("workflow");
   };
 
   return (
@@ -417,6 +360,7 @@ const NewWorkflow = (props) => {
                     onChange={(e) => {
                       setCurrentUserGroup(e.target.value);
                       setAssignedUsergroups([...assignedUG, e.target.value]);
+                      handleUpdateSession();
                     }}
                     sx={{ width: "100%", mb: 1 }}
                   >
@@ -463,7 +407,7 @@ const NewWorkflow = (props) => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={newAccount}
+                        onClick={newUserGroup}
                       >
                         <Add />
                         New
@@ -566,44 +510,6 @@ const NewWorkflow = (props) => {
                             </MenuItem>
                           ))}
                         </TextField>
-                        {/* <Autocomplete
-                          options={forms}
-                          getOptionLabel={(form) =>
-                            form && form.title ? form.title : ""
-                          }
-                          filterOptions={filterOptions}
-                          value={action.form.title}
-                          onChange={(event, value) => {
-                            console.log("hi");
-                            // console.log(value.title)
-                            console.log(action);
-                            handleActionChange(index, "form", value);
-                          }}
-                          onInputChange={handleSearchChange}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Form"
-                              variant="outlined"
-                            />
-                          )}
-                          sx={{ width: "100%", mb: 2 }}
-                        /> */}
-                        {/* <TextField
-                          id="userType"
-                          select
-                          label="Role"
-                          sx={{ width: "100%" }}
-                          onChange={handleAssigneeRole}
-                          value={selectedAsigneeRole[index]}
-                          defaultValue={action.assigneeRole}
-                        >
-                          {userTypes.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </TextField> */}
                         <TextField
                           id={`assignee-${index}`}
                           label="Role"
@@ -626,61 +532,6 @@ const NewWorkflow = (props) => {
                         </TextField>
                       </CardContent>
                     </Card>
-                    // <Card
-                    //   sx={{ p: 3, mb: 5, backgroundColor: "#FFF4F2" }}
-                    //   key={action.id}
-                    // >
-                    //   <CardContent>
-                    //     <Typography variant="h6" sx={{ mb: 2 }}>
-                    //       Action {index + 1}
-                    //     </Typography>
-                    //     {/* <TextField label="" fullWidth /> */}
-                    //     <TextField
-                    //       label="Action Title"
-                    //       onChange={(e) =>
-                    //         setAction(action, "title", e.target.value)
-                    //       }
-                    //       // value=""
-                    //       sx={{ width: "100%", mb: 2 }}
-                    //     />
-                    //     {/* <TextField
-                    //       label="Form"
-                    //       // value={action.formTemplate.title}
-                    //       sx={{ width: "100%", mb: 2 }}
-                    //     /> */}
-                    //     <Autocomplete
-                    //       options={forms}
-                    //       getOptionLabel={(form) => form.title}
-                    //       filterOptions={filterOptions}
-                    //       value={selectedOption[index]}
-                    //       onChange={handleOptionSelect}
-                    //       onInputChange={handleSearchChange}
-                    //       renderInput={(params) => (
-                    //         <TextField
-                    //           {...params}
-                    //           label="Form"
-                    //           variant="outlined"
-                    //         />
-                    //       )}
-                    //       sx={{ width: "100%", mb: 2 }}
-                    //     />
-                    //     <TextField
-                    //       id="userType"
-                    //       select
-                    //       label="Role"
-                    //       sx={{ width: "100%" }}
-                    //       onChange={handleAssigneeRole}
-                    //       value={selectedAsigneeRole[index]}
-                    //       defaultValue={action.assigneeRole}
-                    //     >
-                    //       {userTypes.map((option) => (
-                    //         <MenuItem key={option.value} value={option.value}>
-                    //           {option.label}
-                    //         </MenuItem>
-                    //       ))}
-                    //     </TextField>
-                    //   </CardContent>
-                    // </Card>
                   ))}
                 </div>
                 <div>
@@ -698,16 +549,6 @@ const NewWorkflow = (props) => {
                           Add User Group
                         </Button>
                       </div>
-                      {/* <div className="row align-items-center">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={newAccount}
-                        >
-                          <Add />
-                          New
-                        </Button>
-                      </div> */}
                     </div>
                   </div>
                   {/* <UserGroupTable /> */}
@@ -717,15 +558,20 @@ const NewWorkflow = (props) => {
                     </Alert>
                   ) : (
                     userGroups.map((usergroup, index) => {
-                      // var addedUsergroups = [];
-                      // assignedUG.forEach((usergroup, index) => {
-                      //   addedUsergroups.push(usergroup.usergroupId);
-                      // })
                       if (assignedUG.includes(usergroup.userGroupId)) {
                         return (
                           <div key={index}>
                             <Typography variant="h5" sx={{ mt: 3 }}>
                               User Group {index + 1}
+                              <IconButton
+                                color="error"
+                                onClick={() => {
+                                  deleteUserGroup(usergroup.userGroupId);
+                                }}
+                                sx={{ ml: 2 }}
+                              >
+                                <Delete />
+                              </IconButton>
                             </Typography>
                             <TableContainer>
                               <Table
@@ -739,8 +585,6 @@ const NewWorkflow = (props) => {
                                     <TableCell>Role</TableCell>
                                     <TableCell>Form</TableCell>
                                     <TableCell>Form due date</TableCell>
-                                    {/* <TableCell>Form status</TableCell> */}
-                                    {/* <TableCell>Actions</TableCell> */}
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -773,11 +617,6 @@ const NewWorkflow = (props) => {
                                         </TableCell>
                                         {/* <TableCell>Form status</TableCell> */}
                                         <TableCell>
-                                          {/* { user.userType == "Vendor" ? 
-                                            workflow.assignedUsergroups[
-                                              usergroup.userGroupId
-                                            ] : "-"
-                                          } */}
                                           {user.userType == "Vendor"
                                             ? workflow.assignedUsergroups
                                                 .filter(
@@ -790,14 +629,6 @@ const NewWorkflow = (props) => {
                                                 })
                                             : "-"}
                                         </TableCell>
-                                        {/* <TableCell>
-                                          <Button
-                                            variant="contained"
-                                            color="warning"
-                                          >
-                                            Email
-                                          </Button>
-                                        </TableCell> */}
                                       </TableRow>
                                     )
                                   )}
