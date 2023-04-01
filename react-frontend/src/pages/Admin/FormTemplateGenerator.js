@@ -261,7 +261,7 @@ const FormTemplateGenerator = ({
         //   options: [],
         //   order: "",
         // };
-        if (field.status == "Active") {
+        if (field.status == "active") {
           // console.log("field options", field.options.split(", "));
           var field = {
             id: field.questionID,
@@ -403,7 +403,7 @@ const FormTemplateGenerator = ({
                 options: field.options != [] ? field.options.join(",") : "",
                 type: field.type,
                 order: index + 1,
-                status: "Active",
+                status: "active",
                 formID: {
                   formId: savedFormId,
                 },
@@ -455,7 +455,7 @@ const FormTemplateGenerator = ({
             .then((res) => {
               // console.log(res.data);
               res.data.forEach((field, index) => {
-                if (field.status == "Active") {
+                if (field.status == "active") {
                   // console.log(`soft deleting qn with id ${field.questionID}`);
                   axios.put(
                     `http://localhost:8080/api/questions/delete/${field.questionID}/Inactive`
@@ -477,7 +477,7 @@ const FormTemplateGenerator = ({
                 options: field.options != [] ? field.options.join(",") : "",
                 type: field.type,
                 order: index + 1,
-                status: "Active",
+                status: "active",
                 formID: {
                   formId: savedFormId,
                 },

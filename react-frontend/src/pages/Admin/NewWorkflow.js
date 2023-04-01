@@ -144,7 +144,9 @@ const NewWorkflow = (props) => {
       .get(`http://localhost:8080/api/formtemplate`)
       .then((res) => {
         console.log("forms", res.data);
-        setForms(res.data);
+        // var formsList = [];
+        const formsList = res.data.filter((form) => form.status == "Approved");
+        setForms(formsList);
       })
       .catch((err) => {
         console.log(err);
@@ -154,7 +156,10 @@ const NewWorkflow = (props) => {
       .get(`http://localhost:8080/api/userGroup`)
       .then((res) => {
         console.log("usergroups", res.data);
-        setUserGroups(res.data);
+        const usergroupList = res.data.filter(
+          (usergroup) => usergroup.status == "active"
+        );
+        setUserGroups(usergroupList);
       })
       .catch((err) => {
         console.log(err);
@@ -273,7 +278,7 @@ const NewWorkflow = (props) => {
           console.log("WORKFLOWID: ", workflowId);
           axios
             .put(
-              `http://localhost:8080/api/userGroup/${ugId}/workflow/${workflowId}` //workflow here is null for some reason
+              `http://localhost:8080/api/userGroup/${ugId}/workflow/${workflowId}`
             )
             .then((res) => {
               console.log(
@@ -552,94 +557,97 @@ const NewWorkflow = (props) => {
                     </div>
                   </div>
                   {/* <UserGroupTable /> */}
-                  {assignedUG.length == 0 ? (
-                    <Alert severity="warning" sx={{ mt: 4 }}>
-                      No assigned user group
-                    </Alert>
-                  ) : (
-                    userGroups.map((usergroup, index) => {
-                      if (assignedUG.includes(usergroup.userGroupId)) {
-                        return (
-                          <div key={index}>
-                            <Typography variant="h5" sx={{ mt: 3 }}>
-                              User Group {index + 1}
-                              <IconButton
-                                color="error"
-                                onClick={() => {
-                                  deleteUserGroup(usergroup.userGroupId);
-                                }}
-                                sx={{ ml: 2 }}
-                              >
-                                <Delete />
-                              </IconButton>
-                            </Typography>
-                            <TableContainer>
-                              <Table
-                                sx={{ minWidth: 650 }}
-                                aria-label="simple table"
-                              >
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Role</TableCell>
-                                    <TableCell>Form</TableCell>
-                                    <TableCell>Form due date</TableCell>
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {usergroup.assignedUsers.map(
-                                    (user, index) => (
-                                      <TableRow
-                                        key={index}
-                                        sx={{
-                                          "&:last-child td, &:last-child th": {
-                                            border: 0,
-                                          },
-                                        }}
-                                      >
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>
-                                          <Chip
-                                            label={user.userType}
-                                            color={
-                                              user.userType == "Vendor"
-                                                ? "primary"
-                                                : user.userType == "Admin"
-                                                ? "success"
-                                                : "secondary"
-                                            }
-                                          />
-                                        </TableCell>
-                                        <TableCell>
-                                          {workflow.actions[0].form.title}
-                                        </TableCell>
-                                        {/* <TableCell>Form status</TableCell> */}
-                                        <TableCell>
-                                          {user.userType == "Vendor"
-                                            ? workflow.assignedUsergroups
-                                                .filter(
-                                                  (pair) =>
-                                                    pair.usergroupId ===
-                                                    usergroup.userGroupId
-                                                )
-                                                .map((ugPair) => {
-                                                  return ugPair.dueDate;
-                                                })
-                                            : "-"}
-                                        </TableCell>
-                                      </TableRow>
-                                    )
-                                  )}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </div>
-                        );
-                      }
-                    })
-                  )}
+                  <div style={{ height: "500px", overflow: "auto" }}>
+                    {assignedUG.length == 0 ? (
+                      <Alert severity="warning" sx={{ mt: 4 }}>
+                        No assigned user group
+                      </Alert>
+                    ) : (
+                      userGroups.map((usergroup, index) => {
+                        if (assignedUG.includes(usergroup.userGroupId)) {
+                          return (
+                            <div key={index}>
+                              <Typography variant="h5" sx={{ mt: 3 }}>
+                                User Group {index + 1}
+                                <IconButton
+                                  color="error"
+                                  onClick={() => {
+                                    deleteUserGroup(usergroup.userGroupId);
+                                  }}
+                                  sx={{ ml: 2 }}
+                                >
+                                  <Delete />
+                                </IconButton>
+                              </Typography>
+                              <TableContainer>
+                                <Table
+                                  sx={{ minWidth: 650 }}
+                                  aria-label="simple table"
+                                >
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell>Name</TableCell>
+                                      <TableCell>Email</TableCell>
+                                      <TableCell>Role</TableCell>
+                                      <TableCell>Form</TableCell>
+                                      <TableCell>Form due date</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {usergroup.assignedUsers.map(
+                                      (user, index) => (
+                                        <TableRow
+                                          key={index}
+                                          sx={{
+                                            "&:last-child td, &:last-child th":
+                                              {
+                                                border: 0,
+                                              },
+                                          }}
+                                        >
+                                          <TableCell>{user.name}</TableCell>
+                                          <TableCell>{user.email}</TableCell>
+                                          <TableCell>
+                                            <Chip
+                                              label={user.userType}
+                                              color={
+                                                user.userType == "Vendor"
+                                                  ? "primary"
+                                                  : user.userType == "Admin"
+                                                  ? "success"
+                                                  : "secondary"
+                                              }
+                                            />
+                                          </TableCell>
+                                          <TableCell>
+                                            {workflow.actions[0].form.title}
+                                          </TableCell>
+                                          {/* <TableCell>Form status</TableCell> */}
+                                          <TableCell>
+                                            {user.userType == "Vendor"
+                                              ? workflow.assignedUsergroups
+                                                  .filter(
+                                                    (pair) =>
+                                                      pair.usergroupId ===
+                                                      usergroup.userGroupId
+                                                  )
+                                                  .map((ugPair) => {
+                                                    return ugPair.dueDate;
+                                                  })
+                                              : "-"}
+                                          </TableCell>
+                                        </TableRow>
+                                      )
+                                    )}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </div>
+                          );
+                        }
+                      })
+                    )}
+                  </div>
                 </div>
               </form>
             </Paper>

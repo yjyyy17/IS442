@@ -10,6 +10,7 @@ import Grid from "@mui/material/Grid";
 import WorkflowBox from "../../components/AdminWorkflowComponents/WorkflowBox";
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 
 // remove later
 import UserGroupTable from "../../components/AdminWorkflowComponents/UserGroupTable";
@@ -18,6 +19,14 @@ const ViewWorkflows = () => {
   const label = { inputProps: { "aria-label": "Switch Late Form" } };
   const [searchedVal, setSearchedVal] = useState("");
   const [isLate, setIsLate] = useState(false);
+
+  const navigate = useNavigate();
+
+  const newWorkflow = () => {
+    navigate(`../admin/create_workflow`);
+  };
+
+
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -25,7 +34,7 @@ const ViewWorkflows = () => {
           Your Workflow(s)
         </Typography>
         <div>
-          <Button variant="contained" color="warning">
+          <Button variant="contained" color="warning" onClick={newWorkflow}>
             Create New
           </Button>
         </div>
