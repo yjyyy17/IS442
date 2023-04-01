@@ -35,6 +35,7 @@ const ViewUserGroups = () => {
       .get(`http://localhost:8080/api/userGroup`)
       .then((res) => {
         console.log(res.data);
+        setUsergroups([]);
         res.data.forEach((usergroup, index) => {
           if (usergroup.status == "active") {
             setUsergroups((prevArray) => [...prevArray, usergroup]);

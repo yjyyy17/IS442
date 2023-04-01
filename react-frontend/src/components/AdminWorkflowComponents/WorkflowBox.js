@@ -18,12 +18,14 @@ const WorkflowBox = (props) => {
   const [actions, setActions] = useState([]);
   const current = new Date();
   const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
+  const [reloadComponent, setReloadComponent] = useState(true)
 
   const deleteWorkflow = (id) => {
     axios
       .put(`http://localhost:8080/api/workflow/delete/${id}`)
       .then((res) => {
         console.log(res.data);
+        setReloadComponent(!reloadComponent)
         setSnackbar({ open: true, type: "success" });
       })
       .catch((err) => {
@@ -39,6 +41,7 @@ const WorkflowBox = (props) => {
     axios
       .get(`http://localhost:8080/api/workflow`)
       .then((res) => {
+        setActions([])
         res.data.forEach((workflow, index) => {
           var workflowID = workflow.workflowId;
           var formStatuses = workflow.formStatuses;
@@ -70,7 +73,7 @@ const WorkflowBox = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [reloadComponent]);
 
   return (
     <>
