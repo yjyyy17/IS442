@@ -25,6 +25,7 @@ Frontend application:
 4. Run the `npm start` command
 5. You should see this in your terminal and a new browser tab will open showing the login page
 ![](installation-guide-images/installationguide3.png)
+![](installation-guide-images/installationguide6.png)
 
 ### Method 2: Running build.bat file
 Backend services:
@@ -49,5 +50,8 @@ Frontend application:
 ## Other third-party components/resources
 ### Email sending using Sendgrid
 1. [Sign up for an account ](https://signup.sendgrid.com/ "Sign up for an account ")
-2. Follow the integration guide to generate a new API key
+2. Find the integration guide to generate a new API key using the Web API setup method
+![](installation-guide-images/installationguide7.png)
+3. Choose Node.js
+4. Follow the rest of the steps and save the API key
 3. Replace the Sendgrid API Key in the applications.properties file in the `springboot-backend` folder
