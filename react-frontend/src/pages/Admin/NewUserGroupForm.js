@@ -99,9 +99,9 @@ const NewUserGroupForm = (props) => {
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
-  const returnToWorkflow = (e) => {
+  const returnPreviousPage = (e) => {
     // to change the location to the prev page
-    navigate(`../admin/create_workflow`, { state: { workflow: workflow } });
+    navigate(-1);
   };
 
   const handleSearchChange = (event, value) => {
@@ -179,9 +179,9 @@ const NewUserGroupForm = (props) => {
                 <Button
                   variant="contained"
                   sx={{ backgroundColor: "grey" }}
-                  onClick={returnToWorkflow}
+                  onClick={returnPreviousPage}
                 >
-                  Back to workflow
+                  Back
                 </Button>
               </div>
             </div>

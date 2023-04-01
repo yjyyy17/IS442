@@ -6,6 +6,7 @@ import NewUserAccountForm from "./NewUserAccountForm";
 import ViewForms from "./ViewForms";
 import CreateNewForm from "./CreateNewForm";
 import ViewWorkflows from "./ViewWorkflows";
+import ViewUserGroups from "./ViewUserGroups";
 
 const Admin = () => {
   const [currentPath, setCurrentPath] = useState("");
@@ -27,6 +28,8 @@ const Admin = () => {
             <ViewForms />
           ) : currentPath === "/admin/workflows" ? (
             <ViewWorkflows />
+          ) : currentPath === "/admin/user_groups" ? (
+            <ViewUserGroups />
           ) : (
             <></>
           )

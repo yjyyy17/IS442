@@ -169,7 +169,7 @@ public class ResponseController {
             Response iteratedResponse = response.next();
 
             if(iteratedResponse.getUserID().getUserId() == userId && iteratedResponse.getQuestion().getFormID().getFormId() == formId){
-                iteratedResponse.setStatus("Inactive");
+                iteratedResponse.setStatus("inactive");
                 responseRepository.save(iteratedResponse);
             }
         }

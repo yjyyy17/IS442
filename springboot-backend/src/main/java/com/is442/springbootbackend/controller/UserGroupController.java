@@ -106,7 +106,7 @@ public class UserGroupController {
         UserGroup userGroup = userGroupRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User does not exist with id : " + id));
 
-        userGroup.setStatus("Inactive");
+        userGroup.setStatus("inactive");
         userGroupRepository.save(userGroup);
 
         Map<String, Boolean> response = new HashMap<>();
