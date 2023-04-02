@@ -4,10 +4,9 @@ import axios from "axios";
 const addResponses = async (answerData) => {
   var url = "http://localhost:8080/api/response/add"
   return axios
-    .post(url. answerData)
+    .post(url, answerData)
     .then((response) => {
-      console.log(response)
-      // return response.data
+      return response.data
     })
     .catch(function (error) {
       if (error.response) {

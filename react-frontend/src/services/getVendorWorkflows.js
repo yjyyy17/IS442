@@ -1,7 +1,7 @@
 
 import axios from "axios";
 
-const getVendorWorkflows = async (userId, workflowId) => {
+const getVendorWorkflows = async (userId) => {
   var url = "http://localhost:8080/api/formstatusByUserId?userId=" + userId
   return axios
     .get(url)
