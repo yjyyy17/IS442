@@ -266,21 +266,29 @@ public class FormStatusController {
 
         allForms = formStatusRepository.findAll();
 
+        ArrayList<Integer> checkFormID = new ArrayList<Integer>();
+
         for(FormStatus form: allForms){
             System.out.println(form.getForm().getFormId() + " " + form.getEvaluationStatus());
             String formStatus = form.getEvaluationStatus();
             long userID = form.getUser().getUserId();
             System.out.println(formStatus + " || " + userID);
             if(formStatus.equals("Approved") ){
-                if(userID == userID){
-                    // ArrayList<HashMap> formInfo = new ArrayList<>();
+                if(userID == userId){
+                    Integer formId = form.getForm().getFormId();
 
-                    completedForms.put("FormId",String.valueOf(form.getForm().getFormId()));
-                    completedForms.put("title", form.getForm().getTitle());
-                    completedForms.put("description", form.getForm().getDescription());
-                    completedForms.put("formNumber", form.getForm().getFormNumber());
-                    completedFormsList.add(completedForms);
-                }
+                    if(!checkFormID.contains(formId)){
+                        checkFormID.add(formId);
+                        System.out.println(form.getWorkflow().getWorkflowId() + "VERIFYING");
+                        // ArrayList<HashMap> formInfo = new ArrayList<>();
+
+                        completedForms.put("FormId",String.valueOf(form.getForm().getFormId()));
+                        completedForms.put("title", form.getForm().getTitle());
+                        completedForms.put("description", form.getForm().getDescription());
+                        completedForms.put("formNumber", form.getForm().getFormNumber());
+                        completedFormsList.add(completedForms);
+                        completedForms = new HashMap<>();
+                }}
 
             }
 
