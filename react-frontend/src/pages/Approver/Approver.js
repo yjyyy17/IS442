@@ -4,6 +4,8 @@ import { useLocation } from 'react-router-dom';
 import ViewUserAccounts from "./ViewUserAccounts";
 import ViewWorkflows from "./ViewWorkflows";
 import ApproveForms from "./ViewForms";
+import ViewAdminForms from "./ViewAdminForms";
+
 
 // import NewUserAccountForm from "./NewUserAccountForm";
 
@@ -23,6 +25,7 @@ const Approver = () => {
       content={
         currentPath === '/approver/user_accounts'? <ViewUserAccounts/>
         :currentPath === '/approver/ViewWorkflows'? <ViewWorkflows/>
+        :currentPath === '/approver/ViewAdminForms'? <ViewAdminForms/>
         :currentPath === '/approver/ViewForms'? <ApproveForms/>:<ApproveForms/>
         
       }

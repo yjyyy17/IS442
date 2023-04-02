@@ -76,20 +76,20 @@ const FormsTable = () => {
 
   const updateFormStatus = (formNumber, title, description, effectiveDate, revisionNumber, status) => {
     axios
-      .put(`http://localhost:8080/api/formtemplate?formId=${formId}`, {
-        formNumber: formNumber,
-        title: title,
-        description: description,
-        effectiveDate: effectiveDate,
-        revisionNumber: revisionNumber,
-        status: status,
+      .put(`http://localhost:8080/api/formtemplate?formId=${formNumber}`, {
+        "formNumber": formNumber,
+        "title": title,
+        "description": description,
+       "effectiveDate": effectiveDate,
+        "revisionNumber": revisionNumber,
+        "status": status,
       })
       .then((res) => {
-        console.log(formId, workflowId, userId , dueDate); // Add this line to inspect the error object
+        // console.log(formId, workflowId, userId , dueDate); // Add this line to inspect the error object
         setSnackbar({ open: true, type: "success", message: "Form status updated successfully." });
       })
       .catch((err) => {
-        console.log(formId, workflowId, userId , dueDate); // Add this line to inspect the error object
+        // console.log(formId, workflowId, userId , dueDate); // Add this line to inspect the error object
         console.log('Error:', err); // Add this line to inspect the error object
         console.log(err);
         setSnackbar({ open: true, type: "error", message: "Error updating form status." });

@@ -181,4 +181,17 @@ const FormsTable = () => {
   );
 };
 
-export default FormsTable;
+const VendorFormsTable = () => {
+  return (
+    <>
+      <Typography variant="h5" sx={{ pb: 4 }}>
+        Vendor Forms
+      </Typography>
+      <Divider sx={{ mb: 4 }} />
+      <FormsTable />
+    </>
+  );
+};
+
+
+export default VendorFormsTable;
