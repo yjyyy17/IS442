@@ -1,17 +1,15 @@
 package com.is442.springbootbackend.controller;
 
-import com.is442.springbootbackend.model.FormTemplate;
-import com.is442.springbootbackend.model.Question;
-import com.is442.springbootbackend.model.Response;
-import com.is442.springbootbackend.model.User;
-import com.is442.springbootbackend.repository.FormTemplateRepository;
-import com.is442.springbootbackend.repository.QuestionRepository;
-import com.is442.springbootbackend.repository.ResponseRepository;
-import com.is442.springbootbackend.repository.UserRepository;
+import com.is442.springbootbackend.model.*;
+import com.is442.springbootbackend.repository.*;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.lang.annotation.Repeatable;
 import java.util.*;
 
@@ -28,6 +26,8 @@ public class ResponseController {
     private UserRepository userRepository;
     @Autowired
     private FormTemplateRepository formTemplateRepository;
+    @Autowired
+    private FormStatusRepository formStatusRepository;
 
     @GetMapping(path = "/getresponse")
     public List<Response> getResponseForUser(@RequestBody Response response) throws NullPointerException {
@@ -70,7 +70,9 @@ public class ResponseController {
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<?> addResponses(@RequestBody List<Response> responses){
+    public ResponseEntity<?> addResponses(@RequestBody List<Response> responses, @RequestParam Long workflowId){
+
+//        System.out.println(workflowId);
 
         Iterator<Response> interateResponses = responses.iterator();
         User user = null;
@@ -129,10 +131,19 @@ public class ResponseController {
 
         }
         if(completionStatus == true){
-            return ResponseEntity.ok().body("Added");
-        } else {
-            return ResponseEntity.badRequest().body("Unable to add");
+
+            FormStatus formStatus = formStatusRepository.findByFormFormIdAndWorkflowWorkflowIdAndUserUserId((int) formID, workflowId, user.getUserId());
+
+            if(formStatus!=null){
+
+                formStatus.setEvaluationStatus("Submitted");
+                formStatusRepository.save(formStatus);
+                return ResponseEntity.ok().body("Added");
+            }
         }
+
+            return ResponseEntity.badRequest().body("Unable to add");
+
 
     }
 //
