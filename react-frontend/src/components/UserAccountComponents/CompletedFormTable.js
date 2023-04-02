@@ -120,7 +120,7 @@ const CompletedFormTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [completedForm]);
+  }, []);
 
   const getCompletedFormBasedOnFormId = (formId,userId,formNumber,title,description) => {
     const axios = require('axios');
