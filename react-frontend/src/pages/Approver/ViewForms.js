@@ -145,6 +145,7 @@ const FormsTable = () => {
                       View
                     </Button> */}
                     <Button
+                      disabled={item.evaluationStatus != "Submitted" ? true:false}
                       variant="contained"
                       color="secondary"
                       onClick={() => {

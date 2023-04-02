@@ -166,6 +166,7 @@ const FormsTable = () => {
 
                   <TableCell>
                     <Button
+                    disabled={item.status == "Approved" ? true:false}
                       variant="contained"
                       sx={{ backgroundColor: "#93C019" }}
                       onClick={() => {
