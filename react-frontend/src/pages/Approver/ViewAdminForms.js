@@ -74,9 +74,9 @@ const FormsTable = () => {
       });
   };
 
-  const updateFormStatus = (formNumber, title, description, effectiveDate, revisionNumber, status) => {
+  const updateFormStatus = (formId, formNumber, title, description, effectiveDate, revisionNumber, status) => {
     axios
-      .put(`http://localhost:8080/api/formtemplate?formId=${formNumber}`, {
+      .put(`http://localhost:8080/api/formtemplate/${formId}`, {
         "formNumber": formNumber,
         "title": title,
         "description": description,
@@ -171,7 +171,7 @@ const FormsTable = () => {
                       onClick={() => {
                         if (item) {
                           // You need to pass the formId, userId, and workflowId from the item object as appropriate.
-                          updateFormStatus(item.formNumber, item.title, item.description, item.effectiveDate, item.revisionNumber, item.status);
+                          updateFormStatus(item.formId, item.formNumber, item.title, item.description, item.effectiveDate, item.revisionNumber, item.status);
                         }
                       }
                     }
