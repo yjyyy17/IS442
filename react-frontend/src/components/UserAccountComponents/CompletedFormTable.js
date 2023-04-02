@@ -120,7 +120,7 @@ const CompletedFormTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [completedForm]);
+  }, []);
 
   const getCompletedFormBasedOnFormId = (formId,userId,formNumber,title,description) => {
     const axios = require('axios');
@@ -128,7 +128,7 @@ const CompletedFormTable = () => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:8080/api/formstatus/questions?userId=${userId}&formId=${formId}',
+      url: `http://localhost:8080/api/formstatus/questions?userId=${userId}&formId=${formId}`,
       headers: { }
     };
     axios.request(config)
