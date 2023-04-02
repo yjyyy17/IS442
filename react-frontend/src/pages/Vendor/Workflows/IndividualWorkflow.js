@@ -119,7 +119,7 @@ const IndividualWorkflow = () => {
     ];
 
     const fetchData = async () => {
-      const data = await addResponses(returnArray);
+      const data = await addResponses(returnArray, workflowData.workflow.workflowId);
     };
 
     fetchData();

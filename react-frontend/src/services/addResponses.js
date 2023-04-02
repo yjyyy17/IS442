@@ -1,8 +1,8 @@
 
 import axios from "axios";
 
-const addResponses = async (answerData) => {
-  var url = "http://localhost:8080/api/response/add"
+const addResponses = async (answerData, workflowId) => {
+  var url = "http://localhost:8080/api/response/add?workflowId=" + workflowId.toString()
   return axios
     .post(url, answerData)
     .then((response) => {

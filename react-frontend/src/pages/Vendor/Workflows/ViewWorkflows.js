@@ -27,7 +27,7 @@ const ViewWorkflows = (props) => {
       };
   
       fetchData();
-    }, []);
+    });
 
 
   function handleWorkflowClick(wf) {
@@ -40,23 +40,7 @@ const ViewWorkflows = (props) => {
       <Typography variant='h5' sx={{ pb: 4 }}>
         Your workflow(s)
       </Typography>
-      <Divider />
-
-      <Typography sx={{ mt: 4 }}>Search by title</Typography>
-      <TextField
-        value={searchInput}
-        onChange={(e) => {
-          setSearchInput(e.target.value);
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-        sx={{ mb: 4, width: "100%" }}
-      />
+      <Divider sx={{ mb: 4 }}/>
 
       {workflowData.map((wf) => (
         <>
