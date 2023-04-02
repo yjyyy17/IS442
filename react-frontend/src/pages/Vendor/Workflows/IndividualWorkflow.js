@@ -1,20 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Grid,
   Box,
   Card,
-  TextField,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Select,
-  MenuItem,
-  Button,
 } from "../../../mui";
 import { styled } from "@mui/system";
 import { useLocation } from "react-router-dom";
 import DynamicForm from "./DynamicForm";
+import getFormQuestions from '../../../services/getFormQuestions';
 
 const Item = styled(Box)(() => ({
   padding: 1,
@@ -30,112 +24,55 @@ const IndividualWorkflow = () => {
   // Comes from ViewWorkflows.js
   const location = useLocation();
   const workflowData = location.state ? location.state.data : [];
+  console.log(workflowData)
 
   // Initialising form data and question data state variables
-  const [formData, setFormData] = useState({
-    form_id: 0,
-    title: "New Vendor Assessment Form",
-    description: "",
-    assignee: "",
-    effective_date: "24/05/2022",
-    form_no: "123",
-    revision_no: 1,
-  });
+  const formData = workflowData.form;
+  const formID = formData.formId;
 
-  const [questionData, setQuestionData] = useState([
-    {
-      form_id: 0,
-      question_id: 0,
-      order: 1,
-      label: "Company's name",
-      options: "NA",
-      type: "Text Input",
-      status: "Active",
-    },
-    {
-      form_id: 0,
-      question_id: 1,
-      order: 3,
-      label: "GST Registered",
-      options: "Yes,No,Others",
-      type: "Radio",
-      status: "Active",
-    },
-    {
-      form_id: 0,
-      question_id: 2,
-      order: 4,
-      label: "Type of Business License/ Registration",
-      options:
-        "Sole proprietorship,Limited Company,Partnership Agreement,Others",
-      type: "Select",
-      status: "Active",
-    },
-    {
-      form_id: 0,
-      question_id: 4,
-      order: 2,
-      label: "Company's Registration No",
-      options: "NA",
-      type: "Text Input",
-      status: "Active",
-    },
-  ]);
+  const [questionData, setQuestionData] = useState([]);
 
-  const [answerData, setAnswerData] = useState([]);
-  // function to handle user's answer
-  const handleAnswerChange = (questionId, answer) => {
-    // search if question already exists in answerData
-    const index = answerData.findIndex(
-      (item) => item.question_id === questionId
-    );
-    if (index === -1) {
-      // if question not found, add new object to answerData array
-      setAnswerData((prevState) => [
-        ...prevState,
-        { question_id: questionId, answer: answer },
-      ]);
-    } else {
-      // if question already exists, update answer
-      const newArray = [...answerData];
-      newArray[index] = { question_id: questionId, answer: answer };
-      setAnswerData(newArray);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getFormQuestions(formID.toString());
+      setQuestionData(data);
+    };
 
-  // Order questions based on their 'order' key
-  const questionDataFormatted = questionData.sort((q1, q2) =>
-    q1.order > q2.order ? 1 : -1
-  );
+    fetchData();
+  }, [formID])
 
-  const handleSubmit = () => {
-    // event.preventDefault();
-    // fetch('/api/submit', {
-    //   method: 'POST',
-    //   body: JSON.stringify(answerData),
-    //   headers: { 'Content-Type': 'application/json' }
-    // })
-    //   .then(res => res.json())
-    //   .then(data => console.log(data))
-    //   .catch(err => console.log(err));
+  const handleSubmit = (answerData) => {
+    const dateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+const inputString = "2023-03-01T22:58";
+console.log(dateTimeRegex.test(inputString)); // true
+
+    answerData.forEach((item) => {
+      if (typeof item.answer !== "string") {
+        let answer = ""
+        if (item.answer.options.length > 0) {
+          answer = item.answer.options.join(",");
+          if (item.answer.input.length > 0) {
+            answer += "," + item.answer.input;
+          }
+        } else if (item.answer.input.length > 0) {
+          answer = item.answer.input;
+        }
+        item.answer = answer
+      } else if (dateTimeRegex.test(item.answer)) {
+        item.answer = item.answer.slice(0,10)
+      }
+    });
     console.log(answerData);
   };
-
-  //   console.log(answerData);
-
-  // Need to GET formData based on workflow ID
-  // Once formData is returned, get the list of questions based on form ID
-  // sooo use nested axios get request
-
   return (
     <>
       <Typography variant='h5' sx={{ pb: 4 }}>
-        {workflowData.title}
+        {workflowData.workflow.title}
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Item sx={{ color: "grey" }}>
-            {workflowData.description}
+            {workflowData.workflow.description}
             <br></br>
             <br></br>
             Please fill out all the fields before submitting
@@ -156,8 +93,6 @@ const IndividualWorkflow = () => {
               <Typography variant='h6'>{formData.title}</Typography>
               <DynamicForm
                 questions={questionData}
-                handleAnswerChange={handleAnswerChange}
-                answerData = {answerData}
                 onSubmit = {handleSubmit}
               />
             </Card>

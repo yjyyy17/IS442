@@ -103,7 +103,7 @@ public class VendorController {
             String vendorName = vendorEmailList.get(email).get("vendorName");
 
             String fromEmail = "jiayi.fok.2020@scis.smu.edu.sg";
-            String subject = "Test form overdue email";
+            String subject = "Incomplete Form Reminder";
 
             System.out.println("Formatting email..");
             Mail mail = formatEmail(vendorName, workflowTitle,  fromEmail, subject, email);
