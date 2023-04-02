@@ -45,11 +45,14 @@ const FormsTable = () => {
         evaluationStatus: "Approved",
         rejectionPersonnel: null,
         rejectionComments: null
+        
       })
       .then((res) => {
         setSnackbar({ open: true, type: "success", message: "Form status updated successfully." });
       })
       .catch((err) => {
+        console.log(formId, workflowId, userId ); // Add this line to inspect the error object
+        console.log('Error:', err); // Add this line to inspect the error object
         console.log(err);
         setSnackbar({ open: true, type: "error", message: "Error updating form status." });
       });
@@ -64,10 +67,10 @@ const FormsTable = () => {
           onChange={(e) => setSearchedVal(e.target.value)}
         />
         <div className="row align-items-center">
-          <Button variant="contained" color="primary" disabled>
+          {/* <Button variant="contained" color="primary" disabled>
             <Check />
             Approve
-          </Button>
+          </Button> */}
         </div>
       </div>
       <TableContainer component={Paper}>
@@ -110,7 +113,7 @@ const FormsTable = () => {
               )
               .map((item, index) => (
                   <TableRow
-                    key={`${item?.form?.for}-${item?.user?.name}` || index}
+                    key={`${item?.form?.formId}-${item?.user?.name}` || index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                   <TableCell>{item?.form?.formNumber}</TableCell>
@@ -123,7 +126,7 @@ const FormsTable = () => {
                   <TableCell>{item?.user?.email}</TableCell>
                   <TableCell>{item?.user?.phoneNo}</TableCell>
                   <TableCell>
-                    <Button
+                    {/* <Button
                       variant="contained"
                       color="primary"
                       onClick={() => {
@@ -133,7 +136,7 @@ const FormsTable = () => {
                       }}
                     >
                       View
-                    </Button>
+                    </Button> */}
                     <Button
                       variant="contained"
                       color="secondary"
