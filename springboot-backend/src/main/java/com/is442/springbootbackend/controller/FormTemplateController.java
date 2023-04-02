@@ -69,6 +69,8 @@ public class FormTemplateController {
         updateForm.setFormNumber(form.getFormNumber());
         updateForm.setRevisionNumber(form.getRevisionNumber());
 
+        updateForm.setStatus(form.getStatus());
+
         formTemplateRepository.save(updateForm);
 
         return ResponseEntity.ok(updateForm);

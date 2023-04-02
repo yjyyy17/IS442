@@ -39,24 +39,29 @@ const FormsTable = () => {
       });
   }, [snackbar]);
 
-  const updateFormStatus = (formId, userId, workflowId) => {
+  const updateFormStatus = (formId, userId, workflowId, dueDate) => {
     axios
       .put(`http://localhost:8080/api/formstatus?formId=${formId}&workflowId=${workflowId}&userId=${userId}`, {
         evaluationStatus: "Approved",
         rejectionPersonnel: null,
-        rejectionComments: null
-        
+        rejectionComments: null,
+        dueDate: dueDate
       })
       .then((res) => {
+        console.log(formId, workflowId, userId , dueDate); // Add this line to inspect the error object
         setSnackbar({ open: true, type: "success", message: "Form status updated successfully." });
       })
       .catch((err) => {
-        console.log(formId, workflowId, userId ); // Add this line to inspect the error object
+        console.log(formId, workflowId, userId , dueDate); // Add this line to inspect the error object
         console.log('Error:', err); // Add this line to inspect the error object
         console.log(err);
         setSnackbar({ open: true, type: "error", message: "Error updating form status." });
       });
   };
+
+  function refreshPage() {
+    window.location.reload(false);
+  }
 
   return (
     <>
@@ -81,6 +86,7 @@ const FormsTable = () => {
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Effective Date</TableCell>
+              <TableCell>Due Date</TableCell>
               <TableCell>Revision Number</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Created By</TableCell>
@@ -120,8 +126,9 @@ const FormsTable = () => {
                   <TableCell>{item?.form?.title}</TableCell>
                   <TableCell>{item?.form?.description}</TableCell>
                   <TableCell>{item?.form?.effectiveDate}</TableCell>
+                  <TableCell>{item?.dueDate}</TableCell>
                   <TableCell>{item?.form?.revisionNumber}</TableCell>
-                  <TableCell>{item?.form?.status}</TableCell>
+                  <TableCell>{item?.evaluationStatus}</TableCell>
                   <TableCell>{item?.user?.name}</TableCell>
                   <TableCell>{item?.user?.email}</TableCell>
                   <TableCell>{item?.user?.phoneNo}</TableCell>
@@ -143,9 +150,11 @@ const FormsTable = () => {
                       onClick={() => {
                         if (item) {
                           // You need to pass the formId, userId, and workflowId from the item object as appropriate.
-                          updateFormStatus(item.form.formId, item.user.userId, item.workflow.workflowId);
+                          updateFormStatus(item.form.formId, item.user.userId, item.workflow.workflowId, item.dueDate);
                         }
-                      }}
+                      }
+                    }
+                      // onClick={refreshPage}
                     >
                       Approve
                     </Button>
@@ -157,7 +166,7 @@ const FormsTable = () => {
       </TableContainer>
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={6000}
+        autoHideDuration={10000}
         onClose={handleCloseSnackbar}
       >
         <Alert
@@ -172,4 +181,17 @@ const FormsTable = () => {
   );
 };
 
-export default FormsTable;
+const VendorFormsTable = () => {
+  return (
+    <>
+      <Typography variant="h5" sx={{ pb: 4 }}>
+        Vendor Forms
+      </Typography>
+      <Divider sx={{ mb: 4 }} />
+      <FormsTable />
+    </>
+  );
+};
+
+
+export default VendorFormsTable;
