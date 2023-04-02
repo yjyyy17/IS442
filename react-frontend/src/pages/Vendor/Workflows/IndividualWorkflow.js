@@ -24,6 +24,7 @@ const IndividualWorkflow = () => {
   // Comes from ViewWorkflows.js
   const location = useLocation();
   const workflowData = location.state ? location.state.data : [];
+  console.log(workflowData)
 
   // Initialising form data and question data state variables
   const formData = workflowData.form;
@@ -40,55 +41,38 @@ const IndividualWorkflow = () => {
     fetchData();
   }, [formID])
 
-  const [answerData, setAnswerData] = useState([]);
-  // function to handle user's answer
-  const handleAnswerChange = (questionId, answer) => {
-    // search if question already exists in answerData
-    const index = answerData.findIndex(
-      (item) => item.question_id === questionId
-    );
-    if (index === -1) {
-      // if question not found, add new object to answerData array
-      setAnswerData((prevState) => [
-        ...prevState,
-        { question_id: questionId, answer: answer },
-      ]);
-    } else {
-      // if question already exists, update answer
-      const newArray = [...answerData];
-      newArray[index] = { question_id: questionId, answer: answer };
-      setAnswerData(newArray);
-    }
-  };
+  const handleSubmit = (answerData) => {
+    const dateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+const inputString = "2023-03-01T22:58";
+console.log(dateTimeRegex.test(inputString)); // true
 
-  const handleSubmit = () => {
-    // event.preventDefault();
-    // fetch('/api/submit', {
-    //   method: 'POST',
-    //   body: JSON.stringify(answerData),
-    //   headers: { 'Content-Type': 'application/json' }
-    // })
-    //   .then(res => res.json())
-    //   .then(data => console.log(data))
-    //   .catch(err => console.log(err));
+    answerData.forEach((item) => {
+      if (typeof item.answer !== "string") {
+        let answer = ""
+        if (item.answer.options.length > 0) {
+          answer = item.answer.options.join(",");
+          if (item.answer.input.length > 0) {
+            answer += "," + item.answer.input;
+          }
+        } else if (item.answer.input.length > 0) {
+          answer = item.answer.input;
+        }
+        item.answer = answer
+      } else if (dateTimeRegex.test(item.answer)) {
+        item.answer = item.answer.slice(0,10)
+      }
+    });
     console.log(answerData);
   };
-
-  //   console.log(answerData);
-
-  // Need to GET formData based on workflow ID
-  // Once formData is returned, get the list of questions based on form ID
-  // sooo use nested axios get request
-
   return (
     <>
       <Typography variant='h5' sx={{ pb: 4 }}>
-        {workflowData.title}
+        {workflowData.workflow.title}
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Item sx={{ color: "grey" }}>
-            {workflowData.description}
+            {workflowData.workflow.description}
             <br></br>
             <br></br>
             Please fill out all the fields before submitting
@@ -109,8 +93,6 @@ const IndividualWorkflow = () => {
               <Typography variant='h6'>{formData.title}</Typography>
               <DynamicForm
                 questions={questionData}
-                handleAnswerChange={handleAnswerChange}
-                answerData = {answerData}
                 onSubmit = {handleSubmit}
               />
             </Card>

@@ -22,6 +22,7 @@ export { default as ListItemIcon } from "@mui/material/ListItemIcon";
 export { default as FormControl } from "@mui/material/FormControl";
 export { default as Radio } from "@mui/material/Radio";
 export { default as RadioGroup } from "@mui/material/RadioGroup";
+export { default as Checkbox } from "@mui/material/Checkbox";
 export { default as FormControlLabel } from "@mui/material/FormControlLabel";
 export { default as Select } from "@mui/material/Select";
 export { default as MenuItem } from "@mui/material/MenuItem";
