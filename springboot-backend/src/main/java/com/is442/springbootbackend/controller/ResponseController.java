@@ -1,7 +1,10 @@
 package com.is442.springbootbackend.controller;
 
+import com.is442.springbootbackend.model.FormTemplate;
+import com.is442.springbootbackend.model.Question;
 import com.is442.springbootbackend.model.Response;
 import com.is442.springbootbackend.model.User;
+import com.is442.springbootbackend.repository.FormTemplateRepository;
 import com.is442.springbootbackend.repository.QuestionRepository;
 import com.is442.springbootbackend.repository.ResponseRepository;
 import com.is442.springbootbackend.repository.UserRepository;
@@ -10,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Repeatable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -26,6 +26,8 @@ public class ResponseController {
     private QuestionRepository questionRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FormTemplateRepository formTemplateRepository;
 
     @GetMapping(path = "/getresponse")
     public List<Response> getResponseForUser(@RequestBody Response response) throws NullPointerException {
@@ -72,39 +74,49 @@ public class ResponseController {
 
         Iterator<Response> interateResponses = responses.iterator();
         User user = null;
+        long formID = 0;
         boolean completionStatus = false;
         while(interateResponses.hasNext()){
             Response response = interateResponses.next();
+
+            //get and store userid and formid
+
+            if(response.getUserID() != null){
+                user = response.getUserID();
+                formID = response.getQuestion().getFormID().getFormId();
+            }
+
+            else{
+
             //check if valid formID exists
-            int formid = response.getQuestion().getFormID().getFormId();
-            boolean formiDExists = responseRepository.existsById(formid);
+            boolean formiDExists = formTemplateRepository.existsById((int) formID);
 
             //check if valid questionID exists
             int questionID = response.getQuestion().getQuestionID();
-            boolean questionIDExists = responseRepository.existsById(questionID);
+            boolean questionIDExists = questionRepository.existsById(questionID);
 
             if (formiDExists == false ){
-                return ResponseEntity.badRequest().body("FormID " + formid +" not exist ");
+                return ResponseEntity.badRequest().body("FormID " + formID +" not exist ");
 
             } else if (questionIDExists == false){
                 return ResponseEntity.badRequest().body("QuestionID " + questionID + " does not exist ");
             }
             System.out.println(response.getAnswer());
-            if (response.getUserID() != null)
-            {
-                 user = response.getUserID();
 
-                 responseRepository.save(response);
-                 completionStatus = true;
+            Response rs = new Response();
+            rs.setUserID(user);
+            rs.setAnswer(response.getAnswer());
+            rs.setStatus(response.getStatus());
+            Question qn = new Question();
+            qn.setQuestionID(questionID);
 
-            } else{
-                Response rs = new Response();
-                rs.setUserID(user);
-                rs.setAnswer(response.getAnswer());
-                rs.setStatus(response.getStatus());
-                rs.setQuestion(response.getQuestion());
-                responseRepository.save(rs);
-                completionStatus = true;
+            FormTemplate form = new FormTemplate();
+            form = formTemplateRepository.findById((int) formID)
+                        .orElseThrow(() -> new RuntimeException("Form not found with ID "));
+            qn.setFormID(form);
+            rs.setQuestion(qn);
+            responseRepository.save(rs);
+            completionStatus = true;
 
 
             }
@@ -120,6 +132,60 @@ public class ResponseController {
         }
 
     }
+//
+//    @PostMapping(path = "/add")
+//    public ResponseEntity<?> addResponses(@RequestBody List<Response> responses){
+//
+//        Iterator<Response> interateResponses = responses.iterator();
+//        User user = null;
+//        boolean completionStatus = false;
+//        while(interateResponses.hasNext()){
+//            Response response = interateResponses.next();
+//            //check if valid formID exists
+//            int formid = response.getQuestion().getFormID().getFormId();
+//            boolean formiDExists = responseRepository.existsById(formid);
+//
+//            //check if valid questionID exists
+//            int questionID = response.getQuestion().getQuestionID();
+//            boolean questionIDExists = responseRepository.existsById(questionID);
+//
+//            if (formiDExists == false ){
+//                return ResponseEntity.badRequest().body("FormID " + formid +" not exist ");
+//
+//            } else if (questionIDExists == false){
+//                return ResponseEntity.badRequest().body("QuestionID " + questionID + " does not exist ");
+//            }
+//            System.out.println(response.getAnswer());
+//            if (response.getUserID() != null)
+//            {
+//                 user = response.getUserID();
+//
+//                 responseRepository.save(response);
+//                 completionStatus = true;
+//
+//            } else{
+//                Response rs = new Response();
+//                rs.setUserID(user);
+//                rs.setAnswer(response.getAnswer());
+//                rs.setStatus(response.getStatus());
+//                rs.setQuestion(response.getQuestion());
+//                responseRepository.save(rs);
+//                completionStatus = true;
+//
+//
+//            }
+//
+////            System.out.println("form " + formiDExists + "question " + questionIDExists);
+//
+//
+//        }
+//        if(completionStatus == true){
+//            return ResponseEntity.ok().body("Added");
+//        } else {
+//            return ResponseEntity.badRequest().body("Unable to add");
+//        }
+//
+//    }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateResponses( @RequestBody List<Response> responses) {
@@ -172,10 +238,42 @@ public class ResponseController {
             Response iteratedResponse = response.next();
 
             if(iteratedResponse.getUserID().getUserId() == userId && iteratedResponse.getQuestion().getFormID().getFormId() == formId){
-                iteratedResponse.setStatus("Inactive");
+                iteratedResponse.setStatus("inactive");
                 responseRepository.save(iteratedResponse);
             }
         }
         return ResponseEntity.ok().body("Updated");
     }
+
+//    @GetMapping(path = "/getCompletedForms/{userID}")
+//    public HashMap<String, HashMap> getCompletedForms(@PathVariable int userID){
+//
+//        //main
+//        HashMap<String, HashMap> completedForms = new HashMap<String, HashMap>();
+//
+//        HashMap<String, HashMap> subFields1 = new HashMap<>();
+//        HashMap<String, String> subFields2 = new HashMap<>();
+//
+//
+//        HashMap<String,String > thirdField1 = new HashMap<>();
+//        thirdField1.put("title", "hello");
+//
+//        HashMap<String,String > thirdField2 = new HashMap<>();
+//        thirdField2.put("question", "hello");
+//        thirdField2.put("question2", "hello2");
+//
+//        subFields1.put("form_info", thirdField1);
+//        subFields1.put("question_info", thirdField2);
+//
+//       completedForms.put("form1", subFields1);
+//
+//
+////       completedForms.put("form2", subFields2);
+//
+//        return completedForms;
+//    }
+
+
+
+
 }

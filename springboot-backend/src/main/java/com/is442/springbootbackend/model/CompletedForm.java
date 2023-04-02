@@ -28,12 +28,12 @@ public class CompletedForm {
 //    @OneToMany(mappedBy = "formTemplateQuestion")
 //    private HashMap<int, FormTemplateQuestion> questions;
 
-    public int getUserGroupId() {
-        return userGroupId;
-    }
-    public int getPdfId() {
-        return pdfId;
-    }
+//    public int getUserGroupId() {
+//        return userGroupId;
+//    }
+//    public int getPdfId() {
+//        return pdfId;
+//    }
    
     public byte[] getForm() throws Exception {
         return pdfForm;

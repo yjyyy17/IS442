@@ -32,21 +32,21 @@ public class UserGroup {
         super();
     }
 
-    public Long getUserGroupId() {
-        return userGroupId;
-    }
-
-    public void setUserGroupId(Long userGroupId) {
-        this.userGroupId = userGroupId;
-    }
-
-    public Set<User> getAssignedUsers() {
-        return assignedUsers;
-    }
-
-    public Set<Workflow> getAssignedWorkflows() {
-        return assignedWorkflows;
-    }
+//    public Long getUserGroupId() {
+//        return userGroupId;
+//    }
+//
+//    public void setUserGroupId(Long userGroupId) {
+//        this.userGroupId = userGroupId;
+//    }
+//
+//    public Set<User> getAssignedUsers() {
+//        return assignedUsers;
+//    }
+//
+//    public Set<Workflow> getAssignedWorkflows() {
+//        return assignedWorkflows;
+//    }
 
     public void assignUser(User user) {
         assignedUsers.add(user);

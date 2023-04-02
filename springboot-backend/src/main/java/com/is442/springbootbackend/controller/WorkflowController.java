@@ -1,17 +1,19 @@
 package com.is442.springbootbackend.controller;
 
 import com.is442.springbootbackend.exception.ResourceNotFoundException;
+import com.is442.springbootbackend.model.FormStatus;
 import com.is442.springbootbackend.model.User;
+import com.is442.springbootbackend.model.UserGroup;
 import com.is442.springbootbackend.model.Workflow;
+import com.is442.springbootbackend.repository.UserGroupRepository;
 import com.is442.springbootbackend.repository.WorkflowRepository;
+import com.is442.springbootbackend.repository.FormStatusRepository;
 import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -20,10 +22,21 @@ public class WorkflowController {
     @Autowired
     private WorkflowRepository workflowRepository;
 
+    @Autowired
+    private FormStatusRepository formStatusRepository;
+    @Autowired
+    private UserGroupRepository userGroupRepository;
+
+
     //get all workflows
     @GetMapping("/workflow")
     public List<Workflow> getAllWorkflows(){
-        return workflowRepository.findAll();
+        List<Workflow> workflows = workflowRepository.findAll();
+        for(Workflow workflow: workflows){
+            List<FormStatus> formStatuses = formStatusRepository.findByWorkflowWorkflowId(workflow.getWorkflowId());
+            workflow.setFormStatuses(formStatuses);
+        }
+        return workflows;
     }
 
     //get workflow by id
@@ -31,12 +44,20 @@ public class WorkflowController {
     public ResponseEntity<Workflow> getWorkflowById(@PathVariable Long id){
         Workflow workflow = workflowRepository.findById(id)
                 . orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
+        List<FormStatus> formStatuses = formStatusRepository.findByWorkflowWorkflowId(id);
+        workflow.setFormStatuses(formStatuses);
+
+        Set<UserGroup> usergroups = userGroupRepository.findByAssignedWorkflows_WorkflowId(id);
+        workflow.setUserGroups(usergroups);
+
+
         return ResponseEntity.ok(workflow);
     }
 
     //create new workflow
     @PostMapping("/workflow")
     public Workflow createWorkflow(@RequestBody Workflow workflow){
+        workflow.setStatus("active");
         return workflowRepository.save(workflow);
     }
 
@@ -72,7 +93,7 @@ public class WorkflowController {
         Workflow workflow = workflowRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Workflow does not exist with id : " + id));
 
-        workflow.setStatus("Inactive");
+        workflow.setStatus("inactive");
         workflowRepository.save(workflow);
         Map<String, Boolean> response = new HashMap<>();
         response.put("Status", Boolean.TRUE );

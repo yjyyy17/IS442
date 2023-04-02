@@ -75,8 +75,9 @@ const Login = ({ handleClose }) => {
     e.preventDefault();
     const user = userData.find((u) => u.email === loginData.user);  
     if (user.password === loginData.password) {
-      navigate(userPaths[user.userType]);
       sessionStorage.setItem('userId', user.userId);
+      sessionStorage.setItem('userEmail', user.email);
+      navigate(userPaths[user.userType]);
     }
   };
 
@@ -86,6 +87,8 @@ const Login = ({ handleClose }) => {
       const user = userData.find((u) => u.email === loginData.user);  
     if (user.password === loginData.password) {
       navigate(userPaths[user.userType]);
+      sessionStorage.setItem('userId', user.userId);
+      sessionStorage.setItem('userEmail', user.email);
     }
     }
   }

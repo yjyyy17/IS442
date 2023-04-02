@@ -26,11 +26,13 @@ public class Workflow {
     private String status;
 
 
-        @JsonIgnore
+//    @JsonIgnore
     @ManyToMany(mappedBy = "assignedWorkflows")
+    @JsonIgnoreProperties("assignedWorkflows")
     private Set<UserGroup> userGroups = new HashSet<>();
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "workflow")
+    @JsonIgnoreProperties("workflow")
     private List<FormStatus> formStatuses = new ArrayList<>();
 
     @JsonIgnore
@@ -52,17 +54,21 @@ public class Workflow {
         return workflowId;
     }
 
-    public void setWorkflowId(Long workflowId) {
-        this.workflowId = workflowId;
-    }
-
+//    public void setWorkflowId(Long workflowId) {
+//        this.workflowId = workflowId;
+//    }
+//
 //    public Set<UserGroup> getUserGroups() {
 //        return userGroups;
 //    }
 
-    public Set<Action> getActions() {
-        return actions;
+    public void setUserGroups(Set<UserGroup> userGroups) {
+        this.userGroups = userGroups;
     }
+
+//    public Set<Action> getActions() {
+//        return actions;
+//    }
 
     public String getTitle() {
         return title;
@@ -87,5 +93,13 @@ public class Workflow {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+//    public List<FormStatus> getFormStatuses() {
+//        return formStatuses;
+//    }
+
+    public void setFormStatuses(List<FormStatus> formStatuses) {
+        this.formStatuses = formStatuses;
     }
 }

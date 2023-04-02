@@ -74,13 +74,13 @@ public class User {
         return userId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public Set<UserGroup> getUserGroups() {
-        return userGroups;
-    }
+//    public void setUserId(long userId) {
+//        this.userId = userId;
+//    }
+//
+//    public Set<UserGroup> getUserGroups() {
+//        return userGroups;
+//    }
 
     public String getName() {
         return name;

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.*;
 
+import java.io.File;
+
 @Entity
 @Table(name = "Question")
 //@IdClass(QuestionID.class)
@@ -20,6 +22,9 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "questionID")
     private int questionID;
+
+//    private File test;
+
     @Column(name = "order", nullable = false)
     private int order;
     @Column(name = "label", nullable = false)

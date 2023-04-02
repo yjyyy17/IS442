@@ -111,42 +111,42 @@ CREATE TABLE `completed_form` (
 
 -- ------------INSERT STATEMENTS----------------
 INSERT INTO `is442`.`user`
-(`user_type`,`user_id`,`email`,`name`,`password`,`phone_no`,`address`,`industry`)
+(`user_type`,`user_id`,`email`,`name`,`password`,`phone_no`,`address`,`industry`, `status`)
 VALUES
-('Vendor', '3', 'bob@gmail.com', 'Bob Tan', 'iloveoop!', '82233312', 'Serangoon Avenue 5', 'Chemical'),
-('Vendor', '4', 'robinlie48@gmail.com', 'Robin Liew', 'iloveoop!', '82957134', '6 Sin Ming Heights, #07-43', 'Pharmaceuticals'),
-('Vendor', '1', 'aishasub6@gmail.com', 'Aisha Subhash', 'iloveoop!', '80502974', '163 Buona Vista Field', 'Computer Software'),
-('Vendor', '2', 'annaling88@gmail.com', 'Anna Ling', 'iloveoop!', '97250465', '24 Pasir Ris Court', 'Oil & Gas Production'),
-('Admin', '5', 'bryan@gmail.com', 'Bryan Tan', 'iloveoop!', '82233312', NULL, NULL),
-('Approver', '6', 'brandon@gmail.com', 'Brandon Tan', 'iloveoop!', '82233312', NULL, NULL),
-('Approver', '7', 'lenayang@gmail.com', 'Lena Yang', 'iloveoop!', '91828070', NULL, NULL),
-('Approver', '8', 'tedlo@gmail.com', 'Ted Lo', 'iloveoop!', '98531541', NULL, NULL);
+('Vendor', '3', 'bob@gmail.com', 'Bob Tan', 'iloveoop!', '82233312', 'Serangoon Avenue 5', 'Chemical', 'active'),
+('Vendor', '4', 'robinlie48@gmail.com', 'Robin Liew', 'iloveoop!', '82957134', '6 Sin Ming Heights, #07-43', 'Pharmaceuticals', 'active'),
+('Vendor', '1', 'aishasub6@gmail.com', 'Aisha Subhash', 'iloveoop!', '80502974', '163 Buona Vista Field', 'Computer Software', 'active'),
+('Vendor', '2', 'annaling88@gmail.com', 'Anna Ling', 'iloveoop!', '97250465', '24 Pasir Ris Court', 'Oil & Gas Production', 'active'),
+('Admin', '5', 'bryan@gmail.com', 'Bryan Tan', 'iloveoop!', '82233312', NULL, NULL, 'active'),
+('Approver', '6', 'brandon@gmail.com', 'Brandon Tan', 'iloveoop!', '82233312', NULL, NULL, 'active'),
+('Approver', '7', 'lenayang@gmail.com', 'Lena Yang', 'iloveoop!', '91828070', NULL, NULL, 'active'),
+('Approver', '8', 'tedlo@gmail.com', 'Ted Lo', 'iloveoop!', '98531541', NULL, NULL, 'active');
 
 INSERT INTO `is442`.`workflow`
-(`workflow_id`,`description`,`title`)
+(`workflow_id`,`description`,`title`, `status`)
 VALUES
-('1', 'Evaluate new vendors', 'Vendor Assessment');
+('1', 'Evaluate new vendors', 'Vendor Assessment', 'Active');
 
 
 INSERT INTO `is442`.`form_template`
-(`form_id`,`description`,`effective_date`,`form_number`,`revision_number`,`title`,`assignee`)
+(`form_id`,`description`,`effective_date`,`form_number`,`revision_number`,`title`,`assignee`, `status`)
 VALUES
-('1', 'Assess new vendor', '2023-03-04', 'qli-123-xyz', '1', 'Vendor Assessment Form', '6');
+('1', 'Assess new vendor', '2023-03-04', 'qli-123-xyz', '1', 'Vendor Assessment Form', '6', 'Approved');
 
 INSERT INTO `is442`.`user_group`
-(`user_group_id`)
+(`user_group_id`, `status`)
 VALUES
-(1);
+(1, 'active');
 
 INSERT INTO `is442`.`question`
-(`questionid`,`label`,`options`,`order`,`status`,`type`,`form_id`)
+(`questionid`,`label`,`options`,`order`,`status`,`type`,`form_id`, `status`)
 VALUES
-('1', 'Company Name', NULL, '1', 'active', 'TextField', '1'),
-('2', 'Company Registration No', NULL, '2', 'active', 'TextField', '1'),
-('3', 'Office Address', NULL, '3', 'active', 'TextField', '1'),
-('4', 'Telephone', NULL, '4', 'active', 'TextField', '1'),
-('5', 'Type of business License / Registration', 'Sole proprietorship,Limited Company,Partnership Agreement,Others', '5', 'active', 'Radio', '1'),
-('6', 'Nature of Business', 'Manufacturing,Agent/Dealer,Distributor,Others', '6', 'active', 'Dropdown', '1');
+('1', 'Company Name', NULL, '1', 'active', 'TextField', '1', 'active'),
+('2', 'Company Registration No', NULL, '2', 'active', 'TextField', '1', 'active'),
+('3', 'Office Address', NULL, '3', 'active', 'TextField', '1', 'active'),
+('4', 'Telephone', NULL, '4', 'active', 'TextField', '1', 'active'),
+('5', 'Type of business License / Registration', 'Sole proprietorship,Limited Company,Partnership Agreement,Others', '5', 'active', 'Radio', '1', 'active'),
+('6', 'Nature of Business', 'Manufacturing,Agent/Dealer,Distributor,Others', '6', 'active', 'Dropdown', '1', 'active');
 
 INSERT INTO `is442`.`action`
 (`action_id`,`assignee_role`,`title`,`form_id`,`workflow_id`)
@@ -166,19 +166,19 @@ VALUES
 ('1', '1');
 
 INSERT INTO `is442`.`response`
-(`responseid`,`answer`,`status`,`questionid`,`formid`,`userid`)
+(`responseid`,`answer`,`status`,`questionid`,`formid`,`userid`, `status`)
 VALUES
-('1', 'ChemIStry', 'active', '1', '1', '3'),
-('2', 'T18FC0167C', 'active', '2', '1', '3'),
-('3', 'Serangoon Avenue 5', 'active', '3', '1', '3'),
-('4', '61234567', 'active', '4', '1', '3'),
-('5', 'Limited Company', 'active', '5', '1', '3'),
-('6', 'Manufacturing', 'active', '6', '1', '3');
+('1', 'ChemIStry', 'active', '1', '1', '3', 'active'),
+('2', 'T18FC0167C', 'active', '2', '1', '3', 'active'),
+('3', 'Serangoon Avenue 5', 'active', '3', '1', '3', 'active'),
+('4', '61234567', 'active', '4', '1', '3', 'active'),
+('5', 'Limited Company', 'active', '5', '1', '3', 'active'),
+('6', 'Manufacturing', 'active', '6', '1', '3', 'active');
 
 INSERT INTO `is442`.`form_status`
-(`id`,`evaluation_status`,`rejection_comments`,`rejection_personnel`,`form_id`,`user_id`,`workflow_id`)
+(`id`,`evaluation_status`,`rejection_comments`,`rejection_personnel`,`form_id`,`user_id`,`workflow_id`, `due_date`)
 VALUES
-('1', 'Approved', NULL, '0', '1', '3', '1');
+('1', 'Approved', NULL, '0', '1', '3', '1', '2023-04-22');
 
 -- INSERT INTO `is442`.`completed_form`
 -- (`user_group_id`,`pdf_id`,`pdf_form`)

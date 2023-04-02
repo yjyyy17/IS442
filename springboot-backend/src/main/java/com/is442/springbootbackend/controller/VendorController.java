@@ -103,7 +103,7 @@ public class VendorController {
             String vendorName = vendorEmailList.get(email).get("vendorName");
 
             String fromEmail = "jiayi.fok.2020@scis.smu.edu.sg";
-            String subject = "Test form overdue email";
+            String subject = "Incomplete Form Reminder";
 
             System.out.println("Formatting email..");
             Mail mail = formatEmail(vendorName, workflowTitle,  fromEmail, subject, email);
@@ -143,7 +143,7 @@ public class VendorController {
         // retrieve all vendor id, workflow id and due date from formStatusRepo
         List<FormStatus> formStatusList = formStatusRepository.findAll();
         for(FormStatus oneFS: formStatusList){
-            if(oneFS.getEvaluationStatus().equals("Assigned")){
+            if(oneFS.getEvaluationStatus().equals("Assigned to vendor")){
                 Date today = new Date();
                 Date dueDate = oneFS.getDueDate();
                 if(getDaysBetween(dueDate, today) == 8 || getDaysBetween(dueDate, today) == 10 || getDaysBetween(dueDate, today) == 13 || getDaysBetween(dueDate, today) >= 20 ){

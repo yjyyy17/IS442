@@ -19,6 +19,7 @@ const EditForm = () => {
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [formNumber, setFormNumber] = useState("");
+  const [revisionNumber, setRevisionNumber] = useState(1);
   const [templateStatus, setTemplateStatus] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [fields, setFields] = useState([]);
@@ -40,6 +41,7 @@ const EditForm = () => {
         setFormDescription(formData.description);
         setFormNumber(formData.formNumber);
         setTemplateStatus(formData.status);
+        setRevisionNumber(formData.revisionNumber);
 
         // if the form has existing qns, loop thru, else set questions as []
         if(res.data != []){
@@ -82,6 +84,7 @@ const EditForm = () => {
                 initialFormTitle={formTitle}
                 initialFormDescription={formDescription}
                 initialFormNumber={formNumber}
+                initialRevisionNumber={revisionNumber}
                 initialFormFields={fields}
               />
             </>

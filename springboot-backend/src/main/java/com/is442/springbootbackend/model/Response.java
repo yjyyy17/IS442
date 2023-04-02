@@ -17,10 +17,14 @@ public class Response{
     @Column(name = "status", nullable = false)
     private String status;
 
-    @ManyToOne
-//    @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
-    @JoinColumn(name = "questionID", referencedColumnName = "questionID")
-    private Question question;
+//    @ManyToOne
+////    @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
+//    @JoinColumn(name = "questionID", referencedColumnName = "questionID")
+//    private Question question;
+        @ManyToOne
+        @JoinColumns({ @JoinColumn( referencedColumnName = "questionID", name = "questionID"),
+        @JoinColumn(name = "formID", referencedColumnName = "form_id")})
+        private Question question;
 
     @ManyToOne
     @JoinColumn(name = "userID", referencedColumnName = "user_id")
@@ -48,9 +52,9 @@ public class Response{
         return responseID;
     }
 
-    public void setResponseID(int responseID) {
-        this.responseID = responseID;
-    }
+//    public void setResponseID(int responseID) {
+//        this.responseID = responseID;
+//    }
 
     public String getAnswer() {
         return answer;

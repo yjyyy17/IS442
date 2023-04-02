@@ -98,7 +98,7 @@ public class FormTemplateController {
         FormTemplate formTemplate = formTemplateRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User does not exist with id : " + id));
 
-        formTemplate.setStatus("Inactive");
+        formTemplate.setStatus("inactive");
         formTemplateRepository.save(formTemplate);
 
         Map<String, Boolean> response = new HashMap<>();

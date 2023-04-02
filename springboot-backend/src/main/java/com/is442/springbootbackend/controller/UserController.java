@@ -87,7 +87,7 @@ public class UserController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User does not exist with id : " + id));
 
-        user.setStatus("Inactive");
+        user.setStatus("inactive");
         userRepository.save(user);
 
         Map<String, Boolean> response = new HashMap<>();

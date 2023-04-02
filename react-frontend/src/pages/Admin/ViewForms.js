@@ -14,12 +14,14 @@ import TextField from "@mui/material/TextField";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
-// import UserAccountTabs from "../../components/UserAccountComponents/UserAccountTabs";
+import TablePagination from "@mui/material/TablePagination";
 
 const FormsTable = () => {
   const [forms, setForms] = useState([]);
   const [searchedVal, setSearchedVal] = useState("");
   const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
@@ -31,13 +33,24 @@ const FormsTable = () => {
       .get(`http://localhost:8080/api/formtemplate`)
       .then((res) => {
         console.log(res.data);
-        setForms(res.data);
+        // var formsList = [];
+        const formsList = res.data.filter((form) => form.status == "Approved");
+        setForms(formsList);
         return true;
       })
       .catch((err) => {
         console.log(err);
       });
   }, [snackbar]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const newForm = () => {
     navigate(`../admin/create_form`);
@@ -108,6 +121,7 @@ const FormsTable = () => {
                     .toLowerCase()
                     .includes(searchedVal.toString().toLowerCase())
               )
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((item) => (
                 <TableRow
                   key={item.formId}
@@ -149,6 +163,15 @@ const FormsTable = () => {
               ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={forms.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
       <Snackbar
         open={snackbar.open}

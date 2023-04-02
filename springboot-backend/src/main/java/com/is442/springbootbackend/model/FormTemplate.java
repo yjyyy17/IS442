@@ -145,22 +145,22 @@ public class FormTemplate {
         this.revisionNumber = revisionNumber;
     }
 
-
-    public Collection<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(Collection<Question> questions) {
-        this.questions = questions;
-    }
-
-    public List<FormStatus> getFormStatuses() {
-        return formStatuses;
-    }
-
-    public void setFormStatuses(List<FormStatus> formStatuses) {
-        this.formStatuses = formStatuses;
-    }
+//
+//    public Collection<Question> getQuestions() {
+//        return questions;
+//    }
+//
+//    public void setQuestions(Collection<Question> questions) {
+//        this.questions = questions;
+//    }
+//
+//    public List<FormStatus> getFormStatuses() {
+//        return formStatuses;
+//    }
+//
+//    public void setFormStatuses(List<FormStatus> formStatuses) {
+//        this.formStatuses = formStatuses;
+//    }
 
     public boolean equals(Object object) {
         if (this == object) return true;

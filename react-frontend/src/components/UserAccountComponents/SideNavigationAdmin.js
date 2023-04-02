@@ -16,7 +16,7 @@ import {
   ListItemIcon,
 } from "../../mui";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -24,9 +24,10 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import FolderIcon from "@mui/icons-material/Folder";
 import LogoutIcon from "@mui/icons-material/Logout";
-import PeopleIcon from '@mui/icons-material/People';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ArticleIcon from '@mui/icons-material/Article';
+import PeopleIcon from "@mui/icons-material/People";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import ArticleIcon from "@mui/icons-material/Article";
+import { Diversity3 } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -97,47 +98,48 @@ export default function PersistentDrawerLeft(props) {
   };
 
   const titleWithRoute = {
-    "Admin": "#", 
-    "Your Workflows": "/admin/workflows", 
-    "Your Forms": "/admin/forms", 
-    "User Accounts": '/admin/user_accounts', 
-    "Log out": '/'
-  }
+    [sessionStorage.getItem("userEmail")]: "#",
+    "Your Workflows": "/admin/workflows",
+    "Your Forms": "/admin/forms",
+    "User Accounts": "/admin/user_accounts",
+    "User Groups": "/admin/user_groups",
+    "Log out": "/",
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <MuiAppBar position='fixed' open={open}>
+      <MuiAppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
-            color='inherit'
-            aria-label='open drawer'
+            color="inherit"
+            aria-label="open drawer"
             onClick={handleDrawerOpen}
-            edge='start'
+            edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant='h6' noWrap component='div'>
+          <Typography variant="h6" noWrap component="div">
             Quantum Leap Vendor Management
           </Typography>
-          <Box sx={{ml: 'auto'}}>
-          <IconButton
-            color='inherit'
-            aria-label='open drawer'
-            // onClick={}
-            sx={{ mr: 1 }}
-          >
-            <NotificationsIcon />
-          </IconButton>
-          <IconButton
-            color='inherit'
-            aria-label='open drawer'
-            component={Link} 
-            to="/"
-          >
-            <LogoutIcon />
-          </IconButton>
+          <Box sx={{ ml: "auto" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              // onClick={}
+              sx={{ mr: 1 }}
+            >
+              <NotificationsIcon />
+            </IconButton>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              component={Link}
+              to="/"
+            >
+              <LogoutIcon />
+            </IconButton>
           </Box>
         </Toolbar>
       </MuiAppBar>
@@ -150,8 +152,8 @@ export default function PersistentDrawerLeft(props) {
             boxSizing: "border-box",
           },
         }}
-        variant='persistent'
-        anchor='left'
+        variant="persistent"
+        anchor="left"
         open={open}
       >
         <DrawerHeader>
@@ -165,42 +167,51 @@ export default function PersistentDrawerLeft(props) {
         </DrawerHeader>
         <Divider />
         <List>
-          {Object.keys(titleWithRoute).map(
-            (text, index) => (
-              <ListItem key={index} button component={Link} to={titleWithRoute[text]} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index === 0 ? (
-                      <AccountCircleIcon style={{ color: "#219653" }} />
-                    ) : (
-                      <></>
-                    )}
-                    {index === 1 ? (
-                      <FolderIcon style={{ color: "#6FCF97" }} />
-                    ) : (
-                      <></>
-                    )}
-                    {index === 2 ? (
-                      <ArticleIcon style={{ color: "#6FCF97" }} />
-                    ) : (
-                      <></>
-                    )}
-                    {index === 3 ? (
-                      <PeopleIcon style={{ color: "#6FCF97" }} />
-                    ) : (
-                      <></>
-                    )}
-                    {index === 4 ? (
-                      <LogoutIcon style={{ color: "#6FCF97" }} />
-                    ) : (
-                      <></>
-                    )}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
+          {Object.keys(titleWithRoute).map((text, index) => (
+            <ListItem
+              key={index}
+              button
+              component={Link}
+              to={titleWithRoute[text]}
+              disablePadding
+            >
+              <ListItemButton>
+                <ListItemIcon>
+                  {index === 0 ? (
+                    <AccountCircleIcon style={{ color: "#219653" }} />
+                  ) : (
+                    <></>
+                  )}
+                  {index === 1 ? (
+                    <FolderIcon style={{ color: "#6FCF97" }} />
+                  ) : (
+                    <></>
+                  )}
+                  {index === 2 ? (
+                    <ArticleIcon style={{ color: "#6FCF97" }} />
+                  ) : (
+                    <></>
+                  )}
+                  {index === 3 ? (
+                    <PeopleIcon style={{ color: "#6FCF97" }} />
+                  ) : (
+                    <></>
+                  )}
+                  {index === 4 ? (
+                    <Diversity3 style={{ color: "#6FCF97" }} />
+                  ) : (
+                    <></>
+                  )}
+                  {index === 5 ? (
+                    <LogoutIcon style={{ color: "#6FCF97" }} />
+                  ) : (
+                    <></>
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
       </Drawer>
       <Main open={open}>
