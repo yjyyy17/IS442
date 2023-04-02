@@ -11,8 +11,6 @@ import {
 } from "../../../mui";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
-// import getAllUserGroups from "../../../services/getAllUserGroups";
-// import getFormStatus from "../../../services/getFormStatus";
 import getVendorWorkflows from "../../../services/getVendorWorkflows"
 
 const ViewWorkflows = (props) => {
@@ -20,9 +18,6 @@ const ViewWorkflows = (props) => {
   const [searchInput, setSearchInput] = useState("");
   const userId = sessionStorage.getItem("userId");
   const [workflowData, setWorkflowData] = useState([])
-  // const [userGroupData, setUserGroupData] = useState([]);
-  // const [workflowData, setWorkflowData] = useState([]);
-  // const [workflowDataWithStatus, setWorkflowDataWithStatus] = useState([]);
 
 
   useEffect(() => {
@@ -63,8 +58,9 @@ const ViewWorkflows = (props) => {
         sx={{ mb: 4, width: "100%" }}
       />
 
-      {/* **** To change to map when GET request for all workflows is complete **** */}
       {workflowData.map((wf) => (
+        <>
+        {wf.evaluationStatus === "Assigned to vendor" && (
         <Card sx={{ p: 3, mb: 5 }} key={wf.workflow.workflowId}>
           <CardContent>
             <Typography variant='h6'>{wf.workflow.title}</Typography>
@@ -90,6 +86,8 @@ const ViewWorkflows = (props) => {
             </Link>
           </CardActions>
         </Card>
+        )}
+        </>
       ))}
     </>
   );

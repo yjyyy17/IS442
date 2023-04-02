@@ -11,18 +11,25 @@ import {
   MenuItem,
   Button,
   Checkbox,
+  Snackbar,
+  Alert,
+  FormHelperText,
 } from "../../../mui";
 
-const DynamicForm = ({
-  questions,
-  onSubmit,
-}) => {
-  const [selectedOthersDropdown, setSelectedOthersDropdown] =
-    useState(null);
+const DynamicForm = ({ questions, onSubmit }) => {
+  const [selectedOthersDropdown, setSelectedOthersDropdown] = useState(null);
   const [selectedOthersRadio, setSelectedOthersRadio] = useState(null);
 
   const [answerData, setAnswerData] = useState([]);
+
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success" });
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   const [unansweredQuestions, setUnansweredQuestions] = useState([]);
+
   // function to handle user's answer
   const handleAnswerChange = (questionId, answer) => {
     // search if question already exists in answerData
@@ -41,30 +48,33 @@ const DynamicForm = ({
       newArray[index] = { questionID: questionId, answer: answer };
       setAnswerData(newArray);
     }
-
   };
 
   const handleSubmit = () => {
-    const isAllAnswered = questions.every(
-      (question) => answerData.find((answer) => answer.questionID === question.questionID)
-    );
-    if (isAllAnswered) {
-      onSubmit(answerData);
-    } else {
-      // highlight unanswered questions with red border
-      questions.forEach((question) => {
-        const input = document.getElementById(question.questionID);
-        const answer = answerData.find((answer) => answer.questionID === question.questionID);
-        
-        if (!answer || !answer.answer) {
-          input.style.border = "1px solid red";
-          input.parentElement.querySelector("span").style.color = "red";
+    const unanswered = [];
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i]
+      const questionID = question.questionID;
+      const answer = answerData.find((ans) => ans.questionID === questionID);
+      if (!answer && question.status === "active" && question.type !== "Heading1" && question.type !== "Heading2") {
+        if (question.type === "Dropdown") {
+          handleAnswerChange(question.questionID, question.options.split(",")[0]);
+        } else {
+          console.log(question)
+          unanswered.push(questionID);
         }
-      }); // <---- add a closing bracket here
-      alert("Please answer all questions before submitting");
+      }
     }
-  }
-  
+
+    if (unanswered.length === 0) {
+      setSnackbar({ open: true, type: "success" });
+      onSubmit(answerData);
+      setUnansweredQuestions([]);
+    } else {
+      setSnackbar({ open: true, type: "error" });
+      setUnansweredQuestions(unanswered);
+    }
+  };
 
   // function to handle RadioGroup and Select input change
   const handleSelectChange = (event, question) => {
@@ -90,6 +100,7 @@ const DynamicForm = ({
     const answer = event.target.value;
     handleAnswerChange(question.questionID, answer);
 
+
     // check if the question has "Others" option and is currently selected
     if (answer === "Others" && question.type === "Radio") {
       setSelectedOthersRadio(question);
@@ -102,11 +113,29 @@ const DynamicForm = ({
         handleAnswerChange(selectedOthersRadio.questionID, answer);
         setSelectedOthersRadio(null);
       }
+      setUnansweredQuestions((prevState) => {
+        const index = prevState.indexOf(question.questionID);
+        if (index !== -1) {
+          const newState = [...prevState];
+          newState.splice(index, 1);
+          return newState;
+        }
+        return prevState;
+      });
     }
   };
 
   // function to handle TextField input change
   const handleTextFieldChange = (event, question) => {
+    setUnansweredQuestions((prevState) => {
+      const index = prevState.indexOf(question.questionID);
+      if (index !== -1) {
+        const newState = [...prevState];
+        newState.splice(index, 1);
+        return newState;
+      }
+      return prevState;
+    });
     const answer = event.target.value;
     handleAnswerChange(question.questionID, answer);
   };
@@ -114,33 +143,48 @@ const DynamicForm = ({
   // render RadioGroup component
   const renderRadioGroup = (question) => {
     return (
-      <Box m={2} key={question.questionID}>
-        <Typography>{question.label}</Typography>
-        <RadioGroup
-          aria-label={question.label}
-          name={question.label}
-          onChange={(event) => handleRadioChange(event, question)}
+      <>
+        <Box
+          m={2}
+          key={question.questionID}
+          style={
+            unansweredQuestions.includes(question.questionID)
+              ? { border: "1px solid red" }
+              : {}
+          }
         >
-          {question.options.split(",").map((option) => (
-            <FormControlLabel
-              key={option}
-              value={option}
-              control={<Radio />}
-              label={option}
-            />
-          ))}
-        </RadioGroup>
-        {selectedOthersRadio &&
-          selectedOthersRadio.questionID === question.questionID && (
-            <Box m={2}>
-              <Typography>Please specify:</Typography>
-              <TextField
-                fullWidth
-                onChange={(event) => handleTextFieldChange(event, question)}
+          <Typography>{question.label}</Typography>
+          <RadioGroup
+            aria-label={question.label}
+            name={question.label}
+            onChange={(event) => handleRadioChange(event, question)}
+          >
+            {question.options.split(",").map((option) => (
+              <FormControlLabel
+                key={option}
+                value={option}
+                control={<Radio />}
+                label={option}
               />
-            </Box>
-          )}
-      </Box>
+            ))}
+          </RadioGroup>
+          {selectedOthersRadio &&
+            selectedOthersRadio.questionID === question.questionID && (
+              <Box m={2}>
+                <Typography>Please specify:</Typography>
+                <TextField
+                  fullWidth
+                  onChange={(event) => handleTextFieldChange(event, question)}
+                />
+              </Box>
+            )}
+        </Box>
+        {unansweredQuestions.includes(question.questionID) && (
+          <FormHelperText sx={{ color: "red", ml: 2 }}>
+            Please fill in this field
+          </FormHelperText>
+        )}
+      </>
     );
   };
 
@@ -152,30 +196,35 @@ const DynamicForm = ({
     const value = answer ? answer.answer : question.options.split(",")[0];
 
     return (
-      <Box m={2} key={question.questionID}>
-        <Typography>{question.label}</Typography>
-        <Select
-          value={selectedOthersDropdown ? "Others" : value}
-          onChange={(event) => handleSelectChange(event, question)}
-          fullWidth
+      <>
+        <Box
+          m={2}
+          key={question.questionID}
         >
-          {question.options.split(",").map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-        {selectedOthersDropdown &&
-          selectedOthersDropdown.questionID === question.questionID && (
-            <Box m={2}>
-              <Typography>Please specify:</Typography>
-              <TextField
-                fullWidth
-                onChange={(event) => handleTextFieldChange(event, question)}
-              />
-            </Box>
-          )}
-      </Box>
+          <Typography>{question.label}</Typography>
+          <Select
+            value={selectedOthersDropdown ? "Others" : value}
+            onChange={(event) => handleSelectChange(event, question)}
+            fullWidth
+          >
+            {question.options.split(",").map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+          {selectedOthersDropdown &&
+            selectedOthersDropdown.questionID === question.questionID && (
+              <Box m={2}>
+                <Typography>Please specify:</Typography>
+                <TextField
+                  fullWidth
+                  onChange={(event) => handleTextFieldChange(event, question)}
+                />
+              </Box>
+            )}
+        </Box>
+      </>
     );
   };
 
@@ -183,8 +232,7 @@ const DynamicForm = ({
     // The question if the response already exists
     const answerQuestion = answerData.find(
       (ans) => ans.questionID === question.questionID
-      );
-    
+    );
 
     // current answer state
     const currentOptions = answerQuestion ? answerQuestion.answer.options : [];
@@ -202,127 +250,226 @@ const DynamicForm = ({
           handleAnswerChange(question.questionID, {
             options: currentOptions,
             others: false,
-            input: ""
+            input: "",
           });
         } else {
           handleAnswerChange(question.questionID, {
             options: currentOptions,
             others: true,
             input: "",
-          })
+          });
         }
       } else {
         // if already selected, remove from the array
         if (currentOptions && currentOptions.includes(selectedOption)) {
           handleAnswerChange(question.questionID, {
-            options: currentOptions.filter((option) => option !== selectedOption),
+            options: currentOptions.filter(
+              (option) => option !== selectedOption
+            ),
             others: others,
-            input: input
-          })
+            input: input,
+          });
         } else {
           // if not selected, add to the array
 
           handleAnswerChange(question.questionID, {
             options: [...currentOptions, selectedOption],
             others: others,
-            input: input
-          })
+            input: input,
+          });
         }
       }
     };
 
     const handleTextInput = (e) => {
-        handleAnswerChange(question.questionID, {
-         options: currentOptions,
-         others: true,
-         input: e.target.value 
-        })
-    }
+      handleAnswerChange(question.questionID, {
+        options: currentOptions,
+        others: true,
+        input: e.target.value,
+      });
+    };
 
     return (
-      <Box m={2} key={question.questionID}>
-        <Typography>{question.label}</Typography>
-        {question.options.split(",").map((option) => (
-          <FormControlLabel
-            key={option}
-            style={{ display: "block" }}
-            value={option}
-            control={
-              <Checkbox
-                checked={
-                  option ===  'Others' && others ? true :
-                  currentOptions ?
-                  currentOptions.includes(option) :
-                  false
-                }
-                onChange={handleCheckboxChange}
-              />
-            }
-            label={option}
-          />
-        ))}
-        
-        {others && (
+      <>
+        <Box
+          m={2}
+          key={question.questionID}
+          style={
+            unansweredQuestions.includes(question.questionID)
+              ? { border: "1px solid red" }
+              : {}
+          }
+        >
+          <Typography>{question.label}</Typography>
+          {question.options.split(",").map((option) => (
+            <FormControlLabel
+              key={option}
+              style={{ display: "block" }}
+              value={option}
+              control={
+                <Checkbox
+                  checked={
+                    option === "Others" && others
+                      ? true
+                      : currentOptions
+                      ? currentOptions.includes(option)
+                      : false
+                  }
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label={option}
+            />
+          ))}
+
+          {others && (
             <>
               <Typography>Please specify:</Typography>
-              <TextField
-                fullWidth
-                onChange={(e) => handleTextInput(e)}
-              />
+              <TextField fullWidth onChange={(e) => handleTextInput(e)} />
             </>
           )}
-      </Box>
+        </Box>
+        {unansweredQuestions.includes(question.questionID) && (
+          <FormHelperText sx={{ color: "red", ml: 2 }}>
+            Please fill in this field
+          </FormHelperText>
+        )}
+      </>
     );
   };
 
   // render Text Input component
   const renderTextInput = (question) => {
+    const handleTextFieldChange = (question, event) => {
+      const answer = event.target.value;
+      handleAnswerChange(question.questionID, answer);
+      setUnansweredQuestions((prevState) => {
+        const index = prevState.indexOf(question.questionID);
+        if (index !== -1) {
+          const newState = [...prevState];
+          newState.splice(index, 1);
+          return newState;
+        }
+        return prevState;
+      });
+    };
     return (
-      <Box m={2} key={question.questionID}>
-        <Typography>{question.label}</Typography>
-        <TextField
-          fullWidth
-          onChange={(event) =>
-            handleAnswerChange(question.questionID, event.target.value)
+      <>
+        <Box
+          m={2}
+          key={question.questionID}
+          style={
+            unansweredQuestions.includes(question.questionID)
+              ? { border: "1px solid red" }
+              : {}
           }
-        />
-      </Box>
+        >
+          <Typography>{question.label}</Typography>
+          <TextField
+            fullWidth
+            onChange={(event) =>
+              handleTextFieldChange(question, event)
+            }
+          />
+        </Box>
+        {unansweredQuestions.includes(question.questionID) && (
+          <FormHelperText sx={{ color: "red", ml: 2 }}>
+            Please fill in this field
+          </FormHelperText>
+        )}
+      </>
     );
   };
 
   const renderTextArea = (question) => {
+    const handleTextAreaChange = (question, event) => {
+      const answer = event.target.value;
+      handleAnswerChange(question.questionID, answer);
+      setUnansweredQuestions((prevState) => {
+        const index = prevState.indexOf(question.questionID);
+        if (index !== -1) {
+          const newState = [...prevState];
+          newState.splice(index, 1);
+          return newState;
+        }
+        return prevState;
+      });
+    };
     return (
-      <Box m={2} key={question.questionID}>
-        <Typography>{question.label}</Typography>
-        <TextField
-          multiline
-          rows={4}
-          maxRows={4}
-          fullWidth
-          onChange={(event) =>
-            handleAnswerChange(question.questionID, event.target.value)
+      <>
+        <Box
+          m={2}
+          key={question.questionID}
+          style={
+            unansweredQuestions.includes(question.questionID)
+              ? { border: "1px solid red" }
+              : {}
           }
-        />
-      </Box>
+        >
+          <Typography>{question.label}</Typography>
+          <TextField
+            multiline
+            rows={4}
+            maxRows={4}
+            fullWidth
+            onChange={(event) =>
+              handleTextAreaChange(question, event)
+            }
+          />
+        </Box>
+        {unansweredQuestions.includes(question.questionID) && (
+          <FormHelperText sx={{ color: "red", ml: 2 }}>
+            Please fill in this field
+          </FormHelperText>
+        )}
+      </>
     );
   };
 
   const renderDatetime = (question) => {
+    const handleDatetimeChange = (question, event) => {
+      const answer = event.target.value;
+      handleAnswerChange(question.questionID, answer);
+      setUnansweredQuestions((prevState) => {
+        const index = prevState.indexOf(question.questionID);
+        if (index !== -1) {
+          const newState = [...prevState];
+          newState.splice(index, 1);
+          return newState;
+        }
+        return prevState;
+      });
+    };
     return (
-      <Box m={2} key={question.questionID}>
-        <Typography>{question.label}</Typography>
-        <TextField
-          fullWidth
-          type='datetime-local'
-          margin='normal'
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={(event) =>
-            handleAnswerChange(question.questionID, event.target.value)
+      <>
+        <Box
+          m={2}
+          key={question.questionID}
+          style={
+            unansweredQuestions.includes(question.questionID)
+              ? { border: "1px solid red" }
+              : {}
           }
-        />
-      </Box>
+        >
+          <Typography>{question.label}</Typography>
+          <TextField
+            fullWidth
+            type='datetime-local'
+            margin='normal'
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={(event) =>
+              handleDatetimeChange(question, event)
+            }
+          />
+        </Box>
+        {unansweredQuestions.includes(question.questionID) && (
+          <FormHelperText sx={{ color: "red", ml: 2 }}>
+            Please fill in this field
+          </FormHelperText>
+        )}
+      </>
     );
   };
 
@@ -344,7 +491,7 @@ const DynamicForm = ({
 
   // map through the questions array and render the appropriate component based on the question type
   const renderQuestion = (question) => {
-    if (question.status === "Active") {
+    if (question.status === "active") {
       switch (question.type) {
         case "Radio":
           return renderRadioGroup(question);
@@ -374,6 +521,21 @@ const DynamicForm = ({
         .sort((a, b) => a.order - b.order)
         .map((question) => renderQuestion(question))}
       <Button onClick={handleSubmit}>Submit</Button>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.type}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.type === "success"
+            ? "Form submission success"
+            : "Please fill in all the fields"}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

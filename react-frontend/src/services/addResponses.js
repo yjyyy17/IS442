@@ -1,10 +1,10 @@
 
 import axios from "axios";
 
-const getVendorWorkflows = async (userId) => {
-  var url = "http://localhost:8080/api/formstatusByUserId?userId=" + userId
+const addResponses = async (answerData) => {
+  var url = "http://localhost:8080/api/response/add"
   return axios
-    .get(url)
+    .post(url, answerData)
     .then((response) => {
       return response.data
     })
@@ -24,4 +24,4 @@ const getVendorWorkflows = async (userId) => {
     });
 };
 
-export default getVendorWorkflows;
+export default addResponses;

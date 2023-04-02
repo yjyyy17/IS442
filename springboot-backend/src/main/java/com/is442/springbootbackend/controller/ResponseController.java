@@ -93,6 +93,7 @@ public class ResponseController {
 
             //check if valid questionID exists
             int questionID = response.getQuestion().getQuestionID();
+            System.out.println(questionID);
             boolean questionIDExists = questionRepository.existsById(questionID);
 
             if (formiDExists == false ){
@@ -113,6 +114,8 @@ public class ResponseController {
             FormTemplate form = new FormTemplate();
             form = formTemplateRepository.findById((int) formID)
                         .orElseThrow(() -> new RuntimeException("Form not found with ID "));
+
+                System.out.println(form.getFormId() + "GETTING");
             qn.setFormID(form);
             rs.setQuestion(qn);
             responseRepository.save(rs);
