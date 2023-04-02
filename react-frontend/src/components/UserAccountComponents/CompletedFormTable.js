@@ -128,7 +128,7 @@ const CompletedFormTable = () => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:8080/api/formstatus/questions?userId=3&formId=1',
+      url: 'http://localhost:8080/api/formstatus/questions?userId=${userId}&formId=${formId}',
       headers: { }
     };
     axios.request(config)

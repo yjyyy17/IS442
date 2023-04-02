@@ -353,9 +353,10 @@ public class FormStatusController {
 
             int formID = response.getQuestion().getFormID().getFormId();
             long userID = response.getUserID().getUserId();
-            System.out.println(formID + " || " + userID);
+            System.out.println(formID + " || " + formId + "|" + userID + " |" + userID);
 
             if(formID == formId && userID == userId){
+                System.out.println("TEST");
                 HashMap<String,Object> row = new HashMap<>();
                 HashMap<String, String> qnResponse = new HashMap<>();
 
